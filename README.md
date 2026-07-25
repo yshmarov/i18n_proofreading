@@ -181,6 +181,22 @@ config.enabled = ->(request) { request.env["warden"]&.user&.staff? }
 config.enabled = ->(request) { Flipper.enabled?(:i18n_proofreading) }
 ```
 
+### Resolving the current user
+
+`current_user` (optional — it attributes suggestions) and the gates all
+receive the raw request, so they work with whatever auth you have:
+
+```ruby
+# Devise / Warden:
+config.current_user = ->(request) { request.env["warden"]&.user }
+
+# Rails 8 built-in auth (bin/rails generate authentication):
+config.current_user = lambda do |request|
+  token = request.cookies["session_token"]
+  Session.find_signed(token)&.user if token
+end
+```
+
 ### Placing the widget yourself
 
 Set `config.auto_inject = false` and drop the helper at the end of your layout:

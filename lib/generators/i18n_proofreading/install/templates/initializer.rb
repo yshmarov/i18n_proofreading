@@ -21,7 +21,14 @@ I18nProofreading.configure do |config|
   # #id (ideally #email too), or nil. Receives the Rack::Request. You resolve the
   # user however your app does — session, Warden, a token, etc.
   #
-  # config.current_user = ->(request) { nil }
+  # Devise / Warden:
+  # config.current_user = ->(request) { request.env["warden"]&.user }
+  #
+  # Rails 8 built-in auth (bin/rails generate authentication):
+  # config.current_user = lambda do |request|
+  #   token = request.cookies["session_token"]
+  #   Session.find_signed(token)&.user if token
+  # end
 
   # How to label the author in the "already suggested" list.
   #

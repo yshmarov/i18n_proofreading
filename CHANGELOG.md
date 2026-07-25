@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+## [0.9.5]
+
+- Docs: show how to wire `current_user` with Rails 8's built-in authentication
+  (`bin/rails generate authentication`), alongside the Devise/Warden example —
+  in the README and the generated initializer.
+
 ## [0.9.4]
 
 - **Accessibility parity for the suggestion popover.** The panel is now a real
