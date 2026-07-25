@@ -3,10 +3,9 @@
 /pkg/
 /tmp/
 /log/*.log
-/spec/dummy/log/*.log
-/spec/dummy/tmp/
-/spec/dummy/db/*.sqlite3
-/spec/examples.txt
+/test/dummy/log/*.log
+/test/dummy/tmp/
+/test/dummy/db/*.sqlite3
 Gemfile.lock
 gemfiles/*.lock
 .DS_Store
@@ -14,4 +13,4 @@ gemfiles/*.lock
 
 # Full-resolution demo recording — too large for GitHub (>100MB).
 # The committed GIF and the 640px MP4 are the shareable versions.
-/i18n-feedback-demo.mp4
+/i18n-proofreading-demo.mp4

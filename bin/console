@@ -2,6 +2,6 @@
 # frozen_string_literal: true
 
 require "bundler/setup"
-require "i18n_feedback"
+require "i18n_proofreading"
 require "irb"
 IRB.start

@@ -3,7 +3,7 @@ name: Release
 # Publishes the gem to RubyGems via trusted publishing (OIDC) — no API key or
 # MFA prompt. Triggered by pushing a version tag, e.g. `git tag v0.5.0 && git
 # push origin v0.5.0`. Configured at:
-# https://rubygems.org/gems/i18n_feedback/trusted_publishers
+# https://rubygems.org/gems/i18n_proofreading/trusted_publishers
 on:
   push:
     tags:
@@ -22,7 +22,7 @@ jobs:
           ruby-version: "3.4"
           bundler-cache: true
       - name: Run tests before publishing
-        run: bundle exec rspec
+        run: bundle exec rake test
       - uses: rubygems/release-gem@v1
         with:
           # Skip the post-publish "wait for propagation" probe — it can time out

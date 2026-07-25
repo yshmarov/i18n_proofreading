@@ -1,22 +1,22 @@
-# i18n_feedback
+# i18n_proofreading
 
-[![Gem Version](https://img.shields.io/gem/v/i18n_feedback)](https://rubygems.org/gems/i18n_feedback)
-[![Downloads](https://img.shields.io/gem/dt/i18n_feedback)](https://rubygems.org/gems/i18n_feedback)
-[![CI](https://github.com/yshmarov/i18n-feedback/actions/workflows/ci.yml/badge.svg)](https://github.com/yshmarov/i18n-feedback/actions/workflows/ci.yml)
+[![Gem Version](https://img.shields.io/gem/v/i18n_proofreading)](https://rubygems.org/gems/i18n_proofreading)
+[![Downloads](https://img.shields.io/gem/dt/i18n_proofreading)](https://rubygems.org/gems/i18n_proofreading)
+[![CI](https://github.com/yshmarov/i18n_proofreading/actions/workflows/ci.yml/badge.svg)](https://github.com/yshmarov/i18n_proofreading/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](MIT-LICENSE)
 
 In-context translation proofreading for Rails.
 
-`i18n_feedback` renders every translated string alongside its i18n key in the
+`i18n_proofreading` renders every translated string alongside its i18n key in the
 environments you choose, lets a reviewer click any string in the running app and
 suggest a better wording, and stores those suggestions for a developer to apply.
 It is meant for development and staging, never production.
 
-![Click any string in your running app and suggest a better wording](i18n-feedback-demo.gif)
+![Click any string in your running app and suggest a better wording](i18n-proofreading-demo.gif)
 
-<video src="https://github.com/yshmarov/i18n-feedback/raw/main/i18n-feedback-demo-640-high.mp4" controls muted playsinline width="640">
+<video src="https://github.com/yshmarov/i18n_proofreading/raw/main/i18n-proofreading-demo-640-high.mp4" controls muted playsinline width="640">
   Your browser can't play this video —
-  <a href="https://github.com/yshmarov/i18n-feedback/raw/main/i18n-feedback-demo-640-high.mp4">download it here</a>.
+  <a href="https://github.com/yshmarov/i18n_proofreading/raw/main/i18n-proofreading-demo-640-high.mp4">download it here</a>.
 </video>
 
 - **Zero UI dependencies.** The widget is plain JavaScript and styles itself. No
@@ -38,7 +38,7 @@ It is meant for development and staging, never production.
 3. Clicking a string opens a popover showing the current text, any pending
    suggestions, and a field to propose a new wording.
 4. Suggestions are `POST`ed to the mounted engine and stored in the
-   `i18n_feedback_suggestions` table for you to review and apply.
+   `i18n_proofreading_suggestions` table for you to review and apply.
 
 ## Turbo
 
@@ -58,23 +58,23 @@ Add the gem:
 
 ```ruby
 # Gemfile
-gem "i18n_feedback"
+gem "i18n_proofreading"
 ```
 
 ```bash
 bundle install
-bin/rails generate i18n_feedback:install
+bin/rails generate i18n_proofreading:install
 bin/rails db:migrate
 ```
 
 The generator:
 
-- writes `config/initializers/i18n_feedback.rb`,
-- creates the `i18n_feedback_suggestions` migration,
+- writes `config/initializers/i18n_proofreading.rb`,
+- creates the `i18n_proofreading_suggestions` migration,
 - mounts the engine in `config/routes.rb`:
 
   ```ruby
-  mount I18nFeedback::Engine => "/i18n_feedback"
+  mount I18nProofreading::Engine => "/i18n_proofreading"
   ```
 
 Boot the app in development and look for the **“Suggest edits”** pill in the
@@ -89,8 +89,8 @@ propose a fix. Press `Esc` (or the pill) to exit.
 Everything is optional; the defaults work out of the box in development.
 
 ```ruby
-# config/initializers/i18n_feedback.rb
-I18nFeedback.configure do |config|
+# config/initializers/i18n_proofreading.rb
+I18nProofreading.configure do |config|
   # Environments the tool is active in.
   config.enabled_environments = %w[development staging]
 
@@ -116,10 +116,10 @@ I18nFeedback.configure do |config|
   config.show_pill = true
 
   # Query parameter that toggles suggest mode.
-  config.toggle_param = "i18n_feedback"
+  config.toggle_param = "i18n_proofreading"
 
   # Keep in sync with the `mount` in config/routes.rb.
-  config.mount_path = "/i18n_feedback"
+  config.mount_path = "/i18n_proofreading"
 
   # Per-IP throttle on the submission endpoint, passed to Rails' built-in rate
   # limiter (Rails 7.2+; ignored on 7.1). Set nil to disable.
@@ -140,35 +140,35 @@ config.show_pill = false # optional
 A one-way "turn it on" link is just the toggle parameter:
 
 ```erb
-<%= link_to t("i18n_feedback.start"), "?i18n_feedback=true" %>
+<%= link_to t("i18n_proofreading.start"), "?i18n_proofreading=true" %>
 ```
 
 For a single control that flips both ways, read the current state from the
-`i18n_feedback` cookie and point at the opposite state. The gem ships `start`
-and `stop` labels under the `i18n_feedback.*` scope in every bundled language,
+`i18n_proofreading` cookie and point at the opposite state. The gem ships `start`
+and `stop` labels under the `i18n_proofreading.*` scope in every bundled language,
 so a localized toggle needs no keys of your own:
 
 ```erb
-<% if I18nFeedback.available?(request) %>
-  <% suggesting = cookies[:i18n_feedback].present? %>
-  <%= link_to (suggesting ? t("i18n_feedback.stop") : t("i18n_feedback.start")),
-              "?#{I18nFeedback.config.toggle_param}=#{!suggesting}" %>
+<% if I18nProofreading.available?(request) %>
+  <% suggesting = cookies[:i18n_proofreading].present? %>
+  <%= link_to (suggesting ? t("i18n_proofreading.stop") : t("i18n_proofreading.start")),
+              "?#{I18nProofreading.config.toggle_param}=#{!suggesting}" %>
 <% end %>
 ```
 
 Good to know:
 
-- `?i18n_feedback=true` turns suggest mode on, `false` turns it off. The state is
-  stored in the `i18n_feedback` cookie, and the middleware then redirects to the
+- `?i18n_proofreading=true` turns suggest mode on, `false` turns it off. The state is
+  stored in the `i18n_proofreading` cookie, and the middleware then redirects to the
   same URL without the parameter — so it never sticks in the address bar and the
   cookie stays the single source of truth. `Esc` (or the pill) also exits.
 - These links keep working **while suggest mode is active**. The widget freezes
   ordinary navigation during proofreading (so a stray click can't leave the page
   mid-edit), but any link carrying the toggle parameter is exempt — so a "Disable"
   item in your nav always gets you out.
-- The `i18n_feedback.*` keys are **safe to run through `I18n.t`** — that scope is
+- The `i18n_proofreading.*` keys are **safe to run through `I18n.t`** — that scope is
   exempt from key-marking, so the tool never flags its own controls as editable.
-  Use the bundled `i18n_feedback.start` / `i18n_feedback.stop` labels (or your own
+  Use the bundled `i18n_proofreading.start` / `i18n_proofreading.stop` labels (or your own
   keys); either way, no plain-literal workaround is needed.
 
 ### Gating examples
@@ -178,7 +178,7 @@ Good to know:
 config.enabled = ->(request) { request.env["warden"]&.user&.staff? }
 
 # Behind a feature flag:
-config.enabled = ->(request) { Flipper.enabled?(:i18n_feedback) }
+config.enabled = ->(request) { Flipper.enabled?(:i18n_proofreading) }
 ```
 
 ### Placing the widget yourself
@@ -186,7 +186,7 @@ config.enabled = ->(request) { Flipper.enabled?(:i18n_feedback) }
 Set `config.auto_inject = false` and drop the helper at the end of your layout:
 
 ```erb
-<%= i18n_feedback_tag %>
+<%= i18n_proofreading_tag %>
 ```
 
 It renders nothing unless the tool is available for the request.
@@ -194,7 +194,7 @@ It renders nothing unless the tool is available for the request.
 ### Localizing the widget UI
 
 The pill and the suggestion popover speak the app's language: every string
-resolves through Rails I18n under the `i18n_feedback.*` scope and follows the
+resolves through Rails I18n under the `i18n_proofreading.*` scope and follows the
 language the page was rendered in (its `<html lang>`, falling back to
 `I18n.locale`). Translations ship out of the box for English plus 25 more
 languages — Arabic, Bengali, Bulgarian, Chinese (Simplified), Croatian, Dutch,
@@ -210,7 +210,7 @@ copy, define the keys in your own locale files (yours win over the gem's):
 ```yaml
 # config/locales/fr.yml
 fr:
-  i18n_feedback:
+  i18n_proofreading:
     pill: "Proposer des corrections"
     pill_active: "En cours — appuyez pour quitter (Échap)"
     title: "Proposer une correction de traduction"
@@ -226,7 +226,7 @@ fr:
 ```
 
 `config.pill_label` still overrides the pill text with a fixed string if you set
-it; leave it `nil` (the default) to use the localized `i18n_feedback.pill` key.
+it; leave it `nil` (the default) to use the localized `i18n_proofreading.pill` key.
 
 ### Light / dark / system appearance
 
@@ -239,7 +239,7 @@ blue accent stays the same in both.
 
 ### Review dashboard
 
-Mounted at your `mount_path` (default `/i18n_feedback`), the engine root is a
+Mounted at your `mount_path` (default `/i18n_proofreading`), the engine root is a
 built-in **read-only** review board: pending / applied / rejected tabs with
 counts, a per-locale filter, and each suggestion shown as current-vs-proposed
 with its comment and author. It's plain server-rendered HTML with its own
@@ -267,7 +267,7 @@ dev/staging-only while a maintainer still triages from production.
 Suggestions are also ordinary records:
 
 ```ruby
-I18nFeedback::Suggestion.where(status: "pending").newest_first.each do |s|
+I18nProofreading::Suggestion.where(status: "pending").newest_first.each do |s|
   puts "#{s.locale} #{s.translation_key}: #{s.old_value.inspect} -> #{s.proposed_value.inspect}"
 end
 ```
@@ -276,7 +276,7 @@ Each row stores `translation_key`, `locale`, `old_value`, `proposed_value`,
 `comment`, `page_url`, `status`, and optional `author_id` / `author_label`.
 
 Every suggestion has a `status` — one of `pending`, `applied`, or `rejected`
-(`I18nFeedback::Suggestion::STATUSES`), backed by an Active Record enum. New
+(`I18nProofreading::Suggestion::STATUSES`), backed by an Active Record enum. New
 suggestions start `pending`; once you apply a wording to your locale files or
 decide against it, set the status accordingly so the popover stops offering it
 as pending context:
@@ -284,7 +284,7 @@ as pending context:
 ```ruby
 suggestion.status_applied!          # bang setter
 suggestion.status_applied?          # => true
-I18nFeedback::Suggestion.status_pending.newest_first  # scope per status
+I18nProofreading::Suggestion.status_pending.newest_first  # scope per status
 ```
 
 ### Getting notified

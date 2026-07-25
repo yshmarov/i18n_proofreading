@@ -1,0 +1,16 @@
+nl:
+  i18n_proofreading:
+    pill: "Wijzigingen voorstellen"
+    start: "Vertaling verbeteren"
+    stop: "Stoppen met voorstellen (Esc)"
+    pill_active: "Stoppen met voorstellen (Esc)"
+    title: "Een vertaalcorrectie voorstellen"
+    current_text: "Huidige tekst"
+    suggested_text: "Voorgestelde tekst"
+    comment: "Opmerking"
+    comment_placeholder: "Optionele notitie voor de ontwikkelaar"
+    prior_title: "Al voorgesteld (in behandeling)"
+    cancel: "Annuleren"
+    save: "Suggestie versturen"
+    error_blank: "Voer een suggestie in."
+    error_save: "Kan de suggestie niet opslaan."

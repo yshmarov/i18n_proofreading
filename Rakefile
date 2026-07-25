@@ -5,10 +5,12 @@ require 'bundler/setup'
 # workflow (.github/workflows/release.yml) runs to push the gem to RubyGems.
 require 'bundler/gem_tasks'
 
-APP_RAKEFILE = File.expand_path('spec/dummy/Rakefile', __dir__)
-load 'rails/tasks/engine.rake' if File.exist?(APP_RAKEFILE)
+require 'rake/testtask'
+Rake::TestTask.new(:test) do |t|
+  t.libs << 'test'
+  t.pattern = 'test/**/*_test.rb'
+  t.warning = false
+  t.verbose = false
+end
 
-require 'rspec/core/rake_task'
-RSpec::Core::RakeTask.new(:spec)
-
-task default: :spec
+task default: :test

@@ -2,6 +2,29 @@
 
 ## [Unreleased]
 
+## [0.9.0]
+
+- **Renamed the gem `i18n_feedback` → `i18n_proofreading`.** The name now says
+  what it does. This renames everything: the gem, the `I18nProofreading` module,
+  the `i18n_proofreading.*` locale scope, the suggest-mode cookie / toggle
+  parameter (`i18n_proofreading`), the default mount path (`/i18n_proofreading`),
+  and the DB table (`i18n_proofreading_suggestions`).
+
+  **Migrating from `i18n_feedback`:** point your `Gemfile` at `i18n_proofreading`,
+  rename the initializer, and rename the table + any references:
+
+  ```ruby
+  # a migration
+  rename_table :i18n_feedback_suggestions, :i18n_proofreading_suggestions
+  ```
+
+  Then update `I18nFeedback` → `I18nProofreading`, the `config/initializers`
+  file, the `mount` line, any `t("i18n_feedback.*")` you added, and the
+  `?i18n_feedback=` toggle links to their `i18n_proofreading` equivalents.
+
+- **Switched the test suite from RSpec to Minitest** (`test/`, `bin/rails test`
+  / `rake test`). No behavior change; internal only.
+
 ## [0.8.2]
 
 - Fix the dashboard's locale filter doing nothing under a strict (nonce-based)
@@ -24,13 +47,13 @@
 ## [0.8.0]
 
 - Add a built-in **triage dashboard**, mounted at the engine root (your
-  `mount_path`, default `/i18n_feedback`): pending / applied / rejected tabs
+  `mount_path`, default `/i18n_proofreading`): pending / applied / rejected tabs
   with counts, a per-locale filter, each suggestion shown current-vs-proposed,
   and one-click Apply / Reject / Reopen / Delete. Plain server-rendered HTML
   with its own self-contained styling (light + dark via `prefers-color-scheme`)
   — no host assets or JS framework required.
-- Every dashboard string renders through Rails I18n under `i18n_feedback.dashboard.*`
-  and `i18n_feedback.statuses.*`, with English fallbacks, so a host can translate
+- Every dashboard string renders through Rails I18n under `i18n_proofreading.dashboard.*`
+  and `i18n_proofreading.statuses.*`, with English fallbacks, so a host can translate
   or reword any of it from its own locale files.
 - Add `config.authorize_admin` — the dashboard's gate, **defaulting to
   development only** so a fresh install never exposes it in production. It is
@@ -42,7 +65,7 @@
 
 ## [0.7.1]
 
-- The `i18n_feedback.stop` toggle label now reads "Stop suggesting (Esc)" in
+- The `i18n_proofreading.stop` toggle label now reads "Stop suggesting (Esc)" in
   every language — Esc already exits suggest mode, so the control says so.
 - The widget JavaScript moved from `app/assets/` to `lib/` (it was always
   inlined server-side, never served as an asset). Rails auto-registers every
@@ -55,7 +78,7 @@
 
 ## [0.7.0]
 
-- Reword the `i18n_feedback.start` toggle label from "Suggest edits" to
+- Reword the `i18n_proofreading.start` toggle label from "Suggest edits" to
   "Improve translation" (localized in every language) — clearer for a menu/link
   entry. The floating pill's own label (`pill`) is unchanged.
 - Ship 5 more languages: Bulgarian, Greek, Croatian, Luxembourgish, and
@@ -70,9 +93,9 @@
 
 ## [0.6.0]
 
-- Ship `i18n_feedback.start` / `i18n_feedback.stop` labels in every bundled
+- Ship `i18n_proofreading.start` / `i18n_proofreading.stop` labels in every bundled
   language, for hosts that drive suggest mode from their own menu/link instead
-  of the floating pill. Because the `i18n_feedback.*` scope is exempt from
+  of the floating pill. Because the `i18n_proofreading.*` scope is exempt from
   key-marking, these are safe to render with `t(...)` — no plain-literal
   workaround needed. See the "Toggling suggest mode from your own link" README
   section for a full HTML example.
@@ -80,7 +103,7 @@
 ## [0.5.0]
 
 - Add a `status` to each suggestion — a string-backed Active Record enum with
-  values `pending`, `applied`, and `rejected` (`I18nFeedback::Suggestion::STATUSES`),
+  values `pending`, `applied`, and `rejected` (`I18nProofreading::Suggestion::STATUSES`),
   `status_`-prefixed (`status_applied?`, `status_applied!`, `Suggestion.status_pending`)
   plus a `newest_first` scope. New suggestions start `pending`; the popover's
   "already suggested" context now shows only pending ones, so applied/rejected
@@ -89,8 +112,8 @@
   **Upgrading an existing install:** add the column with a migration —
 
   ```ruby
-  add_column :i18n_feedback_suggestions, :status, :string, null: false, default: "pending"
-  add_index  :i18n_feedback_suggestions, :status
+  add_column :i18n_proofreading_suggestions, :status, :string, null: false, default: "pending"
+  add_index  :i18n_proofreading_suggestions, :status
   ```
 
 - Harden the public submission endpoint against abuse:
@@ -113,9 +136,9 @@
 
 ## [0.3.1]
 
-- Fix the widget showing raw key markers (e.g. `⟦i18n_feedback.title⟧`) in its own
+- Fix the widget showing raw key markers (e.g. `⟦i18n_proofreading.title⟧`) in its own
   popover while suggest mode was on. The key-marking backend was tagging the
-  tool's own `i18n_feedback.*` strings; those are not part of the host app's
+  tool's own `i18n_proofreading.*` strings; those are not part of the host app's
   translatable copy, so they're now always skipped — the widget never marks or
   offers to edit its own UI.
 - Fix the popover not following the page's language under auto-injection. The
@@ -128,7 +151,7 @@
 ## [0.3.0]
 
 - Localize the widget's own UI. Every string in the pill and the suggestion
-  popover now resolves through Rails I18n under the `i18n_feedback.*` scope and
+  popover now resolves through Rails I18n under the `i18n_proofreading.*` scope and
   follows the app's current `I18n.locale`, so the tool speaks the same language as
   the app being proofread. Any key a host hasn't translated falls back to English
   — so nothing goes blank in a locale you haven't fully covered. Override any
@@ -153,13 +176,13 @@
   that the widget re-reads on every `turbo:load`, instead of an executable
   `<script>` the browser refuses to re-run when Turbo re-evaluates it with a stale
   nonce. Only the widget code carries the CSP nonce now.
-- Treat `?i18n_feedback=true|false` as a one-shot command: the middleware sets the
+- Treat `?i18n_proofreading=true|false` as a one-shot command: the middleware sets the
   cookie and redirects (303) to the same URL without the parameter. The cookie is
   now the single source of truth, so the parameter no longer sticks in the address
   bar and the pill's reload can turn suggest mode off.
 - Let a host's own toggle link work while suggest mode is active. Suggest mode
   freezes navigation so a stray click can't leave the page mid-proofread, but that
-  also froze a `?i18n_feedback=false` link in your own nav — so the only way out
+  also froze a `?i18n_proofreading=false` link in your own nav — so the only way out
   was the pill. Links carrying the toggle parameter are now exempt from the freeze.
 
 ## [0.2.1]
@@ -184,8 +207,8 @@
   pill and a per-string suggestion popover. The copy cursor and hover outline
   appear only on the strings that resolve to a key.
 - Optional floating pill (`config.show_pill`) and a URL toggle
-  (`?i18n_feedback=true` / `false`, remembered in a cookie) so suggest mode can
+  (`?i18n_proofreading=true` / `false`, remembered in a cookie) so suggest mode can
   be triggered from a host-provided link instead.
-- `I18nFeedback::Suggestion` model and mountable engine endpoints for listing and
+- `I18nProofreading::Suggestion` model and mountable engine endpoints for listing and
   creating suggestions.
-- `i18n_feedback:install` generator (initializer, migration, engine mount).
+- `i18n_proofreading:install` generator (initializer, migration, engine mount).

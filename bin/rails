@@ -1,0 +1,12 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# Runs Rails commands (e.g. `bin/rails test`) against the bundled dummy app.
+ENGINE_ROOT = File.expand_path('..', __dir__)
+ENGINE_PATH = File.expand_path('../lib/i18n_proofreading/engine', __dir__)
+APP_PATH = File.expand_path('../test/dummy/config/application', __dir__)
+
+require 'bundler/setup' if File.exist?(File.expand_path('../Gemfile', __dir__))
+
+require 'rails/all'
+require 'rails/engine/commands'
