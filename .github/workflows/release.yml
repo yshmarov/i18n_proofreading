@@ -29,7 +29,7 @@ jobs:
         run: bundle exec rake test
       # Exchanges the GitHub Actions OIDC token for a short-lived RubyGems API
       # key (sets GEM_HOST_API_KEY). Same action rubygems/release-gem uses.
-      - uses: rubygems/configure-rubygems-credentials@v1.0.0
+      - uses: rubygems/configure-rubygems-credentials@v2.1.0
       - name: Build and push the gem
         run: |
           gem build i18n_proofreading.gemspec
