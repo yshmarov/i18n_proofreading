@@ -105,6 +105,23 @@ module I18nProofreading
       assert_not_includes response.body, '__i18nProofreadingLoaded' # no inlined code
     end
 
+    test 'drops defer in suggest mode so the marker strip runs before first paint' do
+      src = "/i18n_proofreading/widget.js?v=#{Widget.fingerprint}"
+
+      # No markers on the page: the script defers, so it never blocks rendering.
+      get '/sample'
+      assert_match(%r{<script src="[^"]*widget\.js[^"]*" defer nonce=}, response.body)
+
+      # ⟦key⟧ markers present: the script is eager (no defer), so it strips them
+      # before the browser paints — no flash of raw keys. Still same-origin src
+      # (Turbo + CSP safe) and still nonced.
+      get '/sample', headers: { 'HTTP_COOKIE' => 'i18n_proofreading=1' }
+      assert_includes response.body, "#{Marking::LEFT}sample.greeting#{Marking::RIGHT}"
+      assert_includes response.body,
+                      %(<script src="#{src}" nonce="testnonce" data-i18n-proofreading-widget></script>)
+      assert_no_match(%r{widget\.js[^"]*" defer}, response.body)
+    end
+
     test 'stamps the widget script with the CSP nonce, leaving the JSON config (data, not code) unstamped' do
       get '/sample'
 

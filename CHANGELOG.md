@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+## [0.9.6]
+
+- No more flash of raw `⟦key⟧` markers when entering suggest mode: the widget
+  script drops `defer` while markers are present (so the strip runs before the
+  first paint on a full load), and strips the incoming body on
+  `turbo:before-render` (so soft Turbo navigations into suggest mode are clean
+  too). Delivery stays a same-origin fingerprinted script — Turbo + CSP safe.
+
 ## [0.9.5]
 
 - Docs: show how to wire `current_user` with Rails 8's built-in authentication

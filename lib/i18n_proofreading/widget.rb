@@ -62,8 +62,17 @@ module I18nProofreading
         nonce_attr = nonce ? %( nonce="#{nonce}") : ''
         src = "#{I18nProofreading.config.mount_path.chomp('/')}/widget.js?v=#{fingerprint}"
 
+        # In suggest mode the page carries ⟦key⟧ markers that the widget strips
+        # on load. A `defer` script runs *after* the browser paints, so the
+        # markers would flash; drop `defer` when markers are present so this
+        # end-of-body src script runs before paint. Normal pages keep `defer` —
+        # there is nothing to strip, and a blocking script would only cost
+        # render time. (Soft Turbo visits are handled in the widget's
+        # `turbo:before-render` hook, which strips the incoming body first.)
+        defer = active ? '' : ' defer'
+
         %(<script type="application/json" data-i18n-proofreading-config>#{json}</script>) +
-          %(<script src="#{src}" defer#{nonce_attr} data-i18n-proofreading-widget></script>)
+          %(<script src="#{src}"#{defer}#{nonce_attr} data-i18n-proofreading-widget></script>)
       end
 
       private
