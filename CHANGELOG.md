@@ -2,6 +2,20 @@
 
 ## [Unreleased]
 
+## [0.9.4]
+
+- **Accessibility parity for the suggestion popover.** The panel is now a real
+  dialog (`role="dialog"`, `aria-modal="true"`, named by its title via
+  `aria-labelledby`); Tab/Shift+Tab are trapped inside it while it is open and
+  closing it returns focus to the element that opened it. Validation and save
+  errors are announced to screen readers (`role="alert"`), and the previously
+  hardcoded English network-failure message now goes through the localized
+  `errorSave` label like the rest. The page behind the open dialog is
+  scroll-locked (`overflow: hidden` on `<html>`, restored on close) — and if a
+  Turbo body swap removes the overlay without `close()`, the next render
+  releases the lock so the new page never arrives frozen. The floating pill is
+  untouched.
+
 ## [0.9.3]
 
 - Fix the widget going dead after a Turbo Drive visit under a nonce-based
