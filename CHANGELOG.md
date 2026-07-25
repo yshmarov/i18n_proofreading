@@ -2,6 +2,20 @@
 
 ## [Unreleased]
 
+## [0.9.3]
+
+- Fix the widget going dead after a Turbo Drive visit under a nonce-based
+  Content-Security-Policy. The widget code was inlined as a nonce'd `<script>`;
+  Turbo body swaps re-run body scripts against the *original* page's CSP
+  header, which refuses the freshly minted inline nonce — so after any soft
+  visit the widget never booted until a hard reload. The code is now served as
+  a **same-origin, content-fingerprinted script**
+  (`GET {mount_path}/widget.js?v=<md5>`), which `script-src 'self'` (or the
+  nonce the tag still carries) covers on every visit. The fingerprinted URL is
+  immutable and cached for a year — new code means a new URL — while any other
+  URL only ETag-revalidates. The inline JSON config block is unchanged: it is
+  data, not code, and needs no nonce.
+
 ## [0.9.2]
 
 - Make the suggestion popover **full-screen on mobile** (≤ 480px wide): edge to

@@ -1,13 +1,14 @@
 # frozen_string_literal: true
 
 require 'json'
+require 'digest'
 
 module I18nProofreading
   # Serves the self-contained browser widget. The JavaScript is plain ES (no
   # framework, no build step) and styles itself inline, so it drops into any Rails
-  # app regardless of its CSS or JS setup. It is inlined into the page rather than
-  # served as a separate asset to avoid any dependency on the host's asset
-  # pipeline.
+  # app regardless of its CSS or JS setup. It is served by the engine's own
+  # controller (see WidgetsController) rather than through an asset pipeline, to
+  # avoid any dependency on the host's asset setup.
   module Widget
     # Lives under lib/ (not app/assets/), so a host that runs an asset
     # pipeline never ingests it: Rails auto-registers every engine's
@@ -24,6 +25,13 @@ module I18nProofreading
         @javascript ||= File.read(SOURCE)
       end
 
+      # Content fingerprint for the cache-busting script URL: a changed file is
+      # a changed URL, so no browser can ever run stale widget code — Safari
+      # has been caught ignoring must-revalidate on same-URL scripts.
+      def fingerprint
+        @fingerprint ||= Digest::MD5.hexdigest(javascript)
+      end
+
       # The two <script> tags to place before </body>.
       #
       # The config rides in a `type="application/json"` block: it is *data*, not
@@ -32,8 +40,12 @@ module I18nProofreading
       # widget can re-read the *current* page's config on every `turbo:load`
       # instead of being stuck with whatever the last full load evaluated.
       #
-      # `nonce:` stamps only the widget script (the code), so it runs under a
-      # nonce-based Content-Security-Policy; pass nil when the app has no nonce.
+      # The code is a same-origin `src` script served by the engine — NOT
+      # inlined. Under a nonce-based CSP, Turbo Drive body swaps re-run body
+      # scripts against the *original* page's CSP header, so a fresh inline
+      # nonce gets refused; a same-origin src is covered by `'self'` on every
+      # visit. `nonce:` is still stamped for hosts whose script-src has no
+      # 'self'; pass nil when the app has no nonce.
       def snippet(endpoint:, locale:, active:, nonce: nil)
         config = {
           endpoint: endpoint,
@@ -48,9 +60,10 @@ module I18nProofreading
         # Escape "</" so a value can't close the <script> block early.
         json = config.to_json.gsub('</', '<\/')
         nonce_attr = nonce ? %( nonce="#{nonce}") : ''
+        src = "#{I18nProofreading.config.mount_path.chomp('/')}/widget.js?v=#{fingerprint}"
 
         %(<script type="application/json" data-i18n-proofreading-config>#{json}</script>) +
-          %(<script data-i18n-proofreading-widget#{nonce_attr}>#{javascript}</script>)
+          %(<script src="#{src}" defer#{nonce_attr} data-i18n-proofreading-widget></script>)
       end
 
       private

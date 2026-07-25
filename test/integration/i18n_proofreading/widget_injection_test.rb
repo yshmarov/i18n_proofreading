@@ -96,10 +96,19 @@ module I18nProofreading
       assert_includes response.body, '"showPill":false'
     end
 
+    test 'references the widget code by fingerprinted same-origin src, not inline' do
+      get '/sample'
+
+      src = "/i18n_proofreading/widget.js?v=#{Widget.fingerprint}"
+      assert_includes response.body,
+                      %(<script src="#{src}" defer nonce="testnonce" data-i18n-proofreading-widget></script>)
+      assert_not_includes response.body, '__i18nProofreadingLoaded' # no inlined code
+    end
+
     test 'stamps the widget script with the CSP nonce, leaving the JSON config (data, not code) unstamped' do
       get '/sample'
 
-      assert_includes response.body, '<script data-i18n-proofreading-widget nonce="testnonce">'
+      assert_match(/<script src="[^"]*widget\.js[^"]*" defer nonce="testnonce"/, response.body)
       assert_includes response.body, '<script type="application/json" data-i18n-proofreading-config>'
       assert_no_match(/data-i18n-proofreading-config[^>]*nonce=/, response.body)
     end
