@@ -6,9 +6,19 @@ require 'bundler/setup'
 require 'bundler/gem_tasks'
 
 require 'rake/testtask'
+
+# Unit/integration tests — no browser, runs on every Ruby x Rails combo.
 Rake::TestTask.new(:test) do |t|
   t.libs << 'test'
-  t.pattern = 'test/**/*_test.rb'
+  t.test_files = FileList['test/**/*_test.rb'].exclude('test/system/**/*')
+  t.warning = false
+  t.verbose = false
+end
+
+# System tests — drive the widget in headless Chrome (needs a browser).
+Rake::TestTask.new('test:system') do |t|
+  t.libs << 'test'
+  t.test_files = FileList['test/system/**/*_test.rb']
   t.warning = false
   t.verbose = false
 end

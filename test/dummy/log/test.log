@@ -829,3 +829,895 @@ Processing by I18nProofreading::SuggestionsController#create as HTML
   Parameters: {"suggestion" => {"translation_key" => "", "locale" => "en", "proposed_value" => ""}}
 Completed 422 Unprocessable Content in 0ms (Views: 0.0ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
   [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[35m (0.2ms)[0m  [1m[35mCREATE TABLE "schema_migrations" ("version" varchar NOT NULL PRIMARY KEY)[0m
+  [1m[35m (0.1ms)[0m  [1m[35mCREATE TABLE "ar_internal_metadata" ("key" varchar NOT NULL PRIMARY KEY, "value" varchar, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL)[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.1ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[35m (0.4ms)[0m  [1m[35mDROP TABLE IF EXISTS "i18n_proofreading_suggestions"[0m
+  [1m[35m (0.2ms)[0m  [1m[35mCREATE TABLE "i18n_proofreading_suggestions" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "translation_key" varchar NOT NULL, "locale" varchar NOT NULL, "old_value" text, "proposed_value" text NOT NULL, "comment" text, "page_url" varchar, "status" varchar DEFAULT 'pending' NOT NULL, "author_id" varchar, "author_label" varchar, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL)[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.1ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ? ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1[0m  [[nil, "environment"]]
+  [1m[36mActiveRecord::InternalMetadata Create (0.0ms)[0m  [1m[32mINSERT INTO "ar_internal_metadata" ("key", "value", "created_at", "updated_at") VALUES ('environment', 'test', '2026-07-25 09:50:48.149162', '2026-07-25 09:50:48.149163') RETURNING "key"[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+--------------------------------------------------------------------------------
+I18nProofreading::WidgetTest: test_a_reviewer_clicks_a_string_and_suggests_a_fix
+--------------------------------------------------------------------------------
+Started GET "/sample" for 127.0.0.1 at 2026-07-25 11:50:49 +0200
+Processing by SampleController#show as HTML
+  Rendering inline template
+  Rendered inline template (Duration: 5.9ms | GC: 0.0ms)
+Completed 200 OK in 8ms (Views: 7.6ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+Started GET "/favicon.ico" for 127.0.0.1 at 2026-07-25 11:50:49 +0200
+  
+ActionController::RoutingError (No route matches [GET] "/favicon.ico"):
+  
+Started GET "/sample" for 127.0.0.1 at 2026-07-25 11:50:49 +0200
+Processing by SampleController#show as HTML
+  Rendering inline template
+  Rendered inline template (Duration: 0.2ms | GC: 0.0ms)
+Completed 200 OK in 0ms (Views: 0.3ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+Started GET "/i18n_proofreading/suggestions/context?key=sample.greeting&locale=en" for 127.0.0.1 at 2026-07-25 11:50:49 +0200
+Processing by I18nProofreading::SuggestionsController#context as JSON
+  Parameters: {"key" => "sample.greeting", "locale" => "en"}
+  [1m[36mI18nProofreading::Suggestion Load (0.1ms)[0m  [1m[34mSELECT "i18n_proofreading_suggestions".* FROM "i18n_proofreading_suggestions" WHERE "i18n_proofreading_suggestions"."translation_key" = ? AND "i18n_proofreading_suggestions"."locale" = ? AND "i18n_proofreading_suggestions"."status" = ? ORDER BY "i18n_proofreading_suggestions"."id" DESC LIMIT ?[0m  [["translation_key", "sample.greeting"], ["locale", "en"], ["status", "pending"], ["LIMIT", 20]]
+Completed 200 OK in 10ms (Views: 0.1ms | ActiveRecord: 0.3ms (1 query, 0 cached) | GC: 0.1ms)
+  [1m[36mI18nProofreading::Suggestion Count (0.1ms)[0m  [1m[34mSELECT COUNT(*) FROM "i18n_proofreading_suggestions"[0m
+Started POST "/i18n_proofreading/suggestions" for 127.0.0.1 at 2026-07-25 11:50:49 +0200
+Processing by I18nProofreading::SuggestionsController#create as JSON
+  Parameters: {"suggestion" => {"translation_key" => "sample.greeting", "locale" => "en", "old_value" => "Hello", "proposed_value" => "Hi there", "comment" => "", "page_url" => "http://127.0.0.1:52617/sample"}}
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mI18nProofreading::Suggestion Create (0.4ms)[0m  [1m[32mINSERT INTO "i18n_proofreading_suggestions" ("translation_key", "locale", "old_value", "proposed_value", "comment", "page_url", "status", "author_id", "author_label", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"[0m  [["translation_key", "sample.greeting"], ["locale", "en"], ["old_value", "Hello"], ["proposed_value", "Hi there"], ["comment", ""], ["page_url", "http://127.0.0.1:52617/sample"], ["status", "pending"], ["author_id", nil], ["author_label", nil], ["created_at", "2026-07-25 09:50:49.894872"], ["updated_at", "2026-07-25 09:50:49.894872"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Completed 201 Created in 3ms (ActiveRecord: 0.5ms (1 query, 0 cached) | GC: 0.0ms)
+  [1m[36mI18nProofreading::Suggestion Count (0.1ms)[0m  [1m[34mSELECT COUNT(*) FROM "i18n_proofreading_suggestions"[0m
+  [1m[36mI18nProofreading::Suggestion Load (0.1ms)[0m  [1m[34mSELECT "i18n_proofreading_suggestions".* FROM "i18n_proofreading_suggestions" ORDER BY "i18n_proofreading_suggestions"."id" DESC LIMIT ?[0m  [["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+------------------------------------------------------------
+I18nProofreading::WidgetTest: test_Escape_exits_suggest_mode
+------------------------------------------------------------
+Started GET "/sample" for 127.0.0.1 at 2026-07-25 11:50:50 +0200
+Processing by SampleController#show as HTML
+  Rendering inline template
+  Rendered inline template (Duration: 0.1ms | GC: 0.0ms)
+Completed 200 OK in 0ms (Views: 0.2ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+Started GET "/sample" for 127.0.0.1 at 2026-07-25 11:50:50 +0200
+Processing by SampleController#show as HTML
+  Rendering inline template
+  Rendered inline template (Duration: 0.1ms | GC: 0.0ms)
+Completed 200 OK in 0ms (Views: 0.2ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+Started GET "/sample" for 127.0.0.1 at 2026-07-25 11:50:50 +0200
+Processing by SampleController#show as HTML
+  Rendering inline template
+  Rendered inline template (Duration: 0.1ms | GC: 0.0ms)
+Completed 200 OK in 0ms (Views: 0.3ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[35m (0.2ms)[0m  [1m[35mCREATE TABLE "schema_migrations" ("version" varchar NOT NULL PRIMARY KEY)[0m
+  [1m[35m (0.1ms)[0m  [1m[35mCREATE TABLE "ar_internal_metadata" ("key" varchar NOT NULL PRIMARY KEY, "value" varchar, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL)[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.1ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[35m (0.4ms)[0m  [1m[35mDROP TABLE IF EXISTS "i18n_proofreading_suggestions"[0m
+  [1m[35m (0.2ms)[0m  [1m[35mCREATE TABLE "i18n_proofreading_suggestions" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "translation_key" varchar NOT NULL, "locale" varchar NOT NULL, "old_value" text, "proposed_value" text NOT NULL, "comment" text, "page_url" varchar, "status" varchar DEFAULT 'pending' NOT NULL, "author_id" varchar, "author_label" varchar, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL)[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.1ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ? ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1[0m  [[nil, "environment"]]
+  [1m[36mActiveRecord::InternalMetadata Create (0.1ms)[0m  [1m[32mINSERT INTO "ar_internal_metadata" ("key", "value", "created_at", "updated_at") VALUES ('environment', 'test', '2026-07-25 09:51:00.932474', '2026-07-25 09:51:00.932476') RETURNING "key"[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+---------------------------------------------------------
+I18nProofreading::SuggestionTest: test_starts_out_pending
+---------------------------------------------------------
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mI18nProofreading::Suggestion Create (0.2ms)[0m  [1m[32mINSERT INTO "i18n_proofreading_suggestions" ("translation_key", "locale", "old_value", "proposed_value", "comment", "page_url", "status", "author_id", "author_label", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"[0m  [["translation_key", "sample.greeting"], ["locale", "en"], ["old_value", nil], ["proposed_value", "Hi"], ["comment", nil], ["page_url", nil], ["status", "pending"], ["author_id", nil], ["author_label", nil], ["created_at", "2026-07-25 09:51:00.962585"], ["updated_at", "2026-07-25 09:51:00.962585"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+-------------------------------------------------------------------------------------
+I18nProofreading::SuggestionTest: test_requires_a_key,_a_proposed_value,_and_a_locale
+-------------------------------------------------------------------------------------
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+------------------------------------------------------------------------------
+I18nProofreading::SuggestionTest: test_rejects_a_locale_the_app_does_not_offer
+------------------------------------------------------------------------------
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+--------------------------------------------------------------------------
+I18nProofreading::SuggestionTest: test_exposes_a_predicate_for_each_status
+--------------------------------------------------------------------------
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+------------------------------------------------------------------------------
+I18nProofreading::SuggestionTest: test_caps_the_length_of_the_free-text_fields
+------------------------------------------------------------------------------
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+-------------------------------------------------------------------------------------
+I18nProofreading::SuggestionTest: test_accepts_free-text_fields_at_the_maximum_length
+-------------------------------------------------------------------------------------
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+---------------------------------------------------------------------------
+I18nProofreading::SuggestionTest: test_accepts_a_locale_the_app_knows_about
+---------------------------------------------------------------------------
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+-------------------------------------------------------------------------------
+I18nProofreading::SuggestionTest: test_refuses_to_be_assigned_an_unknown_status
+-------------------------------------------------------------------------------
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+----------------------------------------------------------------------------------------------------
+I18nProofreading::LocalesTest: test_i18n_proofreading.pl.yml_carries_the_same_widget_keys_as_English
+----------------------------------------------------------------------------------------------------
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+----------------------------------------------------------------------------------------------------
+I18nProofreading::LocalesTest: test_i18n_proofreading.ar.yml_carries_the_same_widget_keys_as_English
+----------------------------------------------------------------------------------------------------
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+----------------------------------------------------------------------------------------------------
+I18nProofreading::LocalesTest: test_i18n_proofreading.uk.yml_carries_the_same_widget_keys_as_English
+----------------------------------------------------------------------------------------------------
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+----------------------------------------------------------------------------------------------------
+I18nProofreading::LocalesTest: test_i18n_proofreading.ja.yml_carries_the_same_widget_keys_as_English
+----------------------------------------------------------------------------------------------------
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+----------------------------------------------------------------------------------------------------
+I18nProofreading::LocalesTest: test_i18n_proofreading.es.yml_carries_the_same_widget_keys_as_English
+----------------------------------------------------------------------------------------------------
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+-----------------------------------------------------------------------
+I18nProofreading::LocalesTest: test_ships_25+_languages_besides_English
+-----------------------------------------------------------------------
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+----------------------------------------------------------------------------------------------------
+I18nProofreading::LocalesTest: test_i18n_proofreading.nl.yml_carries_the_same_widget_keys_as_English
+----------------------------------------------------------------------------------------------------
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+----------------------------------------------------------------------------------------------------
+I18nProofreading::LocalesTest: test_i18n_proofreading.hr.yml_carries_the_same_widget_keys_as_English
+----------------------------------------------------------------------------------------------------
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+----------------------------------------------------------------------------------------------------
+I18nProofreading::LocalesTest: test_i18n_proofreading.tr.yml_carries_the_same_widget_keys_as_English
+----------------------------------------------------------------------------------------------------
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+----------------------------------------------------------------------------------------------------
+I18nProofreading::LocalesTest: test_i18n_proofreading.de.yml_carries_the_same_widget_keys_as_English
+----------------------------------------------------------------------------------------------------
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+----------------------------------------------------------------------------------------------------
+I18nProofreading::LocalesTest: test_i18n_proofreading.bn.yml_carries_the_same_widget_keys_as_English
+----------------------------------------------------------------------------------------------------
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+----------------------------------------------------------------------------------------------------
+I18nProofreading::LocalesTest: test_i18n_proofreading.el.yml_carries_the_same_widget_keys_as_English
+----------------------------------------------------------------------------------------------------
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+--------------------------------------------------------------------------
+I18nProofreading::LocalesTest: test_ships_the_dashboard_strings_in_English
+--------------------------------------------------------------------------
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+----------------------------------------------------------------------------------------------------
+I18nProofreading::LocalesTest: test_i18n_proofreading.ro.yml_carries_the_same_widget_keys_as_English
+----------------------------------------------------------------------------------------------------
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+----------------------------------------------------------------------------------------------------
+I18nProofreading::LocalesTest: test_i18n_proofreading.ru.yml_carries_the_same_widget_keys_as_English
+----------------------------------------------------------------------------------------------------
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+-------------------------------------------------------------------------------------
+I18nProofreading::LocalesTest: test_includes_the_host-facing_toggle_labels_in_English
+-------------------------------------------------------------------------------------
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+----------------------------------------------------------------------------------------------------
+I18nProofreading::LocalesTest: test_i18n_proofreading.fr.yml_carries_the_same_widget_keys_as_English
+----------------------------------------------------------------------------------------------------
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+----------------------------------------------------------------------------------------------------
+I18nProofreading::LocalesTest: test_i18n_proofreading.bg.yml_carries_the_same_widget_keys_as_English
+----------------------------------------------------------------------------------------------------
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+-------------------------------------------------------------------------------------------------------
+I18nProofreading::LocalesTest: test_i18n_proofreading.zh-CN.yml_carries_the_same_widget_keys_as_English
+-------------------------------------------------------------------------------------------------------
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+----------------------------------------------------------------------------------------------------
+I18nProofreading::LocalesTest: test_i18n_proofreading.ko.yml_carries_the_same_widget_keys_as_English
+----------------------------------------------------------------------------------------------------
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+----------------------------------------------------------------------------------------------------
+I18nProofreading::LocalesTest: test_i18n_proofreading.lb.yml_carries_the_same_widget_keys_as_English
+----------------------------------------------------------------------------------------------------
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+----------------------------------------------------------------------------------------------------
+I18nProofreading::LocalesTest: test_i18n_proofreading.en.yml_carries_the_same_widget_keys_as_English
+----------------------------------------------------------------------------------------------------
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+----------------------------------------------------------------------------------------------------
+I18nProofreading::LocalesTest: test_i18n_proofreading.vi.yml_carries_the_same_widget_keys_as_English
+----------------------------------------------------------------------------------------------------
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+----------------------------------------------------------------------------------------------------
+I18nProofreading::LocalesTest: test_i18n_proofreading.it.yml_carries_the_same_widget_keys_as_English
+----------------------------------------------------------------------------------------------------
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+----------------------------------------------------------------------------------------------------
+I18nProofreading::LocalesTest: test_i18n_proofreading.ur.yml_carries_the_same_widget_keys_as_English
+----------------------------------------------------------------------------------------------------
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+----------------------------------------------------------------------------------------------------
+I18nProofreading::LocalesTest: test_i18n_proofreading.id.yml_carries_the_same_widget_keys_as_English
+----------------------------------------------------------------------------------------------------
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+----------------------------------------------------------------------------------------------------
+I18nProofreading::LocalesTest: test_i18n_proofreading.pt.yml_carries_the_same_widget_keys_as_English
+----------------------------------------------------------------------------------------------------
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+----------------------------------------------------------------------------------------------------
+I18nProofreading::LocalesTest: test_i18n_proofreading.hi.yml_carries_the_same_widget_keys_as_English
+----------------------------------------------------------------------------------------------------
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+----------------------------------------------------------------------------------------------------
+I18nProofreading::LocalesTest: test_i18n_proofreading.th.yml_carries_the_same_widget_keys_as_English
+----------------------------------------------------------------------------------------------------
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+-----------------------------------------------------------------------------------------
+I18nProofreading::SuggestionsTest: test_runs_the_on_submit_hook_with_the_saved_suggestion
+-----------------------------------------------------------------------------------------
+Started POST "/i18n_proofreading/suggestions" for 127.0.0.1 at 2026-07-25 11:51:00 +0200
+Processing by I18nProofreading::SuggestionsController#create as HTML
+  Parameters: {"suggestion" => {"translation_key" => "sample.greeting", "locale" => "en", "old_value" => "Hello", "proposed_value" => "Hi there", "comment" => "friendlier", "page_url" => "http://example.test/sample"}}
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mI18nProofreading::Suggestion Create (0.1ms)[0m  [1m[32mINSERT INTO "i18n_proofreading_suggestions" ("translation_key", "locale", "old_value", "proposed_value", "comment", "page_url", "status", "author_id", "author_label", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"[0m  [["translation_key", "sample.greeting"], ["locale", "en"], ["old_value", "Hello"], ["proposed_value", "Hi there"], ["comment", "friendlier"], ["page_url", "http://example.test/sample"], ["status", "pending"], ["author_id", nil], ["author_label", nil], ["created_at", "2026-07-25 09:51:01.000027"], ["updated_at", "2026-07-25 09:51:01.000027"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Completed 201 Created in 1ms (ActiveRecord: 0.2ms (1 query, 0 cached) | GC: 0.0ms)
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+---------------------------------------------------------------------------------------------
+I18nProofreading::SuggestionsTest: test_attributes_the_suggestion_via_the_configured_resolver
+---------------------------------------------------------------------------------------------
+Started POST "/i18n_proofreading/suggestions" for 127.0.0.1 at 2026-07-25 11:51:01 +0200
+Processing by I18nProofreading::SuggestionsController#create as HTML
+  Parameters: {"suggestion" => {"translation_key" => "sample.greeting", "locale" => "en", "old_value" => "Hello", "proposed_value" => "Hi there", "comment" => "friendlier", "page_url" => "http://example.test/sample"}}
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mI18nProofreading::Suggestion Create (0.1ms)[0m  [1m[32mINSERT INTO "i18n_proofreading_suggestions" ("translation_key", "locale", "old_value", "proposed_value", "comment", "page_url", "status", "author_id", "author_label", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"[0m  [["translation_key", "sample.greeting"], ["locale", "en"], ["old_value", "Hello"], ["proposed_value", "Hi there"], ["comment", "friendlier"], ["page_url", "http://example.test/sample"], ["status", "pending"], ["author_id", "42"], ["author_label", "translator@example.test"], ["created_at", "2026-07-25 09:51:01.006093"], ["updated_at", "2026-07-25 09:51:01.006093"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Completed 201 Created in 1ms (ActiveRecord: 0.1ms (1 query, 0 cached) | GC: 0.0ms)
+  [1m[36mI18nProofreading::Suggestion Load (0.1ms)[0m  [1m[34mSELECT "i18n_proofreading_suggestions".* FROM "i18n_proofreading_suggestions" ORDER BY "i18n_proofreading_suggestions"."id" DESC LIMIT ?[0m  [["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+---------------------------------------------------------------------------------------------------------------
+I18nProofreading::SuggestionsTest: test_shows_only_pending_suggestions_as_context,_not_applied_or_rejected_ones
+---------------------------------------------------------------------------------------------------------------
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mI18nProofreading::Suggestion Create (0.1ms)[0m  [1m[32mINSERT INTO "i18n_proofreading_suggestions" ("translation_key", "locale", "old_value", "proposed_value", "comment", "page_url", "status", "author_id", "author_label", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"[0m  [["translation_key", "sample.greeting"], ["locale", "en"], ["old_value", nil], ["proposed_value", "Pending one"], ["comment", nil], ["page_url", nil], ["status", "pending"], ["author_id", nil], ["author_label", nil], ["created_at", "2026-07-25 09:51:01.008977"], ["updated_at", "2026-07-25 09:51:01.008977"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mI18nProofreading::Suggestion Create (0.1ms)[0m  [1m[32mINSERT INTO "i18n_proofreading_suggestions" ("translation_key", "locale", "old_value", "proposed_value", "comment", "page_url", "status", "author_id", "author_label", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"[0m  [["translation_key", "sample.greeting"], ["locale", "en"], ["old_value", nil], ["proposed_value", "Applied one"], ["comment", nil], ["page_url", nil], ["status", "applied"], ["author_id", nil], ["author_label", nil], ["created_at", "2026-07-25 09:51:01.009279"], ["updated_at", "2026-07-25 09:51:01.009279"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Started GET "/i18n_proofreading/suggestions/context?key=sample.greeting&locale=en" for 127.0.0.1 at 2026-07-25 11:51:01 +0200
+Processing by I18nProofreading::SuggestionsController#context as HTML
+  Parameters: {"key" => "sample.greeting", "locale" => "en"}
+  [1m[36mI18nProofreading::Suggestion Load (0.0ms)[0m  [1m[34mSELECT "i18n_proofreading_suggestions".* FROM "i18n_proofreading_suggestions" WHERE "i18n_proofreading_suggestions"."translation_key" = ? AND "i18n_proofreading_suggestions"."locale" = ? AND "i18n_proofreading_suggestions"."status" = ? ORDER BY "i18n_proofreading_suggestions"."id" DESC LIMIT ?[0m  [["translation_key", "sample.greeting"], ["locale", "en"], ["status", "pending"], ["LIMIT", 20]]
+Completed 200 OK in 1ms (Views: 0.0ms | ActiveRecord: 0.0ms (1 query, 0 cached) | GC: 0.0ms)
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+-----------------------------------------------------------------------------------------------
+I18nProofreading::SuggestionsTest: test_throttles_a_flood_of_submissions_from_one_IP_with_a_429
+-----------------------------------------------------------------------------------------------
+Started POST "/i18n_proofreading/suggestions" for 127.0.0.1 at 2026-07-25 11:51:01 +0200
+Processing by I18nProofreading::SuggestionsController#create as HTML
+  Parameters: {"suggestion" => {"translation_key" => "sample.greeting", "locale" => "en", "old_value" => "Hello", "proposed_value" => "Hi there", "comment" => "friendlier", "page_url" => "http://example.test/sample"}}
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mI18nProofreading::Suggestion Create (0.1ms)[0m  [1m[32mINSERT INTO "i18n_proofreading_suggestions" ("translation_key", "locale", "old_value", "proposed_value", "comment", "page_url", "status", "author_id", "author_label", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"[0m  [["translation_key", "sample.greeting"], ["locale", "en"], ["old_value", "Hello"], ["proposed_value", "Hi there"], ["comment", "friendlier"], ["page_url", "http://example.test/sample"], ["status", "pending"], ["author_id", nil], ["author_label", nil], ["created_at", "2026-07-25 09:51:01.011228"], ["updated_at", "2026-07-25 09:51:01.011228"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Completed 201 Created in 0ms (ActiveRecord: 0.1ms (1 query, 0 cached) | GC: 0.0ms)
+Started POST "/i18n_proofreading/suggestions" for 127.0.0.1 at 2026-07-25 11:51:01 +0200
+Processing by I18nProofreading::SuggestionsController#create as HTML
+  Parameters: {"suggestion" => {"translation_key" => "sample.greeting", "locale" => "en", "old_value" => "Hello", "proposed_value" => "Hi there", "comment" => "friendlier", "page_url" => "http://example.test/sample"}}
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mI18nProofreading::Suggestion Create (0.1ms)[0m  [1m[32mINSERT INTO "i18n_proofreading_suggestions" ("translation_key", "locale", "old_value", "proposed_value", "comment", "page_url", "status", "author_id", "author_label", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"[0m  [["translation_key", "sample.greeting"], ["locale", "en"], ["old_value", "Hello"], ["proposed_value", "Hi there"], ["comment", "friendlier"], ["page_url", "http://example.test/sample"], ["status", "pending"], ["author_id", nil], ["author_label", nil], ["created_at", "2026-07-25 09:51:01.012206"], ["updated_at", "2026-07-25 09:51:01.012206"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Completed 201 Created in 0ms (ActiveRecord: 0.1ms (1 query, 0 cached) | GC: 0.0ms)
+Started POST "/i18n_proofreading/suggestions" for 127.0.0.1 at 2026-07-25 11:51:01 +0200
+Processing by I18nProofreading::SuggestionsController#create as HTML
+  Parameters: {"suggestion" => {"translation_key" => "sample.greeting", "locale" => "en", "old_value" => "Hello", "proposed_value" => "Hi there", "comment" => "friendlier", "page_url" => "http://example.test/sample"}}
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mI18nProofreading::Suggestion Create (0.0ms)[0m  [1m[32mINSERT INTO "i18n_proofreading_suggestions" ("translation_key", "locale", "old_value", "proposed_value", "comment", "page_url", "status", "author_id", "author_label", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"[0m  [["translation_key", "sample.greeting"], ["locale", "en"], ["old_value", "Hello"], ["proposed_value", "Hi there"], ["comment", "friendlier"], ["page_url", "http://example.test/sample"], ["status", "pending"], ["author_id", nil], ["author_label", nil], ["created_at", "2026-07-25 09:51:01.012894"], ["updated_at", "2026-07-25 09:51:01.012894"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Completed 201 Created in 0ms (ActiveRecord: 0.1ms (1 query, 0 cached) | GC: 0.0ms)
+Started POST "/i18n_proofreading/suggestions" for 127.0.0.1 at 2026-07-25 11:51:01 +0200
+Processing by I18nProofreading::SuggestionsController#create as HTML
+  Parameters: {"suggestion" => {"translation_key" => "sample.greeting", "locale" => "en", "old_value" => "Hello", "proposed_value" => "Hi there", "comment" => "friendlier", "page_url" => "http://example.test/sample"}}
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mI18nProofreading::Suggestion Create (0.1ms)[0m  [1m[32mINSERT INTO "i18n_proofreading_suggestions" ("translation_key", "locale", "old_value", "proposed_value", "comment", "page_url", "status", "author_id", "author_label", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"[0m  [["translation_key", "sample.greeting"], ["locale", "en"], ["old_value", "Hello"], ["proposed_value", "Hi there"], ["comment", "friendlier"], ["page_url", "http://example.test/sample"], ["status", "pending"], ["author_id", nil], ["author_label", nil], ["created_at", "2026-07-25 09:51:01.013556"], ["updated_at", "2026-07-25 09:51:01.013556"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Completed 201 Created in 0ms (ActiveRecord: 0.1ms (1 query, 0 cached) | GC: 0.0ms)
+Started POST "/i18n_proofreading/suggestions" for 127.0.0.1 at 2026-07-25 11:51:01 +0200
+Processing by I18nProofreading::SuggestionsController#create as HTML
+  Parameters: {"suggestion" => {"translation_key" => "sample.greeting", "locale" => "en", "old_value" => "Hello", "proposed_value" => "Hi there", "comment" => "friendlier", "page_url" => "http://example.test/sample"}}
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mI18nProofreading::Suggestion Create (0.1ms)[0m  [1m[32mINSERT INTO "i18n_proofreading_suggestions" ("translation_key", "locale", "old_value", "proposed_value", "comment", "page_url", "status", "author_id", "author_label", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"[0m  [["translation_key", "sample.greeting"], ["locale", "en"], ["old_value", "Hello"], ["proposed_value", "Hi there"], ["comment", "friendlier"], ["page_url", "http://example.test/sample"], ["status", "pending"], ["author_id", nil], ["author_label", nil], ["created_at", "2026-07-25 09:51:01.014225"], ["updated_at", "2026-07-25 09:51:01.014225"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Completed 201 Created in 0ms (ActiveRecord: 0.1ms (1 query, 0 cached) | GC: 0.0ms)
+Started POST "/i18n_proofreading/suggestions" for 127.0.0.1 at 2026-07-25 11:51:01 +0200
+Processing by I18nProofreading::SuggestionsController#create as HTML
+  Parameters: {"suggestion" => {"translation_key" => "sample.greeting", "locale" => "en", "old_value" => "Hello", "proposed_value" => "Hi there", "comment" => "friendlier", "page_url" => "http://example.test/sample"}}
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mI18nProofreading::Suggestion Create (0.0ms)[0m  [1m[32mINSERT INTO "i18n_proofreading_suggestions" ("translation_key", "locale", "old_value", "proposed_value", "comment", "page_url", "status", "author_id", "author_label", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"[0m  [["translation_key", "sample.greeting"], ["locale", "en"], ["old_value", "Hello"], ["proposed_value", "Hi there"], ["comment", "friendlier"], ["page_url", "http://example.test/sample"], ["status", "pending"], ["author_id", nil], ["author_label", nil], ["created_at", "2026-07-25 09:51:01.014904"], ["updated_at", "2026-07-25 09:51:01.014904"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Completed 201 Created in 0ms (ActiveRecord: 0.1ms (1 query, 0 cached) | GC: 0.0ms)
+Started POST "/i18n_proofreading/suggestions" for 127.0.0.1 at 2026-07-25 11:51:01 +0200
+Processing by I18nProofreading::SuggestionsController#create as HTML
+  Parameters: {"suggestion" => {"translation_key" => "sample.greeting", "locale" => "en", "old_value" => "Hello", "proposed_value" => "Hi there", "comment" => "friendlier", "page_url" => "http://example.test/sample"}}
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mI18nProofreading::Suggestion Create (0.1ms)[0m  [1m[32mINSERT INTO "i18n_proofreading_suggestions" ("translation_key", "locale", "old_value", "proposed_value", "comment", "page_url", "status", "author_id", "author_label", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"[0m  [["translation_key", "sample.greeting"], ["locale", "en"], ["old_value", "Hello"], ["proposed_value", "Hi there"], ["comment", "friendlier"], ["page_url", "http://example.test/sample"], ["status", "pending"], ["author_id", nil], ["author_label", nil], ["created_at", "2026-07-25 09:51:01.015545"], ["updated_at", "2026-07-25 09:51:01.015545"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Completed 201 Created in 0ms (ActiveRecord: 0.1ms (1 query, 0 cached) | GC: 0.0ms)
+Started POST "/i18n_proofreading/suggestions" for 127.0.0.1 at 2026-07-25 11:51:01 +0200
+Processing by I18nProofreading::SuggestionsController#create as HTML
+  Parameters: {"suggestion" => {"translation_key" => "sample.greeting", "locale" => "en", "old_value" => "Hello", "proposed_value" => "Hi there", "comment" => "friendlier", "page_url" => "http://example.test/sample"}}
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mI18nProofreading::Suggestion Create (0.1ms)[0m  [1m[32mINSERT INTO "i18n_proofreading_suggestions" ("translation_key", "locale", "old_value", "proposed_value", "comment", "page_url", "status", "author_id", "author_label", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"[0m  [["translation_key", "sample.greeting"], ["locale", "en"], ["old_value", "Hello"], ["proposed_value", "Hi there"], ["comment", "friendlier"], ["page_url", "http://example.test/sample"], ["status", "pending"], ["author_id", nil], ["author_label", nil], ["created_at", "2026-07-25 09:51:01.016194"], ["updated_at", "2026-07-25 09:51:01.016194"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Completed 201 Created in 0ms (ActiveRecord: 0.1ms (1 query, 0 cached) | GC: 0.0ms)
+Started POST "/i18n_proofreading/suggestions" for 127.0.0.1 at 2026-07-25 11:51:01 +0200
+Processing by I18nProofreading::SuggestionsController#create as HTML
+  Parameters: {"suggestion" => {"translation_key" => "sample.greeting", "locale" => "en", "old_value" => "Hello", "proposed_value" => "Hi there", "comment" => "friendlier", "page_url" => "http://example.test/sample"}}
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mI18nProofreading::Suggestion Create (0.0ms)[0m  [1m[32mINSERT INTO "i18n_proofreading_suggestions" ("translation_key", "locale", "old_value", "proposed_value", "comment", "page_url", "status", "author_id", "author_label", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"[0m  [["translation_key", "sample.greeting"], ["locale", "en"], ["old_value", "Hello"], ["proposed_value", "Hi there"], ["comment", "friendlier"], ["page_url", "http://example.test/sample"], ["status", "pending"], ["author_id", nil], ["author_label", nil], ["created_at", "2026-07-25 09:51:01.016832"], ["updated_at", "2026-07-25 09:51:01.016832"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Completed 201 Created in 0ms (ActiveRecord: 0.1ms (1 query, 0 cached) | GC: 0.0ms)
+Started POST "/i18n_proofreading/suggestions" for 127.0.0.1 at 2026-07-25 11:51:01 +0200
+Processing by I18nProofreading::SuggestionsController#create as HTML
+  Parameters: {"suggestion" => {"translation_key" => "sample.greeting", "locale" => "en", "old_value" => "Hello", "proposed_value" => "Hi there", "comment" => "friendlier", "page_url" => "http://example.test/sample"}}
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mI18nProofreading::Suggestion Create (0.1ms)[0m  [1m[32mINSERT INTO "i18n_proofreading_suggestions" ("translation_key", "locale", "old_value", "proposed_value", "comment", "page_url", "status", "author_id", "author_label", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"[0m  [["translation_key", "sample.greeting"], ["locale", "en"], ["old_value", "Hello"], ["proposed_value", "Hi there"], ["comment", "friendlier"], ["page_url", "http://example.test/sample"], ["status", "pending"], ["author_id", nil], ["author_label", nil], ["created_at", "2026-07-25 09:51:01.017479"], ["updated_at", "2026-07-25 09:51:01.017479"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Completed 201 Created in 0ms (ActiveRecord: 0.1ms (1 query, 0 cached) | GC: 0.0ms)
+Started POST "/i18n_proofreading/suggestions" for 127.0.0.1 at 2026-07-25 11:51:01 +0200
+Processing by I18nProofreading::SuggestionsController#create as HTML
+  Parameters: {"suggestion" => {"translation_key" => "sample.greeting", "locale" => "en", "old_value" => "Hello", "proposed_value" => "Hi there", "comment" => "friendlier", "page_url" => "http://example.test/sample"}}
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mI18nProofreading::Suggestion Create (0.1ms)[0m  [1m[32mINSERT INTO "i18n_proofreading_suggestions" ("translation_key", "locale", "old_value", "proposed_value", "comment", "page_url", "status", "author_id", "author_label", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"[0m  [["translation_key", "sample.greeting"], ["locale", "en"], ["old_value", "Hello"], ["proposed_value", "Hi there"], ["comment", "friendlier"], ["page_url", "http://example.test/sample"], ["status", "pending"], ["author_id", nil], ["author_label", nil], ["created_at", "2026-07-25 09:51:01.018114"], ["updated_at", "2026-07-25 09:51:01.018114"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Completed 201 Created in 0ms (ActiveRecord: 0.1ms (1 query, 0 cached) | GC: 0.0ms)
+Started POST "/i18n_proofreading/suggestions" for 127.0.0.1 at 2026-07-25 11:51:01 +0200
+Processing by I18nProofreading::SuggestionsController#create as HTML
+  Parameters: {"suggestion" => {"translation_key" => "sample.greeting", "locale" => "en", "old_value" => "Hello", "proposed_value" => "Hi there", "comment" => "friendlier", "page_url" => "http://example.test/sample"}}
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mI18nProofreading::Suggestion Create (0.0ms)[0m  [1m[32mINSERT INTO "i18n_proofreading_suggestions" ("translation_key", "locale", "old_value", "proposed_value", "comment", "page_url", "status", "author_id", "author_label", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"[0m  [["translation_key", "sample.greeting"], ["locale", "en"], ["old_value", "Hello"], ["proposed_value", "Hi there"], ["comment", "friendlier"], ["page_url", "http://example.test/sample"], ["status", "pending"], ["author_id", nil], ["author_label", nil], ["created_at", "2026-07-25 09:51:01.018801"], ["updated_at", "2026-07-25 09:51:01.018801"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Completed 201 Created in 0ms (ActiveRecord: 0.1ms (1 query, 0 cached) | GC: 0.0ms)
+Started POST "/i18n_proofreading/suggestions" for 127.0.0.1 at 2026-07-25 11:51:01 +0200
+Processing by I18nProofreading::SuggestionsController#create as HTML
+  Parameters: {"suggestion" => {"translation_key" => "sample.greeting", "locale" => "en", "old_value" => "Hello", "proposed_value" => "Hi there", "comment" => "friendlier", "page_url" => "http://example.test/sample"}}
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mI18nProofreading::Suggestion Create (0.0ms)[0m  [1m[32mINSERT INTO "i18n_proofreading_suggestions" ("translation_key", "locale", "old_value", "proposed_value", "comment", "page_url", "status", "author_id", "author_label", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"[0m  [["translation_key", "sample.greeting"], ["locale", "en"], ["old_value", "Hello"], ["proposed_value", "Hi there"], ["comment", "friendlier"], ["page_url", "http://example.test/sample"], ["status", "pending"], ["author_id", nil], ["author_label", nil], ["created_at", "2026-07-25 09:51:01.019472"], ["updated_at", "2026-07-25 09:51:01.019472"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Completed 201 Created in 0ms (ActiveRecord: 0.1ms (1 query, 0 cached) | GC: 0.0ms)
+Started POST "/i18n_proofreading/suggestions" for 127.0.0.1 at 2026-07-25 11:51:01 +0200
+Processing by I18nProofreading::SuggestionsController#create as HTML
+  Parameters: {"suggestion" => {"translation_key" => "sample.greeting", "locale" => "en", "old_value" => "Hello", "proposed_value" => "Hi there", "comment" => "friendlier", "page_url" => "http://example.test/sample"}}
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mI18nProofreading::Suggestion Create (0.0ms)[0m  [1m[32mINSERT INTO "i18n_proofreading_suggestions" ("translation_key", "locale", "old_value", "proposed_value", "comment", "page_url", "status", "author_id", "author_label", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"[0m  [["translation_key", "sample.greeting"], ["locale", "en"], ["old_value", "Hello"], ["proposed_value", "Hi there"], ["comment", "friendlier"], ["page_url", "http://example.test/sample"], ["status", "pending"], ["author_id", nil], ["author_label", nil], ["created_at", "2026-07-25 09:51:01.020126"], ["updated_at", "2026-07-25 09:51:01.020126"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Completed 201 Created in 0ms (ActiveRecord: 0.1ms (1 query, 0 cached) | GC: 0.0ms)
+Started POST "/i18n_proofreading/suggestions" for 127.0.0.1 at 2026-07-25 11:51:01 +0200
+Processing by I18nProofreading::SuggestionsController#create as HTML
+  Parameters: {"suggestion" => {"translation_key" => "sample.greeting", "locale" => "en", "old_value" => "Hello", "proposed_value" => "Hi there", "comment" => "friendlier", "page_url" => "http://example.test/sample"}}
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mI18nProofreading::Suggestion Create (0.1ms)[0m  [1m[32mINSERT INTO "i18n_proofreading_suggestions" ("translation_key", "locale", "old_value", "proposed_value", "comment", "page_url", "status", "author_id", "author_label", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"[0m  [["translation_key", "sample.greeting"], ["locale", "en"], ["old_value", "Hello"], ["proposed_value", "Hi there"], ["comment", "friendlier"], ["page_url", "http://example.test/sample"], ["status", "pending"], ["author_id", nil], ["author_label", nil], ["created_at", "2026-07-25 09:51:01.020772"], ["updated_at", "2026-07-25 09:51:01.020772"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Completed 201 Created in 0ms (ActiveRecord: 0.1ms (1 query, 0 cached) | GC: 0.0ms)
+Started POST "/i18n_proofreading/suggestions" for 127.0.0.1 at 2026-07-25 11:51:01 +0200
+Processing by I18nProofreading::SuggestionsController#create as HTML
+  Parameters: {"suggestion" => {"translation_key" => "sample.greeting", "locale" => "en", "old_value" => "Hello", "proposed_value" => "Hi there", "comment" => "friendlier", "page_url" => "http://example.test/sample"}}
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mI18nProofreading::Suggestion Create (0.1ms)[0m  [1m[32mINSERT INTO "i18n_proofreading_suggestions" ("translation_key", "locale", "old_value", "proposed_value", "comment", "page_url", "status", "author_id", "author_label", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"[0m  [["translation_key", "sample.greeting"], ["locale", "en"], ["old_value", "Hello"], ["proposed_value", "Hi there"], ["comment", "friendlier"], ["page_url", "http://example.test/sample"], ["status", "pending"], ["author_id", nil], ["author_label", nil], ["created_at", "2026-07-25 09:51:01.021429"], ["updated_at", "2026-07-25 09:51:01.021429"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Completed 201 Created in 0ms (ActiveRecord: 0.1ms (1 query, 0 cached) | GC: 0.0ms)
+Started POST "/i18n_proofreading/suggestions" for 127.0.0.1 at 2026-07-25 11:51:01 +0200
+Processing by I18nProofreading::SuggestionsController#create as HTML
+  Parameters: {"suggestion" => {"translation_key" => "sample.greeting", "locale" => "en", "old_value" => "Hello", "proposed_value" => "Hi there", "comment" => "friendlier", "page_url" => "http://example.test/sample"}}
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mI18nProofreading::Suggestion Create (0.0ms)[0m  [1m[32mINSERT INTO "i18n_proofreading_suggestions" ("translation_key", "locale", "old_value", "proposed_value", "comment", "page_url", "status", "author_id", "author_label", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"[0m  [["translation_key", "sample.greeting"], ["locale", "en"], ["old_value", "Hello"], ["proposed_value", "Hi there"], ["comment", "friendlier"], ["page_url", "http://example.test/sample"], ["status", "pending"], ["author_id", nil], ["author_label", nil], ["created_at", "2026-07-25 09:51:01.022071"], ["updated_at", "2026-07-25 09:51:01.022071"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Completed 201 Created in 0ms (ActiveRecord: 0.1ms (1 query, 0 cached) | GC: 0.0ms)
+Started POST "/i18n_proofreading/suggestions" for 127.0.0.1 at 2026-07-25 11:51:01 +0200
+Processing by I18nProofreading::SuggestionsController#create as HTML
+  Parameters: {"suggestion" => {"translation_key" => "sample.greeting", "locale" => "en", "old_value" => "Hello", "proposed_value" => "Hi there", "comment" => "friendlier", "page_url" => "http://example.test/sample"}}
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mI18nProofreading::Suggestion Create (0.0ms)[0m  [1m[32mINSERT INTO "i18n_proofreading_suggestions" ("translation_key", "locale", "old_value", "proposed_value", "comment", "page_url", "status", "author_id", "author_label", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"[0m  [["translation_key", "sample.greeting"], ["locale", "en"], ["old_value", "Hello"], ["proposed_value", "Hi there"], ["comment", "friendlier"], ["page_url", "http://example.test/sample"], ["status", "pending"], ["author_id", nil], ["author_label", nil], ["created_at", "2026-07-25 09:51:01.022726"], ["updated_at", "2026-07-25 09:51:01.022726"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Completed 201 Created in 0ms (ActiveRecord: 0.1ms (1 query, 0 cached) | GC: 0.0ms)
+Started POST "/i18n_proofreading/suggestions" for 127.0.0.1 at 2026-07-25 11:51:01 +0200
+Processing by I18nProofreading::SuggestionsController#create as HTML
+  Parameters: {"suggestion" => {"translation_key" => "sample.greeting", "locale" => "en", "old_value" => "Hello", "proposed_value" => "Hi there", "comment" => "friendlier", "page_url" => "http://example.test/sample"}}
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mI18nProofreading::Suggestion Create (0.0ms)[0m  [1m[32mINSERT INTO "i18n_proofreading_suggestions" ("translation_key", "locale", "old_value", "proposed_value", "comment", "page_url", "status", "author_id", "author_label", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"[0m  [["translation_key", "sample.greeting"], ["locale", "en"], ["old_value", "Hello"], ["proposed_value", "Hi there"], ["comment", "friendlier"], ["page_url", "http://example.test/sample"], ["status", "pending"], ["author_id", nil], ["author_label", nil], ["created_at", "2026-07-25 09:51:01.023362"], ["updated_at", "2026-07-25 09:51:01.023362"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Completed 201 Created in 0ms (ActiveRecord: 0.1ms (1 query, 0 cached) | GC: 0.0ms)
+Started POST "/i18n_proofreading/suggestions" for 127.0.0.1 at 2026-07-25 11:51:01 +0200
+Processing by I18nProofreading::SuggestionsController#create as HTML
+  Parameters: {"suggestion" => {"translation_key" => "sample.greeting", "locale" => "en", "old_value" => "Hello", "proposed_value" => "Hi there", "comment" => "friendlier", "page_url" => "http://example.test/sample"}}
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mI18nProofreading::Suggestion Create (5.2ms)[0m  [1m[32mINSERT INTO "i18n_proofreading_suggestions" ("translation_key", "locale", "old_value", "proposed_value", "comment", "page_url", "status", "author_id", "author_label", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"[0m  [["translation_key", "sample.greeting"], ["locale", "en"], ["old_value", "Hello"], ["proposed_value", "Hi there"], ["comment", "friendlier"], ["page_url", "http://example.test/sample"], ["status", "pending"], ["author_id", nil], ["author_label", nil], ["created_at", "2026-07-25 09:51:01.024006"], ["updated_at", "2026-07-25 09:51:01.024006"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Completed 201 Created in 5ms (ActiveRecord: 5.2ms (1 query, 0 cached) | GC: 5.0ms)
+Started POST "/i18n_proofreading/suggestions" for 127.0.0.1 at 2026-07-25 11:51:01 +0200
+Processing by I18nProofreading::SuggestionsController#create as HTML
+  Parameters: {"suggestion" => {"translation_key" => "sample.greeting", "locale" => "en", "old_value" => "Hello", "proposed_value" => "Hi there", "comment" => "friendlier", "page_url" => "http://example.test/sample"}}
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mI18nProofreading::Suggestion Create (0.1ms)[0m  [1m[32mINSERT INTO "i18n_proofreading_suggestions" ("translation_key", "locale", "old_value", "proposed_value", "comment", "page_url", "status", "author_id", "author_label", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"[0m  [["translation_key", "sample.greeting"], ["locale", "en"], ["old_value", "Hello"], ["proposed_value", "Hi there"], ["comment", "friendlier"], ["page_url", "http://example.test/sample"], ["status", "pending"], ["author_id", nil], ["author_label", nil], ["created_at", "2026-07-25 09:51:01.030074"], ["updated_at", "2026-07-25 09:51:01.030074"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Completed 201 Created in 0ms (ActiveRecord: 0.1ms (1 query, 0 cached) | GC: 0.0ms)
+Started POST "/i18n_proofreading/suggestions" for 127.0.0.1 at 2026-07-25 11:51:01 +0200
+Processing by I18nProofreading::SuggestionsController#create as HTML
+  Parameters: {"suggestion" => {"translation_key" => "sample.greeting", "locale" => "en", "old_value" => "Hello", "proposed_value" => "Hi there", "comment" => "friendlier", "page_url" => "http://example.test/sample"}}
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mI18nProofreading::Suggestion Create (0.1ms)[0m  [1m[32mINSERT INTO "i18n_proofreading_suggestions" ("translation_key", "locale", "old_value", "proposed_value", "comment", "page_url", "status", "author_id", "author_label", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"[0m  [["translation_key", "sample.greeting"], ["locale", "en"], ["old_value", "Hello"], ["proposed_value", "Hi there"], ["comment", "friendlier"], ["page_url", "http://example.test/sample"], ["status", "pending"], ["author_id", nil], ["author_label", nil], ["created_at", "2026-07-25 09:51:01.030800"], ["updated_at", "2026-07-25 09:51:01.030800"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Completed 201 Created in 0ms (ActiveRecord: 0.1ms (1 query, 0 cached) | GC: 0.0ms)
+Started POST "/i18n_proofreading/suggestions" for 127.0.0.1 at 2026-07-25 11:51:01 +0200
+Processing by I18nProofreading::SuggestionsController#create as HTML
+  Parameters: {"suggestion" => {"translation_key" => "sample.greeting", "locale" => "en", "old_value" => "Hello", "proposed_value" => "Hi there", "comment" => "friendlier", "page_url" => "http://example.test/sample"}}
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mI18nProofreading::Suggestion Create (0.1ms)[0m  [1m[32mINSERT INTO "i18n_proofreading_suggestions" ("translation_key", "locale", "old_value", "proposed_value", "comment", "page_url", "status", "author_id", "author_label", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"[0m  [["translation_key", "sample.greeting"], ["locale", "en"], ["old_value", "Hello"], ["proposed_value", "Hi there"], ["comment", "friendlier"], ["page_url", "http://example.test/sample"], ["status", "pending"], ["author_id", nil], ["author_label", nil], ["created_at", "2026-07-25 09:51:01.031702"], ["updated_at", "2026-07-25 09:51:01.031702"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Completed 201 Created in 0ms (ActiveRecord: 0.1ms (1 query, 0 cached) | GC: 0.0ms)
+Started POST "/i18n_proofreading/suggestions" for 127.0.0.1 at 2026-07-25 11:51:01 +0200
+Processing by I18nProofreading::SuggestionsController#create as HTML
+  Parameters: {"suggestion" => {"translation_key" => "sample.greeting", "locale" => "en", "old_value" => "Hello", "proposed_value" => "Hi there", "comment" => "friendlier", "page_url" => "http://example.test/sample"}}
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mI18nProofreading::Suggestion Create (0.0ms)[0m  [1m[32mINSERT INTO "i18n_proofreading_suggestions" ("translation_key", "locale", "old_value", "proposed_value", "comment", "page_url", "status", "author_id", "author_label", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"[0m  [["translation_key", "sample.greeting"], ["locale", "en"], ["old_value", "Hello"], ["proposed_value", "Hi there"], ["comment", "friendlier"], ["page_url", "http://example.test/sample"], ["status", "pending"], ["author_id", nil], ["author_label", nil], ["created_at", "2026-07-25 09:51:01.032376"], ["updated_at", "2026-07-25 09:51:01.032376"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Completed 201 Created in 0ms (ActiveRecord: 0.1ms (1 query, 0 cached) | GC: 0.0ms)
+Started POST "/i18n_proofreading/suggestions" for 127.0.0.1 at 2026-07-25 11:51:01 +0200
+Processing by I18nProofreading::SuggestionsController#create as HTML
+  Parameters: {"suggestion" => {"translation_key" => "sample.greeting", "locale" => "en", "old_value" => "Hello", "proposed_value" => "Hi there", "comment" => "friendlier", "page_url" => "http://example.test/sample"}}
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mI18nProofreading::Suggestion Create (0.1ms)[0m  [1m[32mINSERT INTO "i18n_proofreading_suggestions" ("translation_key", "locale", "old_value", "proposed_value", "comment", "page_url", "status", "author_id", "author_label", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"[0m  [["translation_key", "sample.greeting"], ["locale", "en"], ["old_value", "Hello"], ["proposed_value", "Hi there"], ["comment", "friendlier"], ["page_url", "http://example.test/sample"], ["status", "pending"], ["author_id", nil], ["author_label", nil], ["created_at", "2026-07-25 09:51:01.033045"], ["updated_at", "2026-07-25 09:51:01.033045"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Completed 201 Created in 0ms (ActiveRecord: 0.1ms (1 query, 0 cached) | GC: 0.0ms)
+Started POST "/i18n_proofreading/suggestions" for 127.0.0.1 at 2026-07-25 11:51:01 +0200
+Processing by I18nProofreading::SuggestionsController#create as HTML
+  Parameters: {"suggestion" => {"translation_key" => "sample.greeting", "locale" => "en", "old_value" => "Hello", "proposed_value" => "Hi there", "comment" => "friendlier", "page_url" => "http://example.test/sample"}}
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mI18nProofreading::Suggestion Create (0.0ms)[0m  [1m[32mINSERT INTO "i18n_proofreading_suggestions" ("translation_key", "locale", "old_value", "proposed_value", "comment", "page_url", "status", "author_id", "author_label", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"[0m  [["translation_key", "sample.greeting"], ["locale", "en"], ["old_value", "Hello"], ["proposed_value", "Hi there"], ["comment", "friendlier"], ["page_url", "http://example.test/sample"], ["status", "pending"], ["author_id", nil], ["author_label", nil], ["created_at", "2026-07-25 09:51:01.033969"], ["updated_at", "2026-07-25 09:51:01.033969"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Completed 201 Created in 0ms (ActiveRecord: 0.1ms (1 query, 0 cached) | GC: 0.0ms)
+Started POST "/i18n_proofreading/suggestions" for 127.0.0.1 at 2026-07-25 11:51:01 +0200
+Processing by I18nProofreading::SuggestionsController#create as HTML
+  Parameters: {"suggestion" => {"translation_key" => "sample.greeting", "locale" => "en", "old_value" => "Hello", "proposed_value" => "Hi there", "comment" => "friendlier", "page_url" => "http://example.test/sample"}}
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mI18nProofreading::Suggestion Create (0.0ms)[0m  [1m[32mINSERT INTO "i18n_proofreading_suggestions" ("translation_key", "locale", "old_value", "proposed_value", "comment", "page_url", "status", "author_id", "author_label", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"[0m  [["translation_key", "sample.greeting"], ["locale", "en"], ["old_value", "Hello"], ["proposed_value", "Hi there"], ["comment", "friendlier"], ["page_url", "http://example.test/sample"], ["status", "pending"], ["author_id", nil], ["author_label", nil], ["created_at", "2026-07-25 09:51:01.034596"], ["updated_at", "2026-07-25 09:51:01.034596"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Completed 201 Created in 0ms (ActiveRecord: 0.1ms (1 query, 0 cached) | GC: 0.0ms)
+Started POST "/i18n_proofreading/suggestions" for 127.0.0.1 at 2026-07-25 11:51:01 +0200
+Processing by I18nProofreading::SuggestionsController#create as HTML
+  Parameters: {"suggestion" => {"translation_key" => "sample.greeting", "locale" => "en", "old_value" => "Hello", "proposed_value" => "Hi there", "comment" => "friendlier", "page_url" => "http://example.test/sample"}}
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mI18nProofreading::Suggestion Create (0.1ms)[0m  [1m[32mINSERT INTO "i18n_proofreading_suggestions" ("translation_key", "locale", "old_value", "proposed_value", "comment", "page_url", "status", "author_id", "author_label", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"[0m  [["translation_key", "sample.greeting"], ["locale", "en"], ["old_value", "Hello"], ["proposed_value", "Hi there"], ["comment", "friendlier"], ["page_url", "http://example.test/sample"], ["status", "pending"], ["author_id", nil], ["author_label", nil], ["created_at", "2026-07-25 09:51:01.035313"], ["updated_at", "2026-07-25 09:51:01.035313"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Completed 201 Created in 0ms (ActiveRecord: 0.1ms (1 query, 0 cached) | GC: 0.0ms)
+Started POST "/i18n_proofreading/suggestions" for 127.0.0.1 at 2026-07-25 11:51:01 +0200
+Processing by I18nProofreading::SuggestionsController#create as HTML
+  Parameters: {"suggestion" => {"translation_key" => "sample.greeting", "locale" => "en", "old_value" => "Hello", "proposed_value" => "Hi there", "comment" => "friendlier", "page_url" => "http://example.test/sample"}}
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mI18nProofreading::Suggestion Create (0.4ms)[0m  [1m[32mINSERT INTO "i18n_proofreading_suggestions" ("translation_key", "locale", "old_value", "proposed_value", "comment", "page_url", "status", "author_id", "author_label", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"[0m  [["translation_key", "sample.greeting"], ["locale", "en"], ["old_value", "Hello"], ["proposed_value", "Hi there"], ["comment", "friendlier"], ["page_url", "http://example.test/sample"], ["status", "pending"], ["author_id", nil], ["author_label", nil], ["created_at", "2026-07-25 09:51:01.036025"], ["updated_at", "2026-07-25 09:51:01.036025"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Completed 201 Created in 1ms (ActiveRecord: 0.4ms (1 query, 0 cached) | GC: 0.1ms)
+Started POST "/i18n_proofreading/suggestions" for 127.0.0.1 at 2026-07-25 11:51:01 +0200
+Processing by I18nProofreading::SuggestionsController#create as HTML
+  Parameters: {"suggestion" => {"translation_key" => "sample.greeting", "locale" => "en", "old_value" => "Hello", "proposed_value" => "Hi there", "comment" => "friendlier", "page_url" => "http://example.test/sample"}}
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mI18nProofreading::Suggestion Create (0.0ms)[0m  [1m[32mINSERT INTO "i18n_proofreading_suggestions" ("translation_key", "locale", "old_value", "proposed_value", "comment", "page_url", "status", "author_id", "author_label", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"[0m  [["translation_key", "sample.greeting"], ["locale", "en"], ["old_value", "Hello"], ["proposed_value", "Hi there"], ["comment", "friendlier"], ["page_url", "http://example.test/sample"], ["status", "pending"], ["author_id", nil], ["author_label", nil], ["created_at", "2026-07-25 09:51:01.036972"], ["updated_at", "2026-07-25 09:51:01.036972"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Completed 201 Created in 0ms (ActiveRecord: 0.1ms (1 query, 0 cached) | GC: 0.0ms)
+Started POST "/i18n_proofreading/suggestions" for 127.0.0.1 at 2026-07-25 11:51:01 +0200
+Processing by I18nProofreading::SuggestionsController#create as HTML
+  Parameters: {"suggestion" => {"translation_key" => "sample.greeting", "locale" => "en", "old_value" => "Hello", "proposed_value" => "Hi there", "comment" => "friendlier", "page_url" => "http://example.test/sample"}}
+Filter chain halted as #<Proc:0x000000010ee2f090 /Users/yaroslavshmarov/.local/share/mise/installs/ruby/4.0.2/lib/ruby/gems/4.0.0/gems/actionpack-8.1.3/lib/action_controller/metal/rate_limiting.rb:67 (lambda)> rendered or redirected
+Completed 429 Too Many Requests in 0ms (Views: 0.0ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+---------------------------------------------------------------------
+I18nProofreading::SuggestionsTest: test_rejects_an_invalid_suggestion
+---------------------------------------------------------------------
+Started POST "/i18n_proofreading/suggestions" for 127.0.0.1 at 2026-07-25 11:51:01 +0200
+Processing by I18nProofreading::SuggestionsController#create as HTML
+  Parameters: {"suggestion" => {"translation_key" => "", "locale" => "en", "proposed_value" => ""}}
+Completed 422 Unprocessable Content in 1ms (Views: 0.0ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.1ms)
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+---------------------------------------------------------------------------------------------------
+I18nProofreading::SuggestionsTest: test_is_forbidden_when_the_tool_is_not_available_for_the_request
+---------------------------------------------------------------------------------------------------
+Started POST "/i18n_proofreading/suggestions" for 127.0.0.1 at 2026-07-25 11:51:01 +0200
+Processing by I18nProofreading::SuggestionsController#create as HTML
+  Parameters: {"suggestion" => {"translation_key" => "sample.greeting", "locale" => "en", "old_value" => "Hello", "proposed_value" => "Hi there", "comment" => "friendlier", "page_url" => "http://example.test/sample"}}
+Filter chain halted as :require_available rendered or redirected
+Completed 403 Forbidden in 0ms (ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+------------------------------------------------------------------------------------------------------
+I18nProofreading::SuggestionsTest: test_does_not_run_the_on_submit_hook_when_the_suggestion_is_invalid
+------------------------------------------------------------------------------------------------------
+Started POST "/i18n_proofreading/suggestions" for 127.0.0.1 at 2026-07-25 11:51:01 +0200
+Processing by I18nProofreading::SuggestionsController#create as HTML
+  Parameters: {"suggestion" => {"translation_key" => "", "locale" => "en", "proposed_value" => ""}}
+Completed 422 Unprocessable Content in 0ms (Views: 0.0ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.1ms)
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+-----------------------------------------------------------------------------------------------------------
+I18nProofreading::SuggestionsTest: test_context_is_forbidden_when_the_tool_is_not_available_for_the_request
+-----------------------------------------------------------------------------------------------------------
+Started GET "/i18n_proofreading/suggestions/context?key=sample.greeting&locale=en" for 127.0.0.1 at 2026-07-25 11:51:01 +0200
+Processing by I18nProofreading::SuggestionsController#context as HTML
+  Parameters: {"key" => "sample.greeting", "locale" => "en"}
+Filter chain halted as :require_available rendered or redirected
+Completed 403 Forbidden in 0ms (ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+-------------------------------------------------------------
+I18nProofreading::SuggestionsTest: test_stores_the_suggestion
+-------------------------------------------------------------
+  [1m[36mI18nProofreading::Suggestion Count (0.0ms)[0m  [1m[34mSELECT COUNT(*) FROM "i18n_proofreading_suggestions"[0m
+Started POST "/i18n_proofreading/suggestions" for 127.0.0.1 at 2026-07-25 11:51:01 +0200
+Processing by I18nProofreading::SuggestionsController#create as HTML
+  Parameters: {"suggestion" => {"translation_key" => "sample.greeting", "locale" => "en", "old_value" => "Hello", "proposed_value" => "Hi there", "comment" => "friendlier", "page_url" => "http://example.test/sample"}}
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mI18nProofreading::Suggestion Create (0.1ms)[0m  [1m[32mINSERT INTO "i18n_proofreading_suggestions" ("translation_key", "locale", "old_value", "proposed_value", "comment", "page_url", "status", "author_id", "author_label", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"[0m  [["translation_key", "sample.greeting"], ["locale", "en"], ["old_value", "Hello"], ["proposed_value", "Hi there"], ["comment", "friendlier"], ["page_url", "http://example.test/sample"], ["status", "pending"], ["author_id", nil], ["author_label", nil], ["created_at", "2026-07-25 09:51:01.041249"], ["updated_at", "2026-07-25 09:51:01.041249"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Completed 201 Created in 0ms (ActiveRecord: 0.1ms (1 query, 0 cached) | GC: 0.0ms)
+  [1m[36mI18nProofreading::Suggestion Count (0.0ms)[0m  [1m[34mSELECT COUNT(*) FROM "i18n_proofreading_suggestions"[0m
+  [1m[36mI18nProofreading::Suggestion Load (0.0ms)[0m  [1m[34mSELECT "i18n_proofreading_suggestions".* FROM "i18n_proofreading_suggestions" ORDER BY "i18n_proofreading_suggestions"."id" DESC LIMIT ?[0m  [["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+--------------------------------------------------------------------------------------
+I18nProofreading::SuggestionsTest: test_lists_pending_suggestions_for_a_key_and_locale
+--------------------------------------------------------------------------------------
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mI18nProofreading::Suggestion Create (0.1ms)[0m  [1m[32mINSERT INTO "i18n_proofreading_suggestions" ("translation_key", "locale", "old_value", "proposed_value", "comment", "page_url", "status", "author_id", "author_label", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"[0m  [["translation_key", "sample.greeting"], ["locale", "en"], ["old_value", nil], ["proposed_value", "Hi"], ["comment", nil], ["page_url", nil], ["status", "pending"], ["author_id", nil], ["author_label", nil], ["created_at", "2026-07-25 09:51:01.042151"], ["updated_at", "2026-07-25 09:51:01.042151"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mI18nProofreading::Suggestion Create (0.0ms)[0m  [1m[32mINSERT INTO "i18n_proofreading_suggestions" ("translation_key", "locale", "old_value", "proposed_value", "comment", "page_url", "status", "author_id", "author_label", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"[0m  [["translation_key", "other.key"], ["locale", "en"], ["old_value", nil], ["proposed_value", "Nope"], ["comment", nil], ["page_url", nil], ["status", "pending"], ["author_id", nil], ["author_label", nil], ["created_at", "2026-07-25 09:51:01.042420"], ["updated_at", "2026-07-25 09:51:01.042420"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Started GET "/i18n_proofreading/suggestions/context?key=sample.greeting&locale=en" for 127.0.0.1 at 2026-07-25 11:51:01 +0200
+Processing by I18nProofreading::SuggestionsController#context as HTML
+  Parameters: {"key" => "sample.greeting", "locale" => "en"}
+  [1m[36mI18nProofreading::Suggestion Load (0.0ms)[0m  [1m[34mSELECT "i18n_proofreading_suggestions".* FROM "i18n_proofreading_suggestions" WHERE "i18n_proofreading_suggestions"."translation_key" = ? AND "i18n_proofreading_suggestions"."locale" = ? AND "i18n_proofreading_suggestions"."status" = ? ORDER BY "i18n_proofreading_suggestions"."id" DESC LIMIT ?[0m  [["translation_key", "sample.greeting"], ["locale", "en"], ["status", "pending"], ["LIMIT", 20]]
+Completed 200 OK in 0ms (Views: 0.0ms | ActiveRecord: 0.0ms (1 query, 0 cached) | GC: 0.0ms)
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+----------------------------------------------------------------------------------------------------------------------------------------
+I18nProofreading::DashboardTest: test_renders_the_locale_filter_with_a_label_and_a_submit_button_(works_without_JS_/_under_a_strict_CSP)
+----------------------------------------------------------------------------------------------------------------------------------------
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mI18nProofreading::Suggestion Create (0.1ms)[0m  [1m[32mINSERT INTO "i18n_proofreading_suggestions" ("translation_key", "locale", "old_value", "proposed_value", "comment", "page_url", "status", "author_id", "author_label", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"[0m  [["translation_key", "sample.greeting"], ["locale", "en"], ["old_value", nil], ["proposed_value", "Hi"], ["comment", nil], ["page_url", nil], ["status", "pending"], ["author_id", nil], ["author_label", nil], ["created_at", "2026-07-25 09:51:01.043468"], ["updated_at", "2026-07-25 09:51:01.043468"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mI18nProofreading::Suggestion Create (0.0ms)[0m  [1m[32mINSERT INTO "i18n_proofreading_suggestions" ("translation_key", "locale", "old_value", "proposed_value", "comment", "page_url", "status", "author_id", "author_label", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"[0m  [["translation_key", "sample.greeting"], ["locale", "fr"], ["old_value", nil], ["proposed_value", "Hi"], ["comment", nil], ["page_url", nil], ["status", "pending"], ["author_id", nil], ["author_label", nil], ["created_at", "2026-07-25 09:51:01.043782"], ["updated_at", "2026-07-25 09:51:01.043782"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Started GET "/i18n_proofreading/" for 127.0.0.1 at 2026-07-25 11:51:01 +0200
+Processing by I18nProofreading::SuggestionsController#index as HTML
+  [1m[36mI18nProofreading::Suggestion Count (0.3ms)[0m  [1m[34mSELECT COUNT(*) AS "count_all", "i18n_proofreading_suggestions"."status" AS "i18n_proofreading_suggestions_status" FROM "i18n_proofreading_suggestions" GROUP BY "i18n_proofreading_suggestions"."status"[0m
+  [1m[36mI18nProofreading::Suggestion Pluck (0.0ms)[0m  [1m[34mSELECT DISTINCT "i18n_proofreading_suggestions"."locale" FROM "i18n_proofreading_suggestions"[0m
+  [1m[36mI18nProofreading::Suggestion Load (0.0ms)[0m  [1m[34mSELECT "i18n_proofreading_suggestions".* FROM "i18n_proofreading_suggestions" WHERE "i18n_proofreading_suggestions"."status" = ? ORDER BY "i18n_proofreading_suggestions"."id" DESC LIMIT ? OFFSET ?[0m  [["status", "pending"], ["LIMIT", 51], ["OFFSET", 0]]
+  Rendering layout /Users/yaroslavshmarov/Documents/GitHub.nosync/i18n-feedback/app/views/layouts/i18n_proofreading/application.html.erb
+  Rendering /Users/yaroslavshmarov/Documents/GitHub.nosync/i18n-feedback/app/views/i18n_proofreading/suggestions/index.html.erb within layouts/i18n_proofreading/application
+  Rendered /Users/yaroslavshmarov/Documents/GitHub.nosync/i18n-feedback/app/views/i18n_proofreading/suggestions/index.html.erb within layouts/i18n_proofreading/application (Duration: 0.8ms | GC: 0.0ms)
+  Rendered layout /Users/yaroslavshmarov/Documents/GitHub.nosync/i18n-feedback/app/views/layouts/i18n_proofreading/application.html.erb (Duration: 1.0ms | GC: 0.0ms)
+Completed 200 OK in 4ms (Views: 2.3ms | ActiveRecord: 0.3ms (3 queries, 0 cached) | GC: 0.1ms)
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+--------------------------------------------------------------------------------------
+I18nProofreading::DashboardTest: test_index_is_forbidden_unless_authorize_admin_passes
+--------------------------------------------------------------------------------------
+Started GET "/i18n_proofreading/" for 127.0.0.1 at 2026-07-25 11:51:01 +0200
+Processing by I18nProofreading::SuggestionsController#index as HTML
+  Rendering text template
+  Rendered text template (Duration: 0.0ms | GC: 0.0ms)
+Filter chain halted as :require_admin rendered or redirected
+Completed 403 Forbidden in 0ms (Views: 0.2ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+-------------------------------------------------------------
+I18nProofreading::DashboardTest: test_index_filters_by_locale
+-------------------------------------------------------------
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mI18nProofreading::Suggestion Create (0.1ms)[0m  [1m[32mINSERT INTO "i18n_proofreading_suggestions" ("translation_key", "locale", "old_value", "proposed_value", "comment", "page_url", "status", "author_id", "author_label", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"[0m  [["translation_key", "sample.greeting"], ["locale", "en"], ["old_value", nil], ["proposed_value", "English wording"], ["comment", nil], ["page_url", nil], ["status", "pending"], ["author_id", nil], ["author_label", nil], ["created_at", "2026-07-25 09:51:01.049681"], ["updated_at", "2026-07-25 09:51:01.049681"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mI18nProofreading::Suggestion Create (0.0ms)[0m  [1m[32mINSERT INTO "i18n_proofreading_suggestions" ("translation_key", "locale", "old_value", "proposed_value", "comment", "page_url", "status", "author_id", "author_label", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"[0m  [["translation_key", "sample.greeting"], ["locale", "fr"], ["old_value", nil], ["proposed_value", "French wording"], ["comment", nil], ["page_url", nil], ["status", "pending"], ["author_id", nil], ["author_label", nil], ["created_at", "2026-07-25 09:51:01.050006"], ["updated_at", "2026-07-25 09:51:01.050006"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Started GET "/i18n_proofreading/?status=pending&locale=fr" for 127.0.0.1 at 2026-07-25 11:51:01 +0200
+Processing by I18nProofreading::SuggestionsController#index as HTML
+  Parameters: {"status" => "pending", "locale" => "fr"}
+  [1m[36mI18nProofreading::Suggestion Count (0.0ms)[0m  [1m[34mSELECT COUNT(*) AS "count_all", "i18n_proofreading_suggestions"."status" AS "i18n_proofreading_suggestions_status" FROM "i18n_proofreading_suggestions" GROUP BY "i18n_proofreading_suggestions"."status"[0m
+  [1m[36mI18nProofreading::Suggestion Pluck (0.0ms)[0m  [1m[34mSELECT DISTINCT "i18n_proofreading_suggestions"."locale" FROM "i18n_proofreading_suggestions"[0m
+  [1m[36mI18nProofreading::Suggestion Load (0.0ms)[0m  [1m[34mSELECT "i18n_proofreading_suggestions".* FROM "i18n_proofreading_suggestions" WHERE "i18n_proofreading_suggestions"."status" = ? AND "i18n_proofreading_suggestions"."locale" = ? ORDER BY "i18n_proofreading_suggestions"."id" DESC LIMIT ? OFFSET ?[0m  [["status", "pending"], ["locale", "fr"], ["LIMIT", 51], ["OFFSET", 0]]
+  Rendering layout /Users/yaroslavshmarov/Documents/GitHub.nosync/i18n-feedback/app/views/layouts/i18n_proofreading/application.html.erb
+  Rendering /Users/yaroslavshmarov/Documents/GitHub.nosync/i18n-feedback/app/views/i18n_proofreading/suggestions/index.html.erb within layouts/i18n_proofreading/application
+  Rendered /Users/yaroslavshmarov/Documents/GitHub.nosync/i18n-feedback/app/views/i18n_proofreading/suggestions/index.html.erb within layouts/i18n_proofreading/application (Duration: 0.2ms | GC: 0.0ms)
+  Rendered layout /Users/yaroslavshmarov/Documents/GitHub.nosync/i18n-feedback/app/views/layouts/i18n_proofreading/application.html.erb (Duration: 0.2ms | GC: 0.0ms)
+Completed 200 OK in 1ms (Views: 0.3ms | ActiveRecord: 0.1ms (3 queries, 0 cached) | GC: 0.0ms)
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+-----------------------------------------------------------------------------------------
+I18nProofreading::DashboardTest: test_index_defaults_to_pending_and_can_switch_to_applied
+-----------------------------------------------------------------------------------------
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mI18nProofreading::Suggestion Create (0.1ms)[0m  [1m[32mINSERT INTO "i18n_proofreading_suggestions" ("translation_key", "locale", "old_value", "proposed_value", "comment", "page_url", "status", "author_id", "author_label", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"[0m  [["translation_key", "sample.greeting"], ["locale", "en"], ["old_value", nil], ["proposed_value", "Applied wording"], ["comment", nil], ["page_url", nil], ["status", "applied"], ["author_id", nil], ["author_label", nil], ["created_at", "2026-07-25 09:51:01.051597"], ["updated_at", "2026-07-25 09:51:01.051597"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Started GET "/i18n_proofreading/" for 127.0.0.1 at 2026-07-25 11:51:01 +0200
+Processing by I18nProofreading::SuggestionsController#index as HTML
+  [1m[36mI18nProofreading::Suggestion Count (0.0ms)[0m  [1m[34mSELECT COUNT(*) AS "count_all", "i18n_proofreading_suggestions"."status" AS "i18n_proofreading_suggestions_status" FROM "i18n_proofreading_suggestions" GROUP BY "i18n_proofreading_suggestions"."status"[0m
+  [1m[36mI18nProofreading::Suggestion Pluck (0.0ms)[0m  [1m[34mSELECT DISTINCT "i18n_proofreading_suggestions"."locale" FROM "i18n_proofreading_suggestions"[0m
+  [1m[36mI18nProofreading::Suggestion Load (0.0ms)[0m  [1m[34mSELECT "i18n_proofreading_suggestions".* FROM "i18n_proofreading_suggestions" WHERE "i18n_proofreading_suggestions"."status" = ? ORDER BY "i18n_proofreading_suggestions"."id" DESC LIMIT ? OFFSET ?[0m  [["status", "pending"], ["LIMIT", 51], ["OFFSET", 0]]
+  Rendering layout /Users/yaroslavshmarov/Documents/GitHub.nosync/i18n-feedback/app/views/layouts/i18n_proofreading/application.html.erb
+  Rendering /Users/yaroslavshmarov/Documents/GitHub.nosync/i18n-feedback/app/views/i18n_proofreading/suggestions/index.html.erb within layouts/i18n_proofreading/application
+  Rendered /Users/yaroslavshmarov/Documents/GitHub.nosync/i18n-feedback/app/views/i18n_proofreading/suggestions/index.html.erb within layouts/i18n_proofreading/application (Duration: 0.1ms | GC: 0.0ms)
+  Rendered layout /Users/yaroslavshmarov/Documents/GitHub.nosync/i18n-feedback/app/views/layouts/i18n_proofreading/application.html.erb (Duration: 0.2ms | GC: 0.0ms)
+Completed 200 OK in 1ms (Views: 0.2ms | ActiveRecord: 0.0ms (3 queries, 0 cached) | GC: 0.0ms)
+Started GET "/i18n_proofreading/?status=applied" for 127.0.0.1 at 2026-07-25 11:51:01 +0200
+Processing by I18nProofreading::SuggestionsController#index as HTML
+  Parameters: {"status" => "applied"}
+  [1m[36mCACHE I18nProofreading::Suggestion Count (0.0ms)[0m  [1m[34mSELECT COUNT(*) AS "count_all", "i18n_proofreading_suggestions"."status" AS "i18n_proofreading_suggestions_status" FROM "i18n_proofreading_suggestions" GROUP BY "i18n_proofreading_suggestions"."status"[0m
+  [1m[36mCACHE I18nProofreading::Suggestion Pluck (0.0ms)[0m  [1m[34mSELECT DISTINCT "i18n_proofreading_suggestions"."locale" FROM "i18n_proofreading_suggestions"[0m
+  [1m[36mI18nProofreading::Suggestion Load (0.0ms)[0m  [1m[34mSELECT "i18n_proofreading_suggestions".* FROM "i18n_proofreading_suggestions" WHERE "i18n_proofreading_suggestions"."status" = ? ORDER BY "i18n_proofreading_suggestions"."id" DESC LIMIT ? OFFSET ?[0m  [["status", "applied"], ["LIMIT", 51], ["OFFSET", 0]]
+  Rendering layout /Users/yaroslavshmarov/Documents/GitHub.nosync/i18n-feedback/app/views/layouts/i18n_proofreading/application.html.erb
+  Rendering /Users/yaroslavshmarov/Documents/GitHub.nosync/i18n-feedback/app/views/i18n_proofreading/suggestions/index.html.erb within layouts/i18n_proofreading/application
+  Rendered /Users/yaroslavshmarov/Documents/GitHub.nosync/i18n-feedback/app/views/i18n_proofreading/suggestions/index.html.erb within layouts/i18n_proofreading/application (Duration: 0.2ms | GC: 0.0ms)
+  Rendered layout /Users/yaroslavshmarov/Documents/GitHub.nosync/i18n-feedback/app/views/layouts/i18n_proofreading/application.html.erb (Duration: 0.2ms | GC: 0.0ms)
+Completed 200 OK in 1ms (Views: 0.3ms | ActiveRecord: 0.0ms (3 queries, 2 cached) | GC: 0.0ms)
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+-------------------------------------------------------------------------------------
+I18nProofreading::DashboardTest: test_does_not_route_PATCH_or_DELETE_for_a_suggestion
+-------------------------------------------------------------------------------------
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mI18nProofreading::Suggestion Create (0.1ms)[0m  [1m[32mINSERT INTO "i18n_proofreading_suggestions" ("translation_key", "locale", "old_value", "proposed_value", "comment", "page_url", "status", "author_id", "author_label", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"[0m  [["translation_key", "sample.greeting"], ["locale", "en"], ["old_value", nil], ["proposed_value", "Hi"], ["comment", nil], ["page_url", nil], ["status", "pending"], ["author_id", nil], ["author_label", nil], ["created_at", "2026-07-25 09:51:01.053832"], ["updated_at", "2026-07-25 09:51:01.053832"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Started PATCH "/i18n_proofreading/suggestions/1" for 127.0.0.1 at 2026-07-25 11:51:01 +0200
+  
+ActionController::RoutingError (No route matches [PATCH] "/i18n_proofreading/suggestions/1"):
+  
+Started DELETE "/i18n_proofreading/suggestions/1" for 127.0.0.1 at 2026-07-25 11:51:01 +0200
+  
+ActionController::RoutingError (No route matches [DELETE] "/i18n_proofreading/suggestions/1"):
+  
+  [1m[36mI18nProofreading::Suggestion Load (0.1ms)[0m  [1m[34mSELECT "i18n_proofreading_suggestions".* FROM "i18n_proofreading_suggestions" WHERE "i18n_proofreading_suggestions"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+-------------------------------------------------------------------------------------
+I18nProofreading::DashboardTest: test_index_lists_suggestions_for_the_selected_status
+-------------------------------------------------------------------------------------
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mI18nProofreading::Suggestion Create (0.1ms)[0m  [1m[32mINSERT INTO "i18n_proofreading_suggestions" ("translation_key", "locale", "old_value", "proposed_value", "comment", "page_url", "status", "author_id", "author_label", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"[0m  [["translation_key", "sample.greeting"], ["locale", "en"], ["old_value", nil], ["proposed_value", "Pending wording"], ["comment", nil], ["page_url", nil], ["status", "pending"], ["author_id", nil], ["author_label", nil], ["created_at", "2026-07-25 09:51:01.125755"], ["updated_at", "2026-07-25 09:51:01.125755"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mI18nProofreading::Suggestion Create (0.1ms)[0m  [1m[32mINSERT INTO "i18n_proofreading_suggestions" ("translation_key", "locale", "old_value", "proposed_value", "comment", "page_url", "status", "author_id", "author_label", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"[0m  [["translation_key", "sample.greeting"], ["locale", "en"], ["old_value", nil], ["proposed_value", "Applied wording"], ["comment", nil], ["page_url", nil], ["status", "applied"], ["author_id", nil], ["author_label", nil], ["created_at", "2026-07-25 09:51:01.126185"], ["updated_at", "2026-07-25 09:51:01.126185"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Started GET "/i18n_proofreading/?status=pending" for 127.0.0.1 at 2026-07-25 11:51:01 +0200
+Processing by I18nProofreading::SuggestionsController#index as HTML
+  Parameters: {"status" => "pending"}
+  [1m[36mI18nProofreading::Suggestion Count (0.0ms)[0m  [1m[34mSELECT COUNT(*) AS "count_all", "i18n_proofreading_suggestions"."status" AS "i18n_proofreading_suggestions_status" FROM "i18n_proofreading_suggestions" GROUP BY "i18n_proofreading_suggestions"."status"[0m
+  [1m[36mI18nProofreading::Suggestion Pluck (0.0ms)[0m  [1m[34mSELECT DISTINCT "i18n_proofreading_suggestions"."locale" FROM "i18n_proofreading_suggestions"[0m
+  [1m[36mI18nProofreading::Suggestion Load (0.0ms)[0m  [1m[34mSELECT "i18n_proofreading_suggestions".* FROM "i18n_proofreading_suggestions" WHERE "i18n_proofreading_suggestions"."status" = ? ORDER BY "i18n_proofreading_suggestions"."id" DESC LIMIT ? OFFSET ?[0m  [["status", "pending"], ["LIMIT", 51], ["OFFSET", 0]]
+  Rendering layout /Users/yaroslavshmarov/Documents/GitHub.nosync/i18n-feedback/app/views/layouts/i18n_proofreading/application.html.erb
+  Rendering /Users/yaroslavshmarov/Documents/GitHub.nosync/i18n-feedback/app/views/i18n_proofreading/suggestions/index.html.erb within layouts/i18n_proofreading/application
+  Rendered /Users/yaroslavshmarov/Documents/GitHub.nosync/i18n-feedback/app/views/i18n_proofreading/suggestions/index.html.erb within layouts/i18n_proofreading/application (Duration: 0.3ms | GC: 0.0ms)
+  Rendered layout /Users/yaroslavshmarov/Documents/GitHub.nosync/i18n-feedback/app/views/layouts/i18n_proofreading/application.html.erb (Duration: 0.3ms | GC: 0.0ms)
+Completed 200 OK in 1ms (Views: 0.4ms | ActiveRecord: 0.1ms (3 queries, 0 cached) | GC: 0.0ms)
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+-----------------------------------------------------------------------------------------------------
+I18nProofreading::WidgetInjectionTest: test_does_not_emit_key_markers_without_the_suggest-mode_cookie
+-----------------------------------------------------------------------------------------------------
+Started GET "/sample" for 127.0.0.1 at 2026-07-25 11:51:01 +0200
+Processing by SampleController#show as HTML
+  Rendering inline template
+  Rendered inline template (Duration: 0.1ms | GC: 0.0ms)
+Completed 200 OK in 0ms (Views: 0.4ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+---------------------------------------------------------------------------------------------------------------------------
+I18nProofreading::WidgetInjectionTest: test_turns_suggest_mode_on_via_the_toggle_parameter,_then_redirects_to_the_clean_URL
+---------------------------------------------------------------------------------------------------------------------------
+Started GET "/sample?i18n_proofreading=true" for 127.0.0.1 at 2026-07-25 11:51:01 +0200
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+-----------------------------------------------------------------------------------------------------------------------
+I18nProofreading::WidgetInjectionTest: test_follows_the_app_locale_for_the_widget_labels_using_the_shipped_translations
+-----------------------------------------------------------------------------------------------------------------------
+Started GET "/sample" for 127.0.0.1 at 2026-07-25 11:51:01 +0200
+Processing by SampleController#show as HTML
+  Rendering inline template
+  Rendered inline template (Duration: 0.1ms | GC: 0.0ms)
+Completed 200 OK in 0ms (Views: 0.1ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+-------------------------------------------------------------------------------------------------------------------------------------------
+I18nProofreading::WidgetInjectionTest: test_stamps_the_widget_script_with_the_CSP_nonce,_leaving_the_JSON_config_(data,_not_code)_unstamped
+-------------------------------------------------------------------------------------------------------------------------------------------
+Started GET "/sample" for 127.0.0.1 at 2026-07-25 11:51:01 +0200
+Processing by SampleController#show as HTML
+  Rendering inline template
+  Rendered inline template (Duration: 0.0ms | GC: 0.0ms)
+Completed 200 OK in 0ms (Views: 0.1ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+-----------------------------------------------------------------------------------------------------------
+I18nProofreading::WidgetInjectionTest: test_omits_the_pill_from_the_injected_config_when_show_pill_is_false
+-----------------------------------------------------------------------------------------------------------
+Started GET "/sample" for 127.0.0.1 at 2026-07-25 11:51:01 +0200
+Processing by SampleController#show as HTML
+  Rendering inline template
+  Rendered inline template (Duration: 0.0ms | GC: 0.0ms)
+Completed 200 OK in 0ms (Views: 0.1ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+------------------------------------------------------------------------------------------------------------------------------
+I18nProofreading::WidgetInjectionTest: test_falls_back_to_the_ambient_locale_when_the_page_language_is_not_an_available_locale
+------------------------------------------------------------------------------------------------------------------------------
+Started GET "/sample?page_lang=de" for 127.0.0.1 at 2026-07-25 11:51:01 +0200
+Processing by SampleController#show as HTML
+  Parameters: {"page_lang" => "de"}
+  Rendering inline template
+  Rendered inline template (Duration: 0.0ms | GC: 0.0ms)
+Completed 200 OK in 0ms (Views: 0.1ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+----------------------------------------------------------------------------------------------------------------------------
+I18nProofreading::WidgetInjectionTest: test_turns_suggest_mode_off_via_the_toggle_parameter,_then_redirects_to_the_clean_URL
+----------------------------------------------------------------------------------------------------------------------------
+Started GET "/sample?i18n_proofreading=false" for 127.0.0.1 at 2026-07-25 11:51:01 +0200
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+----------------------------------------------------------------------------------------
+I18nProofreading::WidgetInjectionTest: test_injects_nothing_when_the_tool_is_unavailable
+----------------------------------------------------------------------------------------
+Started GET "/sample" for 127.0.0.1 at 2026-07-25 11:51:01 +0200
+Processing by SampleController#show as HTML
+  Rendering inline template
+  Rendered inline template (Duration: 0.1ms | GC: 0.0ms)
+Completed 200 OK in 0ms (Views: 0.2ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+---------------------------------------------------------------------------------------
+I18nProofreading::WidgetInjectionTest: test_injects_localized_UI_labels_into_the_config
+---------------------------------------------------------------------------------------
+Started GET "/sample" for 127.0.0.1 at 2026-07-25 11:51:01 +0200
+Processing by SampleController#show as HTML
+  Rendering inline template
+  Rendered inline template (Duration: 0.1ms | GC: 0.0ms)
+Completed 200 OK in 0ms (Views: 0.1ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+-------------------------------------------------------------------------------------------------------------
+I18nProofreading::WidgetInjectionTest: test_injects_the_widget_into_HTML_responses_when_the_tool_is_available
+-------------------------------------------------------------------------------------------------------------
+Started GET "/sample" for 127.0.0.1 at 2026-07-25 11:51:01 +0200
+Processing by SampleController#show as HTML
+  Rendering inline template
+  Rendered inline template (Duration: 0.1ms | GC: 0.0ms)
+Completed 200 OK in 0ms (Views: 0.1ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+-------------------------------------------------------------------------------------------------
+I18nProofreading::WidgetInjectionTest: test_emits_key_markers_when_the_suggest-mode_cookie_is_set
+-------------------------------------------------------------------------------------------------
+Started GET "/sample" for 127.0.0.1 at 2026-07-25 11:51:01 +0200
+Processing by SampleController#show as HTML
+  Rendering inline template
+  Rendered inline template (Duration: 0.1ms | GC: 0.0ms)
+Completed 200 OK in 0ms (Views: 0.1ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+------------------------------------------------------------------------------------------------
+I18nProofreading::WidgetInjectionTest: test_never_marks_its_own_UI_strings,_even_in_suggest_mode
+------------------------------------------------------------------------------------------------
+Started GET "/sample" for 127.0.0.1 at 2026-07-25 11:51:01 +0200
+Processing by SampleController#show as HTML
+  Rendering inline template
+  Rendered inline template (Duration: 0.1ms | GC: 0.0ms)
+Completed 200 OK in 0ms (Views: 0.1ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+-----------------------------------------------------------------------------------------------------------------------
+I18nProofreading::WidgetInjectionTest: test_follows_the_page's_rendered_language_even_when_the_ambient_locale_was_reset
+-----------------------------------------------------------------------------------------------------------------------
+Started GET "/sample?page_lang=fr" for 127.0.0.1 at 2026-07-25 11:51:01 +0200
+Processing by SampleController#show as HTML
+  Parameters: {"page_lang" => "fr"}
+  Rendering inline template
+  Rendered inline template (Duration: 0.1ms | GC: 0.0ms)
+Completed 200 OK in 0ms (Views: 0.1ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+-----------------------------------------------------------------------------------
+I18nProofreadingTest: test_available?_is_false_when_the_per-request_gate_rejects_it
+-----------------------------------------------------------------------------------
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+--------------------------------------------------------------------------------------------
+I18nProofreadingTest: test_available?_is_true_in_an_enabled_environment_when_the_gate_passes
+--------------------------------------------------------------------------------------------
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+-------------------------------------------------------------------------------
+I18nProofreadingTest: test_available?_is_false_outside_the_enabled_environments
+-------------------------------------------------------------------------------
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+----------------------------------------------------------------------------------------------------------------
+I18nProofreading::WidgetLabelsTest: test_resolves_labels_under_the_requested_locale,_not_the_ambient_I18n.locale
+----------------------------------------------------------------------------------------------------------------
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+---------------------------------------------------------------------------------------------------------
+I18nProofreading::WidgetLabelsTest: test_lets_the_host_override_a_shipped_label_from_its_own_locale_files
+---------------------------------------------------------------------------------------------------------
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+-----------------------------------------------------------------------------------
+I18nProofreading::WidgetLabelsTest: test_ships_translations_for_the_bundled_locales
+-----------------------------------------------------------------------------------
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+-------------------------------------------------------------------------------------------------------
+I18nProofreading::WidgetLabelsTest: test_falls_back_to_English_for_a_locale_with_no_shipped_translation
+-------------------------------------------------------------------------------------------------------
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+--------------------------------------------------------------
+I18nProofreading::WidgetTest: test_marks_right-to-left_locales
+--------------------------------------------------------------
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+--------------------------------------------------------------------------------------------------------
+I18nProofreading::WidgetTest: test_stays_out_of_the_host_asset_pipeline_(no_app/assets_to_auto-register)
+--------------------------------------------------------------------------------------------------------
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+------------------------------------------------------------------------
+I18nProofreading::WidgetTest: test_leaves_left-to-right_locales_unmarked
+------------------------------------------------------------------------
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+---------------------------------------------------------------------------------------------------
+I18nProofreading::WidgetTest: test_escapes_</_so_a_config_value_cannot_close_the_script_block_early
+---------------------------------------------------------------------------------------------------
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+---------------------------------------------------------------------------------
+I18nProofreading::WidgetTest: test_treats_a_region_variant_by_its_language_subtag
+---------------------------------------------------------------------------------
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m

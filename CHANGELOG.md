@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+## [0.9.1]
+
+- Add Minitest **system tests** that drive the widget in headless Chrome
+  (Capybara + Selenium): entering suggest mode, marker stripping, opening the
+  popover, submitting a suggestion, and Escape to exit. Run with
+  `rake test:system`; `rake test` stays browser-free. Dev/test only — no runtime
+  change and no new runtime dependencies.
+
 ## [0.9.0]
 
 - **Renamed the gem `i18n_feedback` → `i18n_proofreading`.** The name now says
