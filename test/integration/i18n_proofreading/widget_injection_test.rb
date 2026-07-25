@@ -110,7 +110,7 @@ module I18nProofreading
 
       # No markers on the page: the script defers, so it never blocks rendering.
       get '/sample'
-      assert_match(%r{<script src="[^"]*widget\.js[^"]*" defer nonce=}, response.body)
+      assert_match(/<script src="[^"]*widget\.js[^"]*" defer nonce=/, response.body)
 
       # ⟦key⟧ markers present: the script is eager (no defer), so it strips them
       # before the browser paints — no flash of raw keys. Still same-origin src
@@ -119,7 +119,7 @@ module I18nProofreading
       assert_includes response.body, "#{Marking::LEFT}sample.greeting#{Marking::RIGHT}"
       assert_includes response.body,
                       %(<script src="#{src}" nonce="testnonce" data-i18n-proofreading-widget></script>)
-      assert_no_match(%r{widget\.js[^"]*" defer}, response.body)
+      assert_no_match(/widget\.js[^"]*" defer/, response.body)
     end
 
     test 'stamps the widget script with the CSP nonce, leaving the JSON config (data, not code) unstamped' do
