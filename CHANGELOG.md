@@ -2,6 +2,16 @@
 
 ## [Unreleased]
 
+## [0.9.2]
+
+- Make the suggestion popover **full-screen on mobile** (≤ 480px wide): edge to
+  edge with no rounded corners, instead of a floating dialog — no bottom sheet
+  and no animation. The widget's inputs render at 16px on small screens so iOS
+  Safari no longer zooms the page when one gains focus, the action row pads
+  itself past the iPhone home indicator (`env(safe-area-inset-bottom)`), and the
+  panel's scrolling is contained (`overscroll-behavior`) so reaching its end
+  never scrolls the page behind it. CSS only; desktop is unchanged.
+
 ## [0.9.1]
 
 - Add Minitest **system tests** that drive the widget in headless Chrome
