@@ -5,56 +5,15 @@
 [![CI](https://github.com/yshmarov/i18n_proofreading/actions/workflows/ci.yml/badge.svg)](https://github.com/yshmarov/i18n_proofreading/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](MIT-LICENSE)
 
-In-context translation proofreading for Rails.
+**In-context translation proofreading for Rails.** Your reviewer clicks any
+string in the running app and suggests a better wording. You get the i18n key,
+the old text, and the proposal — without anyone opening a YAML file.
 
-`i18n_proofreading` renders every translated string alongside its i18n key in the
-environments you choose, lets a reviewer click any string in the running app and
-suggest a better wording, and stores those suggestions for a developer to apply.
-It is meant for development and staging, never production.
+![Click any string in your running app and suggest a better wording](docs/demo.gif)
 
-![Click any string in your running app and suggest a better wording](i18n-proofreading-demo.gif)
+<sub>[Watch as MP4](https://github.com/yshmarov/i18n_proofreading/raw/main/docs/demo-640.mp4) (sharper, 3 MB)</sub>
 
-<video src="https://github.com/yshmarov/i18n_proofreading/raw/main/i18n-proofreading-demo-640-high.mp4" controls muted playsinline width="640">
-  Your browser can't play this video —
-  <a href="https://github.com/yshmarov/i18n_proofreading/raw/main/i18n-proofreading-demo-640-high.mp4">download it here</a>.
-</video>
-
-- **Zero UI dependencies.** The widget is plain JavaScript and styles itself. No
-  Tailwind, no daisyUI, no Stimulus, no importmap, no build step.
-- **Zero layout changes.** The widget is injected into HTML responses
-  automatically (opt out and place it yourself if you prefer).
-- **Trigger it your way.** Use the built-in floating pill, or hide it and switch
-  suggest mode on from your own link (a nav item, a menu, anywhere).
-- **Pluggable gating and attribution.** You decide which environments and which
-  users see the tool, and how a suggestion is attributed.
-
-## How it works
-
-1. In an enabled environment, the I18n backend appends a hidden `⟦some.key⟧`
-   marker to each translated string. Markers are only emitted while a reviewer
-   has the tool switched on (a cookie), so pages are clean by default.
-2. The browser widget strips every marker out of the DOM on load and remembers
-   which key produced each piece of text.
-3. Clicking a string opens a popover showing the current text, any pending
-   suggestions, and a field to propose a new wording.
-4. Suggestions are `POST`ed to the mounted engine and stored in the
-   `i18n_proofreading_suggestions` table for you to review and apply.
-
-## Turbo
-
-Works with Turbo Drive out of the box. Turbo replaces `<body>` on every visit,
-which would take the pill and the active-mode highlighting with it, so the
-widget registers its document-level listeners once and re-renders on
-`turbo:load`. The pill survives navigation without a full reload.
-
-## Requirements
-
-- Ruby >= 3.2
-- Rails >= 7.1
-
-## Installation
-
-Add the gem:
+## Install
 
 ```ruby
 # Gemfile
@@ -67,75 +26,109 @@ bin/rails generate i18n_proofreading:install
 bin/rails db:migrate
 ```
 
-The generator:
+Boot the app in development and look for the **"Suggest edits"** pill in the
+bottom-left. Click it, then click any text. `Esc` exits.
 
-- writes `config/initializers/i18n_proofreading.rb`,
-- creates the `i18n_proofreading_suggestions` migration,
-- mounts the engine in `config/routes.rb`:
+No layout change needed — the widget injects itself into HTML responses.
 
-  ```ruby
-  mount I18nProofreading::Engine => "/i18n_proofreading"
-  ```
+> [!IMPORTANT]
+> Development and staging only by design. `enabled_environments` defaults to
+> `%w[development staging]`, and the review dashboard defaults to development
+> only. This is not a production tool.
 
-Boot the app in development and look for the **“Suggest edits”** pill in the
-bottom-left corner. Click it to turn on suggest mode, then click any text to
-propose a fix. Press `Esc` (or the pill) to exit.
+Ruby >= 3.2 · Rails >= 7.1 · CSRF token comes from `csrf_meta_tags`, already in
+a standard Rails layout.
 
-> The widget reads the CSRF token from `<meta name="csrf-token">`, which
-> `csrf_meta_tags` in your layout already provides in a standard Rails app.
+## What you get
 
-## Configuration
+|                |                                                                     |
+| -------------- | ------------------------------------------------------------------- |
+| **Highlight**  | Every translated string outlined in the live app, mapped to its key  |
+| **Suggest**    | Click a string → current text, your proposal, an optional comment    |
+| **Review**     | Built-in board: pending / applied / rejected, filtered by locale     |
+| **Storage**    | `i18n_proofreading_suggestions` — ordinary Active Record rows        |
+| **Deps**       | None. Plain JS — no Tailwind, no Stimulus, no importmap, no build step |
+| **Layout**     | Auto-injected. Opt out and place the tag yourself if you prefer      |
+| **Auth**       | Lambdas over the raw request — Devise, Rails 8 auth, feature flags   |
+| **i18n**       | The tool's own UI ships in 26 languages, RTL mirrored                |
+| **Theme**      | Follows system light/dark                                            |
+| **Turbo/CSP**  | Turbo Drive and strict nonce-based CSP (incl. `strict-dynamic`)      |
 
-Everything is optional; the defaults work out of the box in development.
+## The flow
+
+| 1. Turn it on — every translated string is outlined |
+| --- |
+| ![Proofreading mode: every translated string outlined in place](docs/screenshots/01-highlight.png) |
+| Markers are only emitted while a reviewer has the tool switched on, so pages are clean by default. |
+| **2. Click any string and propose a wording** |
+| ![The suggestion popover showing the i18n key, current text, proposal and comment](docs/screenshots/02-suggest.png) |
+| The popover shows the i18n key, the current text, any pending suggestions, and a comment field. |
+| **3. Triage what came in** |
+| ![The review board: pending, applied and rejected tabs with a locale filter](docs/screenshots/03-review-board.png) |
+| Read-only by design — the gem never writes to your locale files. You make the edit. |
+
+## How it works
+
+1. In an enabled environment, the I18n backend appends a hidden `⟦some.key⟧`
+   marker to each translated string — only while a reviewer has the tool on
+   (a cookie), so pages are clean by default.
+2. The widget strips every marker out of the DOM on load and remembers which
+   key produced each piece of text.
+3. Clicking a string opens a popover: current text, pending suggestions, and a
+   field to propose new wording.
+4. Suggestions `POST` to the mounted engine and land in
+   `i18n_proofreading_suggestions`.
+
+## Configure
+
+Everything is optional — the defaults work out of the box in development. In
+`config/initializers/i18n_proofreading.rb`:
+
+| Option | Default | What it does |
+| --- | --- | --- |
+| `enabled_environments` | `%w[development staging]` | Environments the tool is active in |
+| `enabled` | everyone | Extra per-request gate. `false` hides the tool |
+| `authorize_admin` | development only | **Who can open the review board.** Independent of the gates above |
+| `current_user` | `nil` | Attribute a suggestion to a user. Receives the request |
+| `author_label` | the user's `email` | Label shown for the author |
+| `available_locales` | `I18n.available_locales` | Which locales a suggestion may target |
+| `auto_inject` | `true` | Inject the widget into HTML responses |
+| `show_pill` | `true` | The floating "Suggest edits" pill |
+| `pill_label` | `nil` | Fixed pill text. `nil` uses the localized default |
+| `toggle_param` | `"i18n_proofreading"` | Query param that toggles suggest mode |
+| `mount_path` | `"/i18n_proofreading"` | Keep in sync with `mount` in `routes.rb` |
+| `on_submit` | no-op | Runs inline after each save — Slack, email, tickets |
+| `rate_limit` | `{ to: 30, within: 1.minute }` | Per-IP throttle (Rails 7.2+). `nil` disables |
+
+Gates receive the **raw request**, so they work with any auth:
 
 ```ruby
-# config/initializers/i18n_proofreading.rb
-I18nProofreading.configure do |config|
-  # Environments the tool is active in.
-  config.enabled_environments = %w[development staging]
+# Only signed-in staff
+config.enabled = ->(request) { request.env["warden"]&.user&.staff? }
 
-  # Extra per-request gate. Return false to hide the tool. Receives the request.
-  config.enabled = ->(request) { true }
+# Behind a feature flag
+config.enabled = ->(request) { Flipper.enabled?(:i18n_proofreading) }
 
-  # Who may open the triage dashboard. Independent of the gates above; defaults
-  # to development only. Wire it to your own admin check to open it elsewhere.
-  config.authorize_admin = ->(request) { Rails.env.development? }
+# Devise / Warden
+config.current_user    = ->(request) { request.env["warden"]&.user }
+config.authorize_admin = ->(request) { request.env["warden"]&.user&.admin? }
 
-  # Attribute a suggestion to a user (optional). Return an object responding to
-  # #id, or nil. Receives the request.
-  config.current_user = ->(request) { nil }
-
-  # Label shown for the author in the "already suggested" list.
-  config.author_label = ->(user) { user.try(:email) }
-
-  # Inject the widget automatically. Set false to place it yourself.
-  config.auto_inject = true
-
-  # Show the floating "Suggest edits" pill. Set false to drive suggest mode from
-  # your own link instead (see below).
-  config.show_pill = true
-
-  # Query parameter that toggles suggest mode.
-  config.toggle_param = "i18n_proofreading"
-
-  # Keep in sync with the `mount` in config/routes.rb.
-  config.mount_path = "/i18n_proofreading"
-
-  # Per-IP throttle on the submission endpoint, passed to Rails' built-in rate
-  # limiter (Rails 7.2+; ignored on 7.1). Set nil to disable.
-  config.rate_limit = { to: 30, within: 60 }
+# Rails 8 built-in auth (bin/rails generate authentication)
+config.current_user = lambda do |request|
+  token = request.cookies["session_token"]
+  Session.find_signed(token)&.user if token
 end
+
+# Ping me when a suggestion lands
+config.on_submit = ->(s) { SuggestionMailer.with(suggestion: s).created.deliver_later }
 ```
 
-### Toggling suggest mode from your own link
+<details>
+<summary><b>Toggling suggest mode from your own link</b></summary>
 
-Prefer a menu item over the floating pill? You can drive suggest mode from any
-link in your own UI — a nav item, a sidebar entry, a footer — and optionally hide
-the pill (the two can also coexist):
-
-```ruby
-config.show_pill = false # optional
-```
+Prefer a menu item over the floating pill? Drive suggest mode from any link —
+and optionally hide the pill with `config.show_pill = false` (the two can also
+coexist).
 
 A one-way "turn it on" link is just the toggle parameter:
 
@@ -143,10 +136,9 @@ A one-way "turn it on" link is just the toggle parameter:
 <%= link_to t("i18n_proofreading.start"), "?i18n_proofreading=true" %>
 ```
 
-For a single control that flips both ways, read the current state from the
-`i18n_proofreading` cookie and point at the opposite state. The gem ships `start`
-and `stop` labels under the `i18n_proofreading.*` scope in every bundled language,
-so a localized toggle needs no keys of your own:
+For a single control that flips both ways, read the cookie and point at the
+opposite state. The gem ships `start` and `stop` labels in every bundled
+language:
 
 ```erb
 <% if I18nProofreading.available?(request) %>
@@ -156,48 +148,21 @@ so a localized toggle needs no keys of your own:
 <% end %>
 ```
 
-Good to know:
+Three things worth knowing:
 
-- `?i18n_proofreading=true` turns suggest mode on, `false` turns it off. The state is
-  stored in the `i18n_proofreading` cookie, and the middleware then redirects to the
-  same URL without the parameter — so it never sticks in the address bar and the
-  cookie stays the single source of truth. `Esc` (or the pill) also exits.
+- `?i18n_proofreading=true` turns it on, `false` off. State lives in the
+  `i18n_proofreading` cookie; the middleware then redirects to the same URL
+  without the parameter, so it never sticks in the address bar.
 - These links keep working **while suggest mode is active**. The widget freezes
-  ordinary navigation during proofreading (so a stray click can't leave the page
-  mid-edit), but any link carrying the toggle parameter is exempt — so a "Disable"
-  item in your nav always gets you out.
-- The `i18n_proofreading.*` keys are **safe to run through `I18n.t`** — that scope is
-  exempt from key-marking, so the tool never flags its own controls as editable.
-  Use the bundled `i18n_proofreading.start` / `i18n_proofreading.stop` labels (or your own
-  keys); either way, no plain-literal workaround is needed.
+  ordinary navigation during proofreading so a stray click can't leave the page
+  mid-edit — but any link carrying the toggle parameter is exempt.
+- The `i18n_proofreading.*` scope is **exempt from key-marking**, so the tool
+  never flags its own controls as editable. No plain-literal workaround needed.
 
-### Gating examples
+</details>
 
-```ruby
-# Only signed-in staff (however your app resolves that):
-config.enabled = ->(request) { request.env["warden"]&.user&.staff? }
-
-# Behind a feature flag:
-config.enabled = ->(request) { Flipper.enabled?(:i18n_proofreading) }
-```
-
-### Resolving the current user
-
-`current_user` (optional — it attributes suggestions) and the gates all
-receive the raw request, so they work with whatever auth you have:
-
-```ruby
-# Devise / Warden:
-config.current_user = ->(request) { request.env["warden"]&.user }
-
-# Rails 8 built-in auth (bin/rails generate authentication):
-config.current_user = lambda do |request|
-  token = request.cookies["session_token"]
-  Session.find_signed(token)&.user if token
-end
-```
-
-### Placing the widget yourself
+<details>
+<summary><b>Placing the widget yourself</b></summary>
 
 Set `config.auto_inject = false` and drop the helper at the end of your layout:
 
@@ -207,21 +172,66 @@ Set `config.auto_inject = false` and drop the helper at the end of your layout:
 
 It renders nothing unless the tool is available for the request.
 
-### Localizing the widget UI
+</details>
 
-The pill and the suggestion popover speak the app's language: every string
-resolves through Rails I18n under the `i18n_proofreading.*` scope and follows the
-language the page was rendered in (its `<html lang>`, falling back to
-`I18n.locale`). Translations ship out of the box for English plus 25 more
-languages — Arabic, Bengali, Bulgarian, Chinese (Simplified), Croatian, Dutch,
+## Reviewing suggestions
+
+The engine root (default `/i18n_proofreading`) is a **read-only** board:
+pending / applied / rejected tabs with counts, a per-locale filter, and each
+suggestion shown as current-vs-proposed with its comment and author.
+
+Read-only is deliberate. The gem never writes to your locale files, so it
+doesn't pretend to — you review here, then edit your own
+`config/locales/*.yml`.
+
+Its gate, `authorize_admin`, is independent of `enabled` /
+`enabled_environments`: the widget can be dev/staging-only while a maintainer
+triages from production.
+
+Suggestions are also ordinary records:
+
+```ruby
+I18nProofreading::Suggestion.where(status: "pending").newest_first.each do |s|
+  puts "#{s.locale} #{s.translation_key}: #{s.old_value.inspect} -> #{s.proposed_value.inspect}"
+end
+```
+
+Each row stores `translation_key`, `locale`, `old_value`, `proposed_value`,
+`comment`, `page_url`, `status`, and optional `author_id` / `author_label`.
+
+<details>
+<summary><b>Statuses</b></summary>
+
+Every suggestion is `pending`, `applied`, or `rejected`
+(`I18nProofreading::Suggestion::STATUSES`), backed by an Active Record enum.
+New suggestions start `pending`; once you apply a wording or decide against it,
+set the status so the popover stops offering it as pending context:
+
+```ruby
+suggestion.status_applied!                                # bang setter
+suggestion.status_applied?                                # => true
+I18nProofreading::Suggestion.status_pending.newest_first  # scope per status
+```
+
+</details>
+
+## Localization
+
+The pill and popover speak the app's language — every string resolves through
+Rails I18n under `i18n_proofreading.*` and follows the language the page was
+rendered in (`<html lang>`, falling back to `I18n.locale`). 26 languages ship,
+missing keys fall back to English, and RTL locales render the popover
+right-to-left.
+
+<details>
+<summary><b>Bundled languages, and overriding the copy</b></summary>
+
+Arabic, Bengali, Bulgarian, Chinese (Simplified), Croatian, Dutch, English,
 French, German, Greek, Hindi, Indonesian, Italian, Japanese, Korean,
 Luxembourgish, Polish, Portuguese, Romanian, Russian, Spanish, Thai, Turkish,
-Ukrainian, Urdu and Vietnamese — so the tool is already localized for most apps.
-RTL locales (Arabic, Urdu, …) render the popover right-to-left automatically.
+Ukrainian, Urdu, Vietnamese.
 
-Any key you haven't translated falls back to English, so a partially translated
-locale never leaves a control blank. To add a language, or reword the bundled
-copy, define the keys in your own locale files (yours win over the gem's):
+Define the keys in your own locale files — yours win over the gem's:
 
 ```yaml
 # config/locales/fr.yml
@@ -241,101 +251,44 @@ fr:
     error_save: "Impossible d'enregistrer la suggestion."
 ```
 
-`config.pill_label` still overrides the pill text with a fixed string if you set
-it; leave it `nil` (the default) to use the localized `i18n_proofreading.pill` key.
+`config.pill_label` overrides the pill text with a fixed string; leave it `nil`
+to use the localized `i18n_proofreading.pill` key.
 
-### Light / dark / system appearance
-
-The widget follows the reviewer's operating-system appearance via
-`prefers-color-scheme` — no configuration needed. The pill and popover render on a
-dark surface when the system is in dark mode and a light surface otherwise; the
-blue accent stays the same in both.
-
-## Reviewing suggestions
-
-### Review dashboard
-
-Mounted at your `mount_path` (default `/i18n_proofreading`), the engine root is a
-built-in **read-only** review board: pending / applied / rejected tabs with
-counts, a per-locale filter, and each suggestion shown as current-vs-proposed
-with its comment and author. It's plain server-rendered HTML with its own
-styling — no host assets or JS framework needed.
-
-It is deliberately read-only. The gem never writes to your locale files, so it
-doesn't pretend to: you review the suggestions here, then make the edits in your
-own `config/locales/*.yml`. (A suggestion's `status` still exists on the model
-for your own tracking — set it from the console — and is the groundwork for a
-future "apply to locale file" feature.)
-
-It has its own gate, `config.authorize_admin`, **defaulting to development
-only** — so a fresh install never exposes it in production. Point it at your own
-admin check to open it elsewhere:
-
-```ruby
-config.authorize_admin = ->(request) { request.env["warden"]&.user&.admin? }
-```
-
-The gate is independent of `enabled` / `enabled_environments`: the widget can be
-dev/staging-only while a maintainer still triages from production.
-
-### From the console
-
-Suggestions are also ordinary records:
-
-```ruby
-I18nProofreading::Suggestion.where(status: "pending").newest_first.each do |s|
-  puts "#{s.locale} #{s.translation_key}: #{s.old_value.inspect} -> #{s.proposed_value.inspect}"
-end
-```
-
-Each row stores `translation_key`, `locale`, `old_value`, `proposed_value`,
-`comment`, `page_url`, `status`, and optional `author_id` / `author_label`.
-
-Every suggestion has a `status` — one of `pending`, `applied`, or `rejected`
-(`I18nProofreading::Suggestion::STATUSES`), backed by an Active Record enum. New
-suggestions start `pending`; once you apply a wording to your locale files or
-decide against it, set the status accordingly so the popover stops offering it
-as pending context:
-
-```ruby
-suggestion.status_applied!          # bang setter
-suggestion.status_applied?          # => true
-I18nProofreading::Suggestion.status_pending.newest_first  # scope per status
-```
-
-### Getting notified
-
-To be pinged when a suggestion comes in, set `on_submit`. It's called with the
-saved `Suggestion` right after it's stored — notify Slack, send an email, open a
-ticket. It runs inline in the request, so keep it fast or hand off to a job:
-
-```ruby
-config.on_submit = ->(suggestion) { SuggestionMailer.with(suggestion:).created.deliver_later }
-```
+</details>
 
 ## Security
 
-- The tool is gated **on the server** for every marker, endpoint, and injection.
-  Setting the cookie by hand does nothing outside an enabled environment where
-  `config.enabled` returns true.
-- Format and lookup namespaces (`number.*`, `date.*`, `*_html` formats, etc.) are
-  never marked, so currency and date formatting are unaffected.
-- The injected widget code carries the request's Content-Security-Policy nonce
-  (the same one `ActionDispatch` emits), so it runs under a nonce-based
-  `script-src` policy — including `strict-dynamic` — with no configuration. It is
-  a no-op when the app sets no CSP nonce. The runtime config is shipped as a
-  `<script type="application/json">` block (data, not code), so it needs no nonce
-  and stays correct across Turbo visits.
+- **Gated on the server** for every marker, endpoint, and injection. Setting
+  the cookie by hand does nothing outside an enabled environment where
+  `enabled` returns true.
+- **Format and lookup namespaces are never marked** (`number.*`, `date.*`,
+  `*_html` formats), so currency and date formatting are unaffected.
+- **CSP nonce carried** from `ActionDispatch`, so it runs under a nonce-based
+  `script-src` including `strict-dynamic`. Runtime config ships as
+  `<script type="application/json">` (data, not code), so it needs no nonce and
+  survives Turbo visits.
+- **Rate-limited per IP** on the submission endpoint (30/min by default,
+  Rails 7.2+).
 
 ## Development
 
 ```bash
-bin/setup        # or: bundle install
-bundle exec rspec
+bin/setup
+bundle exec rake test         # unit + integration
+bundle exec rake test:system  # browser tests (headless Chrome)
+bundle exec rubocop
 ```
 
-Tests run against a dummy Rails app under `spec/dummy`.
+Tests run against a dummy Rails app in `test/dummy`.
+
+## Also by the same author
+
+- [testimonials](https://github.com/yshmarov/testimonials) — testimonials,
+  reviews and NPS for Rails.
+- [ideasbugs](https://github.com/yshmarov/ideasbugs) — in-app bug reports and
+  feature requests.
+- [SupeRails](https://superails.com) — Rails screencasts.
 
 ## License
 
-Released under the [MIT License](MIT-LICENSE).
+MIT.
