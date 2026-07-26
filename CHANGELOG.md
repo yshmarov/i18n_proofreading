@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+## [0.9.7]
+
+- The widget's injected stylesheet now refreshes when its content changes
+  instead of once-and-never-again — so a shipped widget update takes effect on
+  the next Turbo visit instead of needing a full page reload (Turbo keeps
+  `<head>` across visits, which could otherwise pin old CSS while fresh
+  widget.js runs). Backported from livechat 0.4.5.
+
 ## [0.9.6]
 
 - No more flash of raw `⟦key⟧` markers when entering suggest mode: the widget
