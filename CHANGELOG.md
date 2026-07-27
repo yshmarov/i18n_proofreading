@@ -2,6 +2,18 @@
 
 ## [Unreleased]
 
+## [0.10.0]
+
+- The full-screen mobile suggestion dialog now survives the on-screen keyboard.
+  On phones the panel is a `100dvh` fixed element, and iOS Safari opens the
+  keyboard *over* it without resizing — hiding the Save/Cancel row behind the
+  keyboard. While the dialog is open (and only when the `max-width:480px`
+  full-screen media query matches), the widget uses the `visualViewport` API to
+  pin the panel's `height`/`top` to the actually-visible area, so its action row
+  stays just above the keyboard as it slides in. Listeners are removed and the
+  inline styles cleared on close; desktop is untouched, and browsers without
+  `visualViewport` keep the plain CSS behaviour.
+
 ## [0.9.7]
 
 - The widget's injected stylesheet now refreshes when its content changes
