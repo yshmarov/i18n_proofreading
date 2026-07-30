@@ -4,6 +4,7 @@ I18nProofreading::Engine.routes.draw do
   # The widget code, served same-origin so it runs under a `'self'`/nonce-based
   # CSP even across Turbo body swaps (see WidgetsController).
   get 'widget.js', to: 'widgets#show', as: :widget
+  get 'dashboard.css', to: 'widgets#dashboard_stylesheet', as: :dashboard_stylesheet
 
   # index is the read-only admin dashboard; create + the `context` collection
   # route are the widget's public API (see SuggestionsController). There is

@@ -22,7 +22,7 @@ module I18nProofreading
       end
 
       def mount_engine
-        route %(mount I18nProofreading::Engine => "/i18n_proofreading")
+        route %(mount_i18n_proofreading at: "/i18n_proofreading")
       end
 
       def post_install

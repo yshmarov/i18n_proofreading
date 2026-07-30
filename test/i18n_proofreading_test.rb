@@ -24,4 +24,14 @@ class I18nProofreadingTest < ActiveSupport::TestCase
 
     assert_not I18nProofreading.available?(request)
   end
+
+  test 'mount_i18n_proofreading keeps config.mount_path in sync with the route' do
+    routes = ActionDispatch::Routing::RouteSet.new
+
+    routes.draw do
+      mount_i18n_proofreading at: '/translations'
+    end
+
+    assert_equal '/translations', I18nProofreading.config.mount_path
+  end
 end

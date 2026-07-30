@@ -29,10 +29,21 @@ module I18nProofreading
       get '/i18n_proofreading/', params: { status: 'pending' }
 
       assert_response :ok
+      assert_includes response.body, 'name="csp-nonce"'
+      assert_includes response.body, 'href="/i18n_proofreading/dashboard.css?v='
+      assert_not_includes response.body, '<style>'
       assert_includes response.body, '<title>I18nProofreading</title>'
       assert_includes response.body, '<h1>I18nProofreading</h1>'
       assert_includes response.body, 'Pending wording'
       assert_not_includes response.body, 'Applied wording'
+    end
+
+    test 'serves the dashboard stylesheet as a same-origin static asset' do
+      get '/i18n_proofreading/dashboard.css'
+
+      assert_response :ok
+      assert_equal 'text/css', response.media_type
+      assert_includes response.body, '.tabs'
     end
 
     test 'index defaults to pending and can switch to applied' do

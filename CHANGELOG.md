@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+- Added `mount_i18n_proofreading at: "/i18n_proofreading"` as the install-time
+  route helper, keeping `config.mount_path` synchronized with the mounted
+  engine path while preserving manual `mount I18nProofreading::Engine`
+  compatibility.
+- Extracted the dashboard stylesheet into a same-origin, fingerprinted
+  `/dashboard.css` endpoint and added CSP meta tags to the dashboard layout.
+  The public widget remains pipeline-free and controller-served.
+
 ## [0.10.2]
 
 - Added the `I18nProofreading` dashboard title to every shipped locale, matching

@@ -15,6 +15,7 @@ module I18nProofreading
     # app/assets/* directory, which would put this file in the host's asset
     # namespace as a bare "widget.js" and into its precompiled output.
     SOURCE = File.expand_path('widget.js', __dir__)
+    DASHBOARD_STYLESHEET_SOURCE = File.expand_path('dashboard.css', __dir__)
 
     # Right-to-left scripts, so the popover renders mirrored for those locales.
     # Matched on the language subtag, so region variants ("ar-EG") count too.
@@ -25,11 +26,19 @@ module I18nProofreading
         @javascript ||= File.read(SOURCE)
       end
 
+      def dashboard_stylesheet
+        @dashboard_stylesheet ||= File.read(DASHBOARD_STYLESHEET_SOURCE)
+      end
+
       # Content fingerprint for the cache-busting script URL: a changed file is
       # a changed URL, so no browser can ever run stale widget code — Safari
       # has been caught ignoring must-revalidate on same-URL scripts.
       def fingerprint
         @fingerprint ||= Digest::MD5.hexdigest(javascript)
+      end
+
+      def dashboard_stylesheet_fingerprint
+        @dashboard_stylesheet_fingerprint ||= Digest::MD5.hexdigest(dashboard_stylesheet)
       end
 
       # The two <script> tags to place before </body>.

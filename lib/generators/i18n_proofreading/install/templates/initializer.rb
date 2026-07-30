@@ -47,7 +47,8 @@ I18nProofreading.configure do |config|
   # config.show_pill = true
   # config.toggle_param = "i18n_proofreading"
 
-  # Keep this in sync with the `mount` line in config/routes.rb.
+  # Default mount path used by `mount_i18n_proofreading`.
+  # Override only if you mount the engine manually.
   #
   # config.mount_path = "/i18n_proofreading"
 
