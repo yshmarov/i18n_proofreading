@@ -22,7 +22,7 @@ en:
       applied: "Applied"
       rejected: "Rejected"
     dashboard:
-      title: "Translation suggestions"
+      title: "I18nProofreading"
       subtitle: "Review what reviewers proposed, then apply it to your locale files."
       locale: "Locale"
       filter: "Filter"

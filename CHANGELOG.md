@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+## [0.10.1]
+
+- Renamed the default dashboard title to `I18nProofreading` while keeping it
+  overridable through `i18n_proofreading.dashboard.title`.
+
 ## [0.10.0]
 
 - The full-screen mobile suggestion dialog now survives the on-screen keyboard.

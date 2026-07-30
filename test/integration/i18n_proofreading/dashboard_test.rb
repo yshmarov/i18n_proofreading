@@ -29,6 +29,8 @@ module I18nProofreading
       get '/i18n_proofreading/', params: { status: 'pending' }
 
       assert_response :ok
+      assert_includes response.body, '<title>I18nProofreading</title>'
+      assert_includes response.body, '<h1>I18nProofreading</h1>'
       assert_includes response.body, 'Pending wording'
       assert_not_includes response.body, 'Applied wording'
     end
