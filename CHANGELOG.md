@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [0.10.3]
+
 - Added `mount_i18n_proofreading at: "/i18n_proofreading"` as the install-time
   route helper, keeping `config.mount_path` synchronized with the mounted
   engine path while preserving manual `mount I18nProofreading::Engine`
