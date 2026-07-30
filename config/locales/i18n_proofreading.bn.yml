@@ -14,3 +14,5 @@ bn:
     save: "প্রস্তাব পাঠান"
     error_blank: "অনুগ্রহ করে একটি প্রস্তাব লিখুন।"
     error_save: "প্রস্তাব সংরক্ষণ করা যায়নি।"
+    dashboard:
+      title: "I18nProofreading"

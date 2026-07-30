@@ -14,3 +14,5 @@ ur:
     save: "تجویز بھیجیں"
     error_blank: "براہ کرم ایک تجویز درج کریں۔"
     error_save: "تجویز محفوظ نہیں ہو سکی۔"
+    dashboard:
+      title: "I18nProofreading"

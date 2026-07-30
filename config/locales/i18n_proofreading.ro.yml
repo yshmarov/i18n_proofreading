@@ -14,3 +14,5 @@ ro:
     save: "Trimite sugestia"
     error_blank: "Introduceți o sugestie."
     error_save: "Sugestia nu a putut fi salvată."
+    dashboard:
+      title: "I18nProofreading"

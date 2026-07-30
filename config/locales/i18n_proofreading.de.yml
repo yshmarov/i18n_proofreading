@@ -14,3 +14,5 @@ de:
     save: "Vorschlag senden"
     error_blank: "Bitte gib einen Vorschlag ein."
     error_save: "Der Vorschlag konnte nicht gespeichert werden."
+    dashboard:
+      title: "I18nProofreading"

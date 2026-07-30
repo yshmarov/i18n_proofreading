@@ -14,3 +14,5 @@ lb:
     save: "Virschlag schécken"
     error_blank: "Gitt wannechgelift e Virschlag an."
     error_save: "De Virschlag konnt net gespäichert ginn."
+    dashboard:
+      title: "I18nProofreading"

@@ -14,3 +14,5 @@ ru:
     save: "Отправить предложение"
     error_blank: "Введите предложение."
     error_save: "Не удалось сохранить предложение."
+    dashboard:
+      title: "I18nProofreading"

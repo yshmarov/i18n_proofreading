@@ -14,3 +14,5 @@ hi:
     save: "सुझाव भेजें"
     error_blank: "कृपया एक सुझाव दर्ज करें।"
     error_save: "सुझाव सहेजा नहीं जा सका।"
+    dashboard:
+      title: "I18nProofreading"

@@ -14,3 +14,5 @@ ja:
     save: "提案を送信"
     error_blank: "提案を入力してください。"
     error_save: "提案を保存できませんでした。"
+    dashboard:
+      title: "I18nProofreading"

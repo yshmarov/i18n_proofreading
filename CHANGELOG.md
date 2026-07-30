@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+## [0.10.2]
+
+- Added the `I18nProofreading` dashboard title to every shipped locale, matching
+  the gem-name default consistently across localized installs.
+
 ## [0.10.1]
 
 - Renamed the default dashboard title to `I18nProofreading` while keeping it

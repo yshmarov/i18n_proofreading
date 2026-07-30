@@ -14,3 +14,5 @@ es:
     save: "Enviar sugerencia"
     error_blank: "Introduce una sugerencia."
     error_save: "No se pudo guardar la sugerencia."
+    dashboard:
+      title: "I18nProofreading"

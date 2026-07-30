@@ -14,3 +14,5 @@ vi:
     save: "Gửi đề xuất"
     error_blank: "Vui lòng nhập một đề xuất."
     error_save: "Không thể lưu đề xuất."
+    dashboard:
+      title: "I18nProofreading"

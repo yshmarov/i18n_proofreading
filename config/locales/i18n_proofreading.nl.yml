@@ -14,3 +14,5 @@ nl:
     save: "Suggestie versturen"
     error_blank: "Voer een suggestie in."
     error_save: "Kan de suggestie niet opslaan."
+    dashboard:
+      title: "I18nProofreading"

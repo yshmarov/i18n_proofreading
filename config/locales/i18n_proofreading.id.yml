@@ -14,3 +14,5 @@ id:
     save: "Kirim saran"
     error_blank: "Silakan masukkan saran."
     error_save: "Tidak dapat menyimpan saran."
+    dashboard:
+      title: "I18nProofreading"

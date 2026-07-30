@@ -14,3 +14,5 @@ zh-CN:
     save: "发送建议"
     error_blank: "请输入建议。"
     error_save: "无法保存建议。"
+    dashboard:
+      title: "I18nProofreading"

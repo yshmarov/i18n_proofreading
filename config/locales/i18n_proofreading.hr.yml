@@ -14,3 +14,5 @@ hr:
     save: "Pošalji prijedlog"
     error_blank: "Unesite prijedlog."
     error_save: "Prijedlog nije moguće spremiti."
+    dashboard:
+      title: "I18nProofreading"

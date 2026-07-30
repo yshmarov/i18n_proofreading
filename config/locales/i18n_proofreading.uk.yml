@@ -14,3 +14,5 @@ uk:
     save: "Надіслати пропозицію"
     error_blank: "Будь ласка, введіть пропозицію."
     error_save: "Не вдалося зберегти пропозицію."
+    dashboard:
+      title: "I18nProofreading"

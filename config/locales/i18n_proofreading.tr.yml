@@ -14,3 +14,5 @@ tr:
     save: "Öneriyi gönder"
     error_blank: "Lütfen bir öneri girin."
     error_save: "Öneri kaydedilemedi."
+    dashboard:
+      title: "I18nProofreading"

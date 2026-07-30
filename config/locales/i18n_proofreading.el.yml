@@ -14,3 +14,5 @@ el:
     save: "Αποστολή πρότασης"
     error_blank: "Παρακαλώ εισαγάγετε μια πρόταση."
     error_save: "Δεν ήταν δυνατή η αποθήκευση της πρότασης."
+    dashboard:
+      title: "I18nProofreading"

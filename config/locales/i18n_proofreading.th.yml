@@ -14,3 +14,5 @@ th:
     save: "ส่งคำแนะนำ"
     error_blank: "โปรดป้อนคำแนะนำ"
     error_save: "ไม่สามารถบันทึกคำแนะนำได้"
+    dashboard:
+      title: "I18nProofreading"

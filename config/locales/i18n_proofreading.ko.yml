@@ -14,3 +14,5 @@ ko:
     save: "제안 보내기"
     error_blank: "제안을 입력하세요."
     error_save: "제안을 저장할 수 없습니다."
+    dashboard:
+      title: "I18nProofreading"

@@ -14,3 +14,5 @@ bg:
     save: "Изпрати предложение"
     error_blank: "Моля, въведете предложение."
     error_save: "Предложението не можа да бъде запазено."
+    dashboard:
+      title: "I18nProofreading"
