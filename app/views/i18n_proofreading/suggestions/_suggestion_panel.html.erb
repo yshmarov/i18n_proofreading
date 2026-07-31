@@ -1,0 +1,42 @@
+<section class="suggestion-panel">
+  <div class="panel-head">
+    <h1>
+      <code class="key"><%= suggestion.translation_key %></code>
+      <span class="badge locale"><%= suggestion.locale %></span>
+      <span class="badge status-<%= suggestion.status %>">
+        <%= t("i18n_proofreading.statuses.#{suggestion.status}", default: suggestion.status.humanize) %>
+      </span>
+      <span class="case-id">#<%= suggestion.id %></span>
+    </h1>
+  </div>
+
+  <div class="detail-scroll">
+    <article class="card pad">
+      <dl class="meta-list">
+        <% if suggestion.author_label.present? || suggestion.author_id.present? %>
+          <dt><%= t('i18n_proofreading.dashboard.from', default: 'From') %></dt>
+          <dd><%= suggestion.author_label.presence || "##{suggestion.author_id}" %></dd>
+        <% end %>
+        <% if suggestion.page_url.present? %>
+          <dt><%= t('i18n_proofreading.dashboard.page', default: 'Page') %></dt>
+          <dd><%= link_to suggestion.page_url, suggestion.page_url, target: '_blank', rel: 'noopener' %></dd>
+        <% end %>
+        <dt><%= t('i18n_proofreading.dashboard.received', default: 'Received') %></dt>
+        <dd><%= suggestion.created_at %></dd>
+      </dl>
+    </article>
+
+    <article class="card pad">
+      <dl class="diff">
+        <dt><%= t('i18n_proofreading.dashboard.current', default: 'Current') %></dt>
+        <dd><span class="old" dir="auto"><%= suggestion.old_value.presence || '—' %></span></dd>
+        <dt><%= t('i18n_proofreading.dashboard.suggested', default: 'Suggested') %></dt>
+        <dd><span class="new" dir="auto"><%= suggestion.proposed_value %></span></dd>
+      </dl>
+
+      <% if suggestion.comment.present? %>
+        <div class="comment" dir="auto"><%= suggestion.comment %></div>
+      <% end %>
+    </article>
+  </div>
+</section>

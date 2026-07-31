@@ -10,7 +10,7 @@ I18nProofreading::Engine.routes.draw do
   # route are the widget's public API (see SuggestionsController). There is
   # deliberately no update/destroy — the tool never mutates suggestions from the
   # UI, since it can't write to the host's locale files.
-  resources :suggestions, only: %i[index create] do
+  resources :suggestions, only: %i[index show create] do
     get :context, on: :collection
   end
 
