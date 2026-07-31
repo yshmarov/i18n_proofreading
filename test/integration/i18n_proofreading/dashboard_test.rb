@@ -93,6 +93,8 @@ module I18nProofreading
       assert_includes response.body, 'suggestion-row active'
       assert_includes response.body, 'Hi there'
       assert_includes response.body, 'translator@example.test'
+      assert_operator response.body.rindex('translator@example.test'), :<, response.body.rindex('Hi there')
+      assert_operator response.body.rindex('Hi there'), :<, response.body.rindex('friendlier')
     end
 
     test 'shows one suggestion independently' do
