@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+## [0.10.4]
+
+- Redesigned the proofreading admin dashboard into a two-column review layout
+  with status filters, a selected-suggestion pane, and refreshed before/after
+  screenshots.
+- Added independent suggestion show pages while keeping long detail content
+  scrollable on narrow screens.
+
 ## [0.10.3]
 
 - Added `mount_i18n_proofreading at: "/i18n_proofreading"` as the install-time
