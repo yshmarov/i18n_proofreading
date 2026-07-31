@@ -1,77 +1,99 @@
+<% content_for :body_class, 'ip-index' %>
+
 <header class="page">
   <h1><%= t('i18n_proofreading.dashboard.title', default: 'I18nProofreading') %></h1>
   <p class="lede"><%= t('i18n_proofreading.dashboard.subtitle', default: 'Review what reviewers proposed, then apply it to your locale files.') %></p>
 </header>
 
-<nav class="tabs">
-  <% I18nProofreading::Suggestion::STATUSES.each do |status| %>
-    <%= link_to suggestions_path(status: status, locale: @locale),
-                class: ('active' if status == @status) do %>
-      <%= t("i18n_proofreading.statuses.#{status}", default: status.humanize) %>
-      <span class="count"><%= @counts.fetch(status, 0) %></span>
+<div class="review-shell <%= 'has-selected' if @selected_suggestion %>">
+  <aside class="review-sidebar" aria-label="<%= t('i18n_proofreading.dashboard.suggestions', default: 'Suggestions') %>">
+    <nav class="tabs">
+      <% I18nProofreading::Suggestion::STATUSES.each do |status| %>
+        <%= link_to suggestions_path(status: status, locale: @locale),
+                    class: ('active' if status == @status) do %>
+          <%= t("i18n_proofreading.statuses.#{status}", default: status.humanize) %>
+          <span class="count"><%= @counts.fetch(status, 0) %></span>
+        <% end %>
+      <% end %>
+    </nav>
+
+    <% if @locales.many? %>
+      <form class="filters" method="get">
+        <input type="hidden" name="status" value="<%= @status %>">
+        <label for="i18np-locale"><%= t('i18n_proofreading.dashboard.locale', default: 'Locale') %></label>
+        <select id="i18np-locale" name="locale" onchange="this.form.submit()">
+          <option value=""><%= t('i18n_proofreading.dashboard.all_locales', default: 'All locales') %></option>
+          <% @locales.each do |locale| %>
+            <option value="<%= locale %>" <%= 'selected' if locale == @locale %>><%= locale %></option>
+          <% end %>
+        </select>
+        <%# Inline onchange auto-submits where allowed; this button is the reliable
+            path where a strict CSP blocks inline handlers, or with JS off. %>
+        <button><%= t('i18n_proofreading.dashboard.filter', default: 'Filter') %></button>
+      </form>
     <% end %>
-  <% end %>
-</nav>
 
-<% if @locales.many? %>
-  <form class="filters" method="get">
-    <input type="hidden" name="status" value="<%= @status %>">
-    <label for="i18np-locale"><%= t('i18n_proofreading.dashboard.locale', default: 'Locale') %></label>
-    <select id="i18np-locale" name="locale" onchange="this.form.submit()">
-      <option value=""><%= t('i18n_proofreading.dashboard.all_locales', default: 'All locales') %></option>
-      <% @locales.each do |locale| %>
-        <option value="<%= locale %>" <%= 'selected' if locale == @locale %>><%= locale %></option>
+    <div class="suggestion-list">
+      <% if @suggestions.any? %>
+        <% @suggestions.each do |suggestion| %>
+          <%= link_to suggestions_path(status: @status, locale: @locale, page: @page,
+                                       suggestion_id: suggestion.id),
+                      class: ['suggestion-row', ('active' if @selected_suggestion&.id == suggestion.id)].compact do %>
+            <span class="suggestion-main">
+              <span class="suggestion-topline">
+                <code class="key"><%= suggestion.translation_key %></code>
+                <span class="badge locale"><%= suggestion.locale %></span>
+                <span class="muted suggestion-time" title="<%= suggestion.created_at %>">
+                  <%= time_ago_in_words(suggestion.created_at) %> <%= t('i18n_proofreading.dashboard.ago', default: 'ago') %>
+                </span>
+              </span>
+              <span class="suggestion-copy" dir="auto"><%= truncate(suggestion.proposed_value, length: 110) %></span>
+              <span class="muted suggestion-meta">
+                <span>#<%= suggestion.id %></span>
+                <% if suggestion.author_label.present? %>
+                  <span><%= suggestion.author_label %></span>
+                <% end %>
+              </span>
+            </span>
+            <span class="badge status-<%= suggestion.status %>">
+              <%= t("i18n_proofreading.statuses.#{suggestion.status}", default: suggestion.status.humanize) %>
+            </span>
+          <% end %>
+        <% end %>
+      <% else %>
+        <div class="empty"><%= t('i18n_proofreading.dashboard.empty', default: 'Nothing here yet.') %></div>
       <% end %>
-    </select>
-    <%# Inline onchange auto-submits where allowed; this button is the reliable
-        path where a strict CSP blocks inline handlers, or with JS off. %>
-    <button><%= t('i18n_proofreading.dashboard.filter', default: 'Filter') %></button>
-  </form>
-<% end %>
+    </div>
 
-<% if @suggestions.any? %>
-  <% @suggestions.each do |suggestion| %>
-    <article class="card">
-      <div class="row-top">
-        <code class="key"><%= suggestion.translation_key %></code>
-        <span class="badge locale"><%= suggestion.locale %></span>
-        <span class="badge status-<%= suggestion.status %>">
-          <%= t("i18n_proofreading.statuses.#{suggestion.status}", default: suggestion.status.humanize) %>
-        </span>
-        <span class="spacer"></span>
-        <span class="meta">
-          <% if suggestion.author_label.present? %><%= suggestion.author_label %> · <% end %>
-          <span title="<%= suggestion.created_at %>"><%= time_ago_in_words(suggestion.created_at) %> <%= t('i18n_proofreading.dashboard.ago', default: 'ago') %></span>
-        </span>
+    <nav class="pager">
+      <span>
+        <% if @page > 1 %>
+          <%= link_to t('i18n_proofreading.dashboard.newer', default: '← Newer'),
+                      suggestions_path(status: @status, locale: @locale, page: @page - 1) %>
+        <% end %>
+      </span>
+      <span>
+        <% if @more %>
+          <%= link_to t('i18n_proofreading.dashboard.older', default: 'Older →'),
+                      suggestions_path(status: @status, locale: @locale, page: @page + 1) %>
+        <% end %>
+      </span>
+    </nav>
+  </aside>
+
+  <main class="review-detail" aria-label="<%= t('i18n_proofreading.dashboard.current_suggestion', default: 'Current suggestion') %>">
+    <% if @selected_suggestion %>
+      <p class="mobile-back">
+        <%= link_to t('i18n_proofreading.dashboard.back', default: '← All suggestions'),
+                    suggestions_path(status: @status, locale: @locale, page: @page) %>
+      </p>
+      <%= render 'suggestion_panel', suggestion: @selected_suggestion %>
+    <% else %>
+      <div class="empty-state">
+        <h2><%= t('i18n_proofreading.dashboard.select_suggestion', default: 'Select a suggestion') %></h2>
+        <p class="muted"><%= t('i18n_proofreading.dashboard.select_suggestion_hint',
+                               default: 'Open a row to review the proposed wording beside the queue.') %></p>
       </div>
-
-      <dl class="diff">
-        <dt><%= t('i18n_proofreading.dashboard.current', default: 'Current') %></dt>
-        <dd><span class="old" dir="auto"><%= suggestion.old_value.presence || '—' %></span></dd>
-        <dt><%= t('i18n_proofreading.dashboard.suggested', default: 'Suggested') %></dt>
-        <dd><span class="new" dir="auto"><%= suggestion.proposed_value %></span></dd>
-      </dl>
-
-      <% if suggestion.comment.present? %>
-        <div class="comment" dir="auto"><%= suggestion.comment %></div>
-      <% end %>
-    </article>
-  <% end %>
-
-  <nav class="pager">
-    <span>
-      <% if @page > 1 %>
-        <%= link_to t('i18n_proofreading.dashboard.newer', default: '← Newer'),
-                    suggestions_path(status: @status, locale: @locale, page: @page - 1) %>
-      <% end %>
-    </span>
-    <span>
-      <% if @more %>
-        <%= link_to t('i18n_proofreading.dashboard.older', default: 'Older →'),
-                    suggestions_path(status: @status, locale: @locale, page: @page + 1) %>
-      <% end %>
-    </span>
-  </nav>
-<% else %>
-  <div class="empty"><%= t('i18n_proofreading.dashboard.empty', default: 'Nothing here yet.') %></div>
-<% end %>
+    <% end %>
+  </main>
+</div>

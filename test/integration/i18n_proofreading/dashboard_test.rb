@@ -35,6 +35,7 @@ module I18nProofreading
       assert_includes response.body, '<title>I18nProofreading</title>'
       assert_includes response.body, '<h1>I18nProofreading</h1>'
       assert_includes response.body, 'Pending wording'
+      assert_includes response.body, 'suggestion_id='
       assert_not_includes response.body, 'Applied wording'
     end
 
@@ -44,6 +45,7 @@ module I18nProofreading
       assert_response :ok
       assert_equal 'text/css', response.media_type
       assert_includes response.body, '.tabs'
+      assert_includes response.body, '.ip-show { min-height: 100vh; overflow: auto; }'
     end
 
     test 'index defaults to pending and can switch to applied' do
@@ -77,6 +79,34 @@ module I18nProofreading
 
       assert_includes response.body, '<label for="i18np-locale"'
       assert_match(%r{<form class="filters"[^>]*>.*<button[^>]*>Filter</button>.*</form>}m, response.body)
+    end
+
+    test 'index can render a selected suggestion beside the list' do
+      admin!
+      suggestion = create_suggestion(old_value: 'Hello', proposed_value: 'Hi there',
+                                     comment: 'friendlier', author_label: 'translator@example.test')
+
+      get '/i18n_proofreading/', params: { suggestion_id: suggestion.id }
+
+      assert_response :ok
+      assert_includes response.body, 'review-shell has-selected'
+      assert_includes response.body, 'suggestion-row active'
+      assert_includes response.body, 'Hi there'
+      assert_includes response.body, 'translator@example.test'
+    end
+
+    test 'shows one suggestion independently' do
+      admin!
+      suggestion = create_suggestion(old_value: 'Hello', proposed_value: 'Hi there',
+                                     comment: 'friendlier')
+
+      get "/i18n_proofreading/suggestions/#{suggestion.id}"
+
+      assert_response :ok
+      assert_includes response.body, 'class="ip-show"'
+      assert_includes response.body, 'sample.greeting'
+      assert_includes response.body, 'Hi there'
+      assert_includes response.body, 'friendlier'
     end
 
     # The dashboard never writes to the host's locale files, so it deliberately

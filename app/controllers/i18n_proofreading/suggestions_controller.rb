@@ -6,9 +6,10 @@ module I18nProofreading
 
     # Public widget API is available-gated; the read-only dashboard is admin-gated.
     before_action :require_available, only: %i[context create]
-    before_action :require_admin, only: :index
+    before_action :require_admin, only: %i[index show]
+    before_action :set_suggestion, only: :show
 
-    layout 'i18n_proofreading/application', only: :index
+    layout 'i18n_proofreading/application', only: %i[index show]
 
     # Throttle the public submission endpoint per IP so one user or bot can't
     # flood the table. Uses the rate limiter built into Rails 7.2+ (backed by
@@ -37,7 +38,11 @@ module I18nProofreading
       rows = scope.newest_first.offset((@page - 1) * PER_PAGE).limit(PER_PAGE + 1).to_a
       @more = rows.size > PER_PAGE
       @suggestions = rows.first(PER_PAGE)
+
+      @selected_suggestion = Suggestion.find_by(id: params[:suggestion_id]) if params[:suggestion_id].present?
     end
+
+    def show; end
 
     # --- widget API (public) -------------------------------------------------
 
@@ -66,6 +71,10 @@ module I18nProofreading
     end
 
     private
+
+    def set_suggestion
+      @suggestion = Suggestion.find(params[:id])
+    end
 
     def attribute_author(suggestion)
       author = current_author

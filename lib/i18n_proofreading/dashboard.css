@@ -45,6 +45,7 @@
         background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
         padding: 14px 16px; margin-bottom: 12px;
       }
+      .card.pad { margin: 0; }
       .row-top { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
       code.key {
         font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12.5px;
@@ -78,3 +79,83 @@
       .empty { padding: 48px 16px; text-align: center; color: var(--muted); border: 1px dashed var(--border); border-radius: 12px; }
       .pager { margin-top: 16px; display: flex; justify-content: space-between; }
       .pager .muted { color: var(--muted); }
+      .breadcrumb { margin: 0 0 12px; font-size: 13px; }
+      .case-id { color: var(--muted); font-weight: 400; font-size: 15px; }
+      .panel-head { flex: 0 0 auto; }
+      .panel-head h1 { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+      .detail-scroll { min-height: 0; display: flex; flex-direction: column; gap: 16px; }
+      .suggestion-panel { min-width: 0; display: flex; flex-direction: column; }
+      .meta-list { display: grid; grid-template-columns: max-content 1fr; gap: 6px 16px; margin: 0; }
+      .meta-list dt { color: var(--muted); font-size: 13px; }
+      .meta-list dd { margin: 0; overflow-wrap: anywhere; }
+
+      /* Desktop review: queue on the left, selected suggestion on the right. */
+      .ip-index, .ip-index .container { height: 100vh; height: 100dvh; }
+      .ip-index { overflow: hidden; }
+      .ip-index .container { max-width: 1280px; display: flex; flex-direction: column; padding-bottom: 16px; }
+      .ip-index header.page { flex: 0 0 auto; margin-bottom: 14px; }
+      .review-shell { flex: 1 1 auto; min-height: 0; display: grid; grid-template-columns: minmax(330px, 430px) 1fr;
+                      gap: 16px; }
+      .review-sidebar { min-width: 0; min-height: 0; display: flex; flex-direction: column;
+                        background: var(--surface); border: 1px solid var(--border);
+                        border-radius: 8px; overflow: hidden; }
+      .review-sidebar .tabs { flex: 0 0 auto; margin: 12px 12px 0; padding: 0; background: transparent;
+                              border: 0; border-radius: 0; gap: 6px; flex-wrap: nowrap; }
+      .review-sidebar .tabs a { flex: 1 1 0; position: relative; display: flex; align-items: center;
+                                justify-content: center; gap: 6px; min-height: 34px; padding: 5px 10px 8px;
+                                border-radius: 8px; color: var(--muted); font-weight: 600; }
+      .review-sidebar .tabs a.active { color: var(--text); border: 0; background: transparent; box-shadow: none; margin: 0; }
+      .review-sidebar .tabs a.active::after { content: ""; position: absolute; left: 20px; right: 20px; bottom: 0;
+                                              height: 2px; border-radius: 999px; background: var(--accent); }
+      .review-sidebar .tabs a:not(.active):hover { text-decoration: none; color: var(--text); background: var(--bg); }
+      .review-sidebar .tabs .count { margin-left: 0; background: color-mix(in srgb, var(--muted) 14%, transparent); }
+      .review-sidebar .tabs a.active .count { background: var(--border); }
+      .review-sidebar .filters { flex: 0 0 auto; margin: 0; padding: 12px; border-bottom: 1px solid var(--border); }
+      .suggestion-list { flex: 1 1 auto; min-height: 0; overflow-y: auto; }
+      .suggestion-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; padding: 13px 14px;
+                        color: var(--text); border-bottom: 1px solid var(--border); }
+      .suggestion-row > .badge { align-self: start; }
+      .suggestion-row:hover { text-decoration: none; background: var(--bg); }
+      .suggestion-row.active { background: color-mix(in srgb, var(--accent) 9%, var(--surface));
+                               box-shadow: inset 3px 0 0 var(--accent); }
+      .suggestion-main { min-width: 0; display: flex; flex-direction: column; gap: 5px; }
+      .suggestion-topline, .suggestion-meta { display: flex; align-items: center; gap: 8px; min-width: 0; }
+      .suggestion-topline .key { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      .suggestion-copy, .suggestion-meta span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      .suggestion-copy { display: block; font-weight: 600; }
+      .suggestion-time { margin-left: auto; white-space: nowrap; }
+      .review-sidebar .pager { flex: 0 0 auto; margin: 0; padding: 10px 12px; border-top: 1px solid var(--border); }
+      .review-detail { min-width: 0; min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
+      .review-detail .suggestion-panel { flex: 1 1 auto; min-height: 0; }
+      .review-detail .detail-scroll { flex: 1 1 auto; overflow-y: auto; padding-right: 2px; }
+      .empty-state { margin: auto; max-width: 320px; padding: 24px; text-align: center; }
+      .empty-state h2 { margin: 0 0 6px; font-size: 18px; }
+      .empty-state p { margin: 0; }
+      .mobile-back { display: none; }
+
+      /* Standalone show pages keep normal page scrolling. */
+      .ip-show { min-height: 100vh; overflow: auto; }
+      .ip-show .detail-scroll { overflow: visible; }
+      @media (max-width: 760px) {
+        body { font-size: 14px; }
+        .container { padding: 14px 10px 24px; }
+        .ip-index, .ip-show { overflow-x: hidden; }
+        .review-detail, .suggestion-panel, .detail-scroll, .card, dl, dd { min-width: 0; max-width: 100%; }
+        .suggestion-panel .card { width: calc(100vw - 20px); }
+        .lede, dd, .comment { max-width: calc(100vw - 54px); white-space: normal; overflow-wrap: anywhere; }
+        .ip-index { overflow-y: auto; overflow-x: hidden; }
+        .ip-index, .ip-index .container { min-height: 100vh; height: auto; }
+        .ip-index .container { padding-bottom: 10px; }
+        .review-shell { display: block; min-height: calc(100vh - 76px); }
+        .review-sidebar, .review-detail { min-height: calc(100vh - 76px); }
+        .review-shell.has-selected .review-sidebar { display: none; }
+        .review-shell:not(.has-selected) .review-detail { display: none; }
+        .suggestion-list { overflow: visible; }
+        .suggestion-row { padding: 12px; }
+        .suggestion-meta { display: none; }
+        .review-detail .suggestion-panel { min-height: calc(100vh - 64px); }
+        .mobile-back { display: block; flex: 0 0 auto; margin: 10px 10px 0; font-size: 13px; }
+        .panel-head h1 { font-size: 18px; }
+        .panel-head .key { min-width: 0; white-space: normal; overflow-wrap: anywhere; }
+        dl.diff, .meta-list { grid-template-columns: 1fr; gap: 3px; }
+      }
