@@ -21,6 +21,10 @@ module I18nProofreading
     # the dashboard until you wire it to your own admin check.
     attr_accessor :authorize_admin
 
+    # Layout used by the triage dashboard. Override this to render it inside
+    # your app's admin shell, e.g. "admin/application".
+    attr_accessor :admin_layout
+
     # Resolve the current user for attribution (optional). Return an object
     # responding to #id, or nil. Receives the Rack::Request.
     attr_accessor :current_user
@@ -68,6 +72,7 @@ module I18nProofreading
       @enabled_environments = %w[development staging]
       @enabled = ->(_request) { true }
       @authorize_admin = ->(_request) { Rails.env.development? }
+      @admin_layout = 'i18n_proofreading/application'
       @current_user = ->(_request) {}
       @author_label = ->(user) { user.respond_to?(:email) ? user.email : user&.to_s }
       @available_locales = -> { I18n.available_locales.map(&:to_s) }

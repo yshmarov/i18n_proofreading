@@ -6,6 +6,10 @@ module I18nProofreading
 
     private
 
+    def i18n_proofreading_admin_layout
+      I18nProofreading.config.admin_layout
+    end
+
     # Gate for the widget's public API (submit a suggestion, read prior context).
     # The client can set the cookie, but it can never reach the endpoints unless
     # the app itself says the tool is available for this request.

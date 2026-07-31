@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+## [0.10.5]
+
+- Added `config.admin_layout`, letting host apps render the proofreading
+  dashboard inside their own admin layout while keeping the standalone gem
+  layout as the default.
+
 ## [0.10.4]
 
 - Redesigned the proofreading admin dashboard into a two-column review layout

@@ -9,7 +9,7 @@ module I18nProofreading
     before_action :require_admin, only: %i[index show]
     before_action :set_suggestion, only: :show
 
-    layout 'i18n_proofreading/application', only: %i[index show]
+    layout :i18n_proofreading_admin_layout, only: %i[index show]
 
     # Throttle the public submission endpoint per IP so one user or bot can't
     # flood the table. Uses the rate limiter built into Rails 7.2+ (backed by

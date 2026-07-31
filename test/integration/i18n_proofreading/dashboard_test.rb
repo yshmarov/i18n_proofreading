@@ -39,6 +39,18 @@ module I18nProofreading
       assert_not_includes response.body, 'Applied wording'
     end
 
+    test 'dashboard can render inside a host admin layout' do
+      admin!
+      I18nProofreading.config.admin_layout = 'host_admin'
+      create_suggestion(proposed_value: 'Host layout wording')
+
+      get '/i18n_proofreading/'
+
+      assert_response :ok
+      assert_includes response.body, 'data-host-admin-layout="i18n-proofreading"'
+      assert_includes response.body, 'Host layout wording'
+    end
+
     test 'serves the dashboard stylesheet as a same-origin static asset' do
       get '/i18n_proofreading/dashboard.css'
 

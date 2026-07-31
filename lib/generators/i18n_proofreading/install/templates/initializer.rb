@@ -16,6 +16,11 @@ I18nProofreading.configure do |config|
   # development only; wire it to your own admin check to open it elsewhere.
   #
   # config.authorize_admin = ->(request) { request.env["warden"]&.user&.admin? }
+  #
+  # Render the dashboard inside your app's admin layout. Default: the gem's
+  # standalone dashboard layout.
+  #
+  # config.admin_layout = "admin/application"
 
   # Attribute a suggestion to a user (optional). Return an object responding to
   # #id (ideally #email too), or nil. Receives the Rack::Request. You resolve the
