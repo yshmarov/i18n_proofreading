@@ -26,6 +26,16 @@ bin/rails generate i18n_proofreading:install
 bin/rails db:migrate
 ```
 
+Optional demo data:
+
+```bash
+bin/rails i18n_proofreading:seed_demo
+```
+
+It creates three idempotent sample suggestions across pending, applied, and
+rejected states. Running the task again refreshes those records instead of
+duplicating them.
+
 Boot the app in development and look for the **"Suggest edits"** pill in the
 bottom-left. Click it, then click any text. `Esc` exits.
 

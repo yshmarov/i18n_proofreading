@@ -4,6 +4,10 @@ module I18nProofreading
   class Engine < ::Rails::Engine
     isolate_namespace I18nProofreading
 
+    rake_tasks do
+      load File.expand_path('../tasks/i18n_proofreading_tasks.rake', __dir__)
+    end
+
     initializer 'i18n_proofreading.middleware' do |app|
       app.middleware.use I18nProofreading::Middleware
     end

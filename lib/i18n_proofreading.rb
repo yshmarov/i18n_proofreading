@@ -5,6 +5,7 @@ require 'i18n_proofreading/configuration'
 require 'i18n_proofreading/marking'
 require 'i18n_proofreading/widget'
 require 'i18n_proofreading/middleware'
+require 'i18n_proofreading/seeds'
 require 'i18n_proofreading/engine'
 
 # In-context translation proofreading for Rails. Renders each i18n key alongside

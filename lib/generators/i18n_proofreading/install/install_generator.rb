@@ -27,6 +27,7 @@ module I18nProofreading
 
       def post_install
         say "\ni18n_proofreading installed. Run `rails db:migrate`, then boot in development", :green
+        say 'Optional: run `bin/rails i18n_proofreading:seed_demo` for sample suggestions.'
         say "and look for the “Suggest edits” pill in the bottom-left corner.\n"
       end
 
