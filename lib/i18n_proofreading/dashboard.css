@@ -64,13 +64,21 @@
 
 /* Page frame — the gem's own layout only. */
 .ip-page { margin: 0; background: var(--ip-bg); color: var(--ip-text); font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+/* Desktop review: queue on the left, selected suggestion on the right. */
+.ip-index, .ip-index .container { height: 100vh; height: 100dvh; }
 .ip-index { overflow: hidden; }
 .ip-index .container { max-width: 1280px; display: flex; flex-direction: column; padding-bottom: 16px; }
 .ip-index header.page { flex: 0 0 auto; margin-bottom: 14px; }
+/* Standalone show pages keep normal page scrolling. */
+.ip-show { min-height: 100vh; overflow: auto; }
 .ip-show .detail-scroll { overflow: visible; }
 
 /* Dashboard components — any layout. */
 .ip-dashboard {
+  /* A scoping device, not a layout one: without this the wrapper would
+     become the flex/grid child that the content should be. */
+  display: contents;
+
   & * { box-sizing: border-box; }
   & a { color: var(--ip-accent); text-decoration: none; }
   & a:hover { text-decoration: underline; }
@@ -118,10 +126,6 @@
   & .meta-list { display: grid; grid-template-columns: max-content 1fr; gap: 6px 16px; margin: 0; }
   & .meta-list dt { color: var(--ip-muted); font-size: 13px; }
   & .meta-list dd { margin: 0; overflow-wrap: anywhere; }
-  & /* Desktop review: queue on the left,
-  & selected suggestion on the right. */
-      .ip-index,
-  & .ip-index .container { height: 100vh; height: 100dvh; }
   & .review-shell { flex: 1 1 auto; min-height: 0; display: grid; grid-template-columns: minmax(330px, 430px) 1fr; gap: 16px; }
   & .review-sidebar { min-width: 0; min-height: 0; display: flex; flex-direction: column; background: var(--ip-surface); border: 1px solid var(--ip-border); border-radius: 8px; overflow: hidden; }
   & .review-sidebar .tabs { flex: 0 0 auto; margin: 12px 12px 0; padding: 0; background: transparent; border: 0; border-radius: 0; gap: 6px; flex-wrap: nowrap; }
@@ -153,6 +157,4 @@
   & .empty-state h2 { margin: 0 0 6px; font-size: 18px; }
   & .empty-state p { margin: 0; }
   & .mobile-back { display: none; }
-  & /* Standalone show pages keep normal page scrolling. */
-      .ip-show { min-height: 100vh; overflow: auto; }
 }

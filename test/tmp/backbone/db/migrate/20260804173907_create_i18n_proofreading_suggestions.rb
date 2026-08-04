@@ -2,7 +2,7 @@
 
 class CreateI18nProofreadingSuggestions < ActiveRecord::Migration[8.1]
   def change
-    create_table :i18n_proofreading_suggestions, id: :uuid do |t|
+    create_table :i18n_proofreading_suggestions do |t|
       t.string :translation_key, null: false
       t.string :locale, null: false
       t.text :old_value
