@@ -14,8 +14,10 @@ module I18nProofreading
     # feature flag, an allowlist, etc.
     attr_accessor :enabled
 
-    # Per-request gate for the triage dashboard (browse suggestions, change their
-    # status, delete). Independent of `enabled` and `enabled_environments`: the
+    # Per-request gate for the triage dashboard, which is read-only — browse and
+    # read suggestions; there is deliberately no update or destroy, since the
+    # tool never writes to the host's locale files.
+    # Independent of `enabled` and `enabled_environments`: the
     # widget is dev/staging-only, but a maintainer may want to triage from
     # production. Defaults to development only, so a fresh install never exposes
     # the dashboard until you wire it to your own admin check.

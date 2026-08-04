@@ -2,6 +2,19 @@
 
 ## [Unreleased]
 
+## [0.10.6]
+
+- Added `AGENTS.md`: install and integration instructions written for coding
+  agents — that no layout change is needed because the widget is injected by
+  middleware, that the environment gate (never production) is the usual reason
+  the pill is missing, the request-shaped config lambdas, and above all that the
+  gem never writes to locale files, so there is no "apply" endpoint to build
+  against. It ships inside the gem, so
+  `cat "$(bundle show i18n_proofreading)/AGENTS.md"` works from a host app.
+- Corrected the `authorize_admin` comment in the configuration: it described the
+  dashboard as changing status and deleting, but the dashboard has been
+  read-only (`index` and `show` only) for as long as that route file has said so.
+
 ## [0.10.5]
 
 - Added `config.admin_layout`, letting host apps render the proofreading

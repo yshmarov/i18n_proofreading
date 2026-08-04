@@ -49,6 +49,12 @@ No layout change needed — the widget injects itself into HTML responses.
 Ruby >= 3.2 · Rails >= 7.1 · CSRF token comes from `csrf_meta_tags`, already in
 a standard Rails layout.
 
+Installing with a coding agent? Point it at [AGENTS.md](AGENTS.md) — the same
+steps in the order an agent needs them, the gates it tends to get wrong, and the
+things it should not do (starting with: this gem never writes your locale files).
+It ships inside the gem, so `cat "$(bundle show i18n_proofreading)/AGENTS.md"`
+works from any app that bundles it.
+
 ## What you get
 
 |                |                                                                     |
