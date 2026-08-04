@@ -1,5 +1,32 @@
 # Changelog
 
+## 0.11.0
+
+- **`config.admin_layout` now works on its own.** The dashboard's stylesheet was
+  declared in the gem's layout, so replacing that layout dropped it and the
+  dashboard rendered unstyled. It moves into the views, so every layout gets it
+  with nothing asked of the host.
+- **The dashboard stylesheet no longer claims selectors it does not own.** It
+  styled bare `*`, `body` and `a`, and its `.container`, `.card` and `.tabs` are
+  names other frameworks use too. Component rules now nest inside an
+  `.ip-dashboard` wrapper the views render, and every custom property is `--ip-`
+  prefixed — that collision ran both ways, so a host defining `--bg` recoloured
+  the dashboard just as easily.
+- **Added `config.base_controller_class`.** Name the controller your own admin
+  inherits from and the dashboard adopts its layout, helpers, authentication and
+  request context. Default is unchanged.
+- **The widget's endpoints moved to `I18nProofreading::SubmissionsController`.**
+  One controller served both them and the triage dashboard, so
+  `base_controller_class` would have put staff authentication in front of every
+  proofreader. `POST /suggestions` and `GET /suggestions/context` now route
+  there; both URLs are unchanged, and the per-IP rate limiter moved with the
+  action. If you referenced `SuggestionsController#create` or `#context`, that is
+  the breaking change in this release.
+- **Migrations follow the host's `primary_key_type`,** the same
+  `Rails.configuration.generators` lookup Rails' own Active Storage migration
+  does, so a uuid-keyed host gets a uuid table.
+- A `BackboneTest` now fails the build on any of the above regressing.
+
 ## [Unreleased]
 
 ## [0.10.6]

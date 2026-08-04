@@ -2,11 +2,13 @@
 
 require 'rails/generators'
 require 'rails/generators/active_record'
+require_relative '../migration_helpers'
 
 module I18nProofreading
   module Generators
     class InstallGenerator < Rails::Generators::Base
       include ActiveRecord::Generators::Migration
+      include MigrationHelpers
 
       source_root File.expand_path('templates', __dir__)
 
@@ -29,12 +31,6 @@ module I18nProofreading
         say "\ni18n_proofreading installed. Run `rails db:migrate`, then boot in development", :green
         say 'Optional: run `bin/rails i18n_proofreading:seed_demo` for sample suggestions.'
         say "and look for the “Suggest edits” pill in the bottom-left corner.\n"
-      end
-
-      private
-
-      def migration_version
-        "[#{ActiveRecord::VERSION::MAJOR}.#{ActiveRecord::VERSION::MINOR}]"
       end
     end
   end

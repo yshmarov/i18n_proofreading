@@ -117,7 +117,7 @@ module I18nProofreading
       get "/i18n_proofreading/suggestions/#{suggestion.id}"
 
       assert_response :ok
-      assert_includes response.body, 'class="ip-show"'
+      assert_includes response.body, 'ip-show"'
       assert_includes response.body, 'sample.greeting'
       assert_includes response.body, 'Hi there'
       assert_includes response.body, 'friendlier'

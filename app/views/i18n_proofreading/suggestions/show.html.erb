@@ -1,8 +1,10 @@
 <% content_for :body_class, 'ip-show' %>
 
-<p class="breadcrumb">
-  <%= link_to t('i18n_proofreading.dashboard.title', default: 'I18nProofreading'), suggestions_path %>
-  / #<%= @suggestion.id %>
-</p>
+<%= render layout: 'i18n_proofreading/shared/dashboard' do %>
+  <p class="breadcrumb">
+    <%= link_to t('i18n_proofreading.dashboard.title', default: 'I18nProofreading'), suggestions_path %>
+    / #<%= @suggestion.id %>
+  </p>
 
-<%= render 'suggestion_panel', suggestion: @suggestion %>
+  <%= render 'suggestion_panel', suggestion: @suggestion %>
+<% end %>

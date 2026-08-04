@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-class CreateI18nProofreadingSuggestions < ActiveRecord::Migration<%= migration_version %>
+class CreateI18nProofreadingSuggestions < ActiveRecord::Migration[8.1]
   def change
-    create_table :i18n_proofreading_suggestions<%= primary_key_type_option %> do |t|
+    create_table :i18n_proofreading_suggestions, id: :uuid do |t|
       t.string :translation_key, null: false
       t.string :locale, null: false
       t.text :old_value

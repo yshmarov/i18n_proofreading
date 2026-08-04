@@ -105,6 +105,7 @@ Everything is optional — the defaults work out of the box in development. In
 | `enabled_environments` | `%w[development staging]` | Environments the tool is active in |
 | `enabled` | everyone | Extra per-request gate. `false` hides the tool |
 | `authorize_admin` | development only | **Who can open the review board.** Independent of the gates above |
+| `base_controller_class` | `ActionController::Base` | Controller the dashboard inherits — name your admin's and it adopts its layout, helpers and auth |
 | `current_user` | `nil` | Attribute a suggestion to a user. Receives the request |
 | `author_label` | the user's `email` | Label shown for the author |
 | `available_locales` | `I18n.available_locales` | Which locales a suggestion may target |

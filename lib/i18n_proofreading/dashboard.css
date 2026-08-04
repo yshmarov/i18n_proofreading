@@ -1,161 +1,158 @@
-      :root {
+/* Dashboard styles.
+ *
+ * Three layers, and the split is what lets a host replace the layout:
+ *
+ *   :root            custom properties, all `--ip-` prefixed so they can
+ *                    neither overwrite a host's nor be overwritten by them.
+ *   .ip-page          the page frame (was bare html/body). Only the gem's own
+ *                    layout puts this class on <body>, so inside a host admin
+ *                    these rules simply do not apply.
+ *   .ip-dashboard     everything else, nested. Names like .container, .card
+ *                    and .tabs are confined to the dashboard's own markup, so
+ *                    loading this file inside a host cannot restyle its chrome.
+ *
+ * Nothing here styles a bare `body`, `a`, `table` or `*` at the top level.
+ */
+
+
+:root {
         color-scheme: light dark;
-        --bg: #f6f7f9; --surface: #fff; --text: #1c2024; --muted: #6b7280;
-        --border: #e5e7eb; --accent: #2563eb; --accent-text: #fff; --code: #f0f1f3;
-        --pending: #d97706; --applied: #16a34a; --rejected: #6b7280;
-      }
-      @media (prefers-color-scheme: dark) {
-        :root {
-          --bg: #111418; --surface: #1a1f26; --text: #e6e8ea; --muted: #9aa2ab;
-          --border: #2a313a; --accent: #3b82f6; --code: #232a33;
-        }
-      }
-      * { box-sizing: border-box; }
-      body {
-        margin: 0; background: var(--bg); color: var(--text);
-        font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
-      }
-      a { color: var(--accent); text-decoration: none; }
-      a:hover { text-decoration: underline; }
-      .container { max-width: 960px; margin: 0 auto; padding: 24px 16px 64px; }
-      h1 { font-size: 22px; margin: 0; }
-      .lede { color: var(--muted); margin: 4px 0 0; }
-      header.page { margin-bottom: 20px; }
+        --ip-bg: #f6f7f9; --ip-surface: #fff; --ip-text: #1c2024; --ip-muted: #6b7280;
+        --ip-border: #e5e7eb; --ip-accent: #2563eb; --ip-accent-text: #fff; --ip-code: #f0f1f3;
+        --ip-pending: #d97706; --ip-applied: #16a34a; --ip-rejected: #6b7280;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+          --ip-bg: #111418; --ip-surface: #1a1f26; --ip-text: #e6e8ea; --ip-muted: #9aa2ab;
+          --ip-border: #2a313a; --ip-accent: #3b82f6; --ip-code: #232a33;
+}
+}
+@media (max-width: 760px) {
+  .ip-page { font-size: 14px; }
+  .ip-index, .ip-show { overflow-x: hidden; }
+  .ip-index { overflow-y: auto; overflow-x: hidden; }
+  .ip-index, .ip-index .container { min-height: 100vh; height: auto; }
+  .ip-index .container { padding-bottom: 10px; }
+  .ip-dashboard {
+  & .container { padding: 14px 10px 24px; }
+  & .review-detail,
+  & .suggestion-panel,
+  & .detail-scroll,
+  & .card,
+  & dl,
+  & dd { min-width: 0; max-width: 100%; }
+  & .suggestion-panel .card { width: calc(100vw - 20px); }
+  & .lede,
+  & dd,
+  & .comment { max-width: calc(100vw - 54px); white-space: normal; overflow-wrap: anywhere; }
+  & .review-shell { display: block; min-height: calc(100vh - 76px); }
+  & .review-sidebar,
+  & .review-detail { min-height: calc(100vh - 76px); }
+  & .review-shell.has-selected .review-sidebar { display: none; }
+  & .review-shell:not(.has-selected) .review-detail { display: none; }
+  & .suggestion-list { overflow: visible; }
+  & .suggestion-row { padding: 12px; }
+  & .suggestion-meta { display: none; }
+  & .review-detail .suggestion-panel { min-height: calc(100vh - 64px); }
+  & .mobile-back { display: block; flex: 0 0 auto; margin: 10px 10px 0; font-size: 13px; }
+  & .panel-head h1 { font-size: 18px; }
+  & .panel-head .key { min-width: 0; white-space: normal; overflow-wrap: anywhere; }
+  & dl.diff,
+  & .meta-list { grid-template-columns: 1fr; gap: 3px; }
+  }
+}
 
-      .tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--border); margin-bottom: 16px; flex-wrap: wrap; }
-      .tabs a { padding: 8px 14px; border-radius: 8px 8px 0 0; color: var(--muted); }
-      .tabs a.active {
-        color: var(--text); font-weight: 600; border: 1px solid var(--border);
-        border-bottom: 2px solid var(--surface); background: var(--surface); margin-bottom: -1px;
-      }
-      .tabs a:hover { text-decoration: none; color: var(--text); }
-      .count {
-        display: inline-block; min-width: 20px; padding: 0 6px; margin-left: 4px; border-radius: 999px;
-        background: var(--border); font-size: 12px; text-align: center; font-variant-numeric: tabular-nums;
-      }
+/* Page frame — the gem's own layout only. */
+.ip-page { margin: 0; background: var(--ip-bg); color: var(--ip-text); font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+.ip-index { overflow: hidden; }
+.ip-index .container { max-width: 1280px; display: flex; flex-direction: column; padding-bottom: 16px; }
+.ip-index header.page { flex: 0 0 auto; margin-bottom: 14px; }
+.ip-show .detail-scroll { overflow: visible; }
 
-      .filters { margin-bottom: 16px; display: flex; gap: 8px; align-items: center; }
-      .filters label { color: var(--muted); font-size: 13px; }
-      .filters select {
-        padding: 6px 8px; border: 1px solid var(--border); border-radius: 8px;
-        background: var(--surface); color: var(--text); font: inherit;
-      }
-
-      .card {
-        background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
-        padding: 14px 16px; margin-bottom: 12px;
-      }
-      .card.pad { margin: 0; }
-      .row-top { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
-      code.key {
-        font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12.5px;
-        background: var(--code); padding: 2px 7px; border-radius: 6px; overflow-wrap: anywhere;
-      }
-      .badge {
-        display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 12px; font-weight: 600;
-        color: #fff; white-space: nowrap;
-      }
-      .badge.status-pending { background: var(--pending); }
-      .badge.status-applied { background: var(--applied); }
-      .badge.status-rejected { background: var(--rejected); }
-      .badge.locale { background: transparent; color: var(--muted); border: 1px solid var(--border); }
-      .spacer { flex: 1; }
-      .meta { color: var(--muted); font-size: 13px; }
-
-      dl.diff { display: grid; grid-template-columns: max-content 1fr; gap: 6px 16px; margin: 0; }
-      dl.diff dt { color: var(--muted); font-size: 13px; }
-      dl.diff dd { margin: 0; overflow-wrap: anywhere; white-space: pre-wrap; }
-      dd .old { color: var(--muted); }
-      dd .new { font-weight: 600; }
-      .comment { margin-top: 10px; padding: 8px 10px; background: var(--code); border-radius: 8px; font-size: 14px; overflow-wrap: anywhere; }
-
-      button {
-        padding: 7px 13px; border: 1px solid var(--border); border-radius: 8px; cursor: pointer;
-        background: var(--surface); color: var(--text); font: inherit; font-size: 14px; font-weight: 600;
-      }
-      button:hover { border-color: var(--muted); }
-      :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-
-      .empty { padding: 48px 16px; text-align: center; color: var(--muted); border: 1px dashed var(--border); border-radius: 12px; }
-      .pager { margin-top: 16px; display: flex; justify-content: space-between; }
-      .pager .muted { color: var(--muted); }
-      .breadcrumb { margin: 0 0 12px; font-size: 13px; }
-      .case-id { color: var(--muted); font-weight: 400; font-size: 15px; }
-      .panel-head { flex: 0 0 auto; }
-      .panel-head h1 { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
-      .detail-scroll { min-height: 0; display: flex; flex-direction: column; gap: 12px; }
-      .suggestion-panel { min-width: 0; display: flex; flex-direction: column; }
-      .meta-list { display: grid; grid-template-columns: max-content 1fr; gap: 6px 16px; margin: 0; }
-      .meta-list dt { color: var(--muted); font-size: 13px; }
-      .meta-list dd { margin: 0; overflow-wrap: anywhere; }
-
-      /* Desktop review: queue on the left, selected suggestion on the right. */
-      .ip-index, .ip-index .container { height: 100vh; height: 100dvh; }
-      .ip-index { overflow: hidden; }
-      .ip-index .container { max-width: 1280px; display: flex; flex-direction: column; padding-bottom: 16px; }
-      .ip-index header.page { flex: 0 0 auto; margin-bottom: 14px; }
-      .review-shell { flex: 1 1 auto; min-height: 0; display: grid; grid-template-columns: minmax(330px, 430px) 1fr;
-                      gap: 16px; }
-      .review-sidebar { min-width: 0; min-height: 0; display: flex; flex-direction: column;
-                        background: var(--surface); border: 1px solid var(--border);
-                        border-radius: 8px; overflow: hidden; }
-      .review-sidebar .tabs { flex: 0 0 auto; margin: 12px 12px 0; padding: 0; background: transparent;
-                              border: 0; border-radius: 0; gap: 6px; flex-wrap: nowrap; }
-      .review-sidebar .tabs a { flex: 1 1 0; position: relative; display: flex; align-items: center;
-                                justify-content: center; gap: 6px; min-height: 34px; padding: 5px 10px 8px;
-                                border-radius: 8px; color: var(--muted); font-weight: 600; }
-      .review-sidebar .tabs a.active { color: var(--text); border: 0; background: transparent; box-shadow: none; margin: 0; }
-      .review-sidebar .tabs a.active::after { content: ""; position: absolute; left: 20px; right: 20px; bottom: 0;
-                                              height: 2px; border-radius: 999px; background: var(--accent); }
-      .review-sidebar .tabs a:not(.active):hover { text-decoration: none; color: var(--text); background: var(--bg); }
-      .review-sidebar .tabs .count { margin-left: 0; background: color-mix(in srgb, var(--muted) 14%, transparent); }
-      .review-sidebar .tabs a.active .count { background: var(--border); }
-      .review-sidebar .filters { flex: 0 0 auto; margin: 0; padding: 12px; border-bottom: 1px solid var(--border); }
-      .suggestion-list { flex: 1 1 auto; min-height: 0; overflow-y: auto; }
-      .suggestion-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; padding: 13px 14px;
-                        color: var(--text); border-bottom: 1px solid var(--border); }
-      .suggestion-row > .badge { align-self: start; }
-      .suggestion-row:hover { text-decoration: none; background: var(--bg); }
-      .suggestion-row.active { background: color-mix(in srgb, var(--accent) 9%, var(--surface));
-                               box-shadow: inset 3px 0 0 var(--accent); }
-      .suggestion-main { min-width: 0; display: flex; flex-direction: column; gap: 5px; }
-      .suggestion-topline, .suggestion-meta { display: flex; align-items: center; gap: 8px; min-width: 0; }
-      .suggestion-topline .key { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-      .suggestion-copy, .suggestion-meta span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-      .suggestion-copy { display: block; font-weight: 600; }
-      .suggestion-time { margin-left: auto; white-space: nowrap; }
-      .review-sidebar .pager { flex: 0 0 auto; margin: 0; padding: 10px 12px; border-top: 1px solid var(--border); }
-      .review-detail { min-width: 0; min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
-      .review-detail .suggestion-panel { flex: 1 1 auto; min-height: 0; }
-      .review-detail .detail-scroll { flex: 1 1 auto; overflow-y: auto; padding-right: 2px; }
-      .empty-state { margin: auto; max-width: 320px; padding: 24px; text-align: center; }
-      .empty-state h2 { margin: 0 0 6px; font-size: 18px; }
-      .empty-state p { margin: 0; }
-      .mobile-back { display: none; }
-
-      /* Standalone show pages keep normal page scrolling. */
+/* Dashboard components — any layout. */
+.ip-dashboard {
+  & * { box-sizing: border-box; }
+  & a { color: var(--ip-accent); text-decoration: none; }
+  & a:hover { text-decoration: underline; }
+  & .container { max-width: 960px; margin: 0 auto; padding: 24px 16px 64px; }
+  & h1 { font-size: 22px; margin: 0; }
+  & .lede { color: var(--ip-muted); margin: 4px 0 0; }
+  & header.page { margin-bottom: 20px; }
+  & .tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--ip-border); margin-bottom: 16px; flex-wrap: wrap; }
+  & .tabs a { padding: 8px 14px; border-radius: 8px 8px 0 0; color: var(--ip-muted); }
+  & .tabs a.active { color: var(--ip-text); font-weight: 600; border: 1px solid var(--ip-border); border-bottom: 2px solid var(--ip-surface); background: var(--ip-surface); margin-bottom: -1px; }
+  & .tabs a:hover { text-decoration: none; color: var(--ip-text); }
+  & .count { display: inline-block; min-width: 20px; padding: 0 6px; margin-left: 4px; border-radius: 999px; background: var(--ip-border); font-size: 12px; text-align: center; font-variant-numeric: tabular-nums; }
+  & .filters { margin-bottom: 16px; display: flex; gap: 8px; align-items: center; }
+  & .filters label { color: var(--ip-muted); font-size: 13px; }
+  & .filters select { padding: 6px 8px; border: 1px solid var(--ip-border); border-radius: 8px; background: var(--ip-surface); color: var(--ip-text); font: inherit; }
+  & .card { background: var(--ip-surface); border: 1px solid var(--ip-border); border-radius: 12px; padding: 14px 16px; margin-bottom: 12px; }
+  & .card.pad { margin: 0; }
+  & .row-top { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+  & code.key { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12.5px; background: var(--ip-code); padding: 2px 7px; border-radius: 6px; overflow-wrap: anywhere; }
+  & .badge { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; color: #fff; white-space: nowrap; }
+  & .badge.status-pending { background: var(--ip-pending); }
+  & .badge.status-applied { background: var(--ip-applied); }
+  & .badge.status-rejected { background: var(--ip-rejected); }
+  & .badge.locale { background: transparent; color: var(--ip-muted); border: 1px solid var(--ip-border); }
+  & .spacer { flex: 1; }
+  & .meta { color: var(--ip-muted); font-size: 13px; }
+  & dl.diff { display: grid; grid-template-columns: max-content 1fr; gap: 6px 16px; margin: 0; }
+  & dl.diff dt { color: var(--ip-muted); font-size: 13px; }
+  & dl.diff dd { margin: 0; overflow-wrap: anywhere; white-space: pre-wrap; }
+  & dd .old { color: var(--ip-muted); }
+  & dd .new { font-weight: 600; }
+  & .comment { margin-top: 10px; padding: 8px 10px; background: var(--ip-code); border-radius: 8px; font-size: 14px; overflow-wrap: anywhere; }
+  & button { padding: 7px 13px; border: 1px solid var(--ip-border); border-radius: 8px; cursor: pointer; background: var(--ip-surface); color: var(--ip-text); font: inherit; font-size: 14px; font-weight: 600; }
+  & button:hover { border-color: var(--ip-muted); }
+  & :focus-visible { outline: 2px solid var(--ip-accent); outline-offset: 2px; }
+  & .empty { padding: 48px 16px; text-align: center; color: var(--ip-muted); border: 1px dashed var(--ip-border); border-radius: 12px; }
+  & .pager { margin-top: 16px; display: flex; justify-content: space-between; }
+  & .pager .muted { color: var(--ip-muted); }
+  & .breadcrumb { margin: 0 0 12px; font-size: 13px; }
+  & .case-id { color: var(--ip-muted); font-weight: 400; font-size: 15px; }
+  & .panel-head { flex: 0 0 auto; }
+  & .panel-head h1 { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+  & .detail-scroll { min-height: 0; display: flex; flex-direction: column; gap: 12px; }
+  & .suggestion-panel { min-width: 0; display: flex; flex-direction: column; }
+  & .meta-list { display: grid; grid-template-columns: max-content 1fr; gap: 6px 16px; margin: 0; }
+  & .meta-list dt { color: var(--ip-muted); font-size: 13px; }
+  & .meta-list dd { margin: 0; overflow-wrap: anywhere; }
+  & /* Desktop review: queue on the left,
+  & selected suggestion on the right. */
+      .ip-index,
+  & .ip-index .container { height: 100vh; height: 100dvh; }
+  & .review-shell { flex: 1 1 auto; min-height: 0; display: grid; grid-template-columns: minmax(330px, 430px) 1fr; gap: 16px; }
+  & .review-sidebar { min-width: 0; min-height: 0; display: flex; flex-direction: column; background: var(--ip-surface); border: 1px solid var(--ip-border); border-radius: 8px; overflow: hidden; }
+  & .review-sidebar .tabs { flex: 0 0 auto; margin: 12px 12px 0; padding: 0; background: transparent; border: 0; border-radius: 0; gap: 6px; flex-wrap: nowrap; }
+  & .review-sidebar .tabs a { flex: 1 1 0; position: relative; display: flex; align-items: center; justify-content: center; gap: 6px; min-height: 34px; padding: 5px 10px 8px; border-radius: 8px; color: var(--ip-muted); font-weight: 600; }
+  & .review-sidebar .tabs a.active { color: var(--ip-text); border: 0; background: transparent; box-shadow: none; margin: 0; }
+  & .review-sidebar .tabs a.active::after { content: ""; position: absolute; left: 20px; right: 20px; bottom: 0; height: 2px; border-radius: 999px; background: var(--ip-accent); }
+  & .review-sidebar .tabs a:not(.active):hover { text-decoration: none; color: var(--ip-text); background: var(--ip-bg); }
+  & .review-sidebar .tabs .count { margin-left: 0; background: color-mix(in srgb, var(--ip-muted) 14%, transparent); }
+  & .review-sidebar .tabs a.active .count { background: var(--ip-border); }
+  & .review-sidebar .filters { flex: 0 0 auto; margin: 0; padding: 12px; border-bottom: 1px solid var(--ip-border); }
+  & .suggestion-list { flex: 1 1 auto; min-height: 0; overflow-y: auto; }
+  & .suggestion-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; padding: 13px 14px; color: var(--ip-text); border-bottom: 1px solid var(--ip-border); }
+  & .suggestion-row > .badge { align-self: start; }
+  & .suggestion-row:hover { text-decoration: none; background: var(--ip-bg); }
+  & .suggestion-row.active { background: color-mix(in srgb, var(--ip-accent) 9%, var(--ip-surface)); box-shadow: inset 3px 0 0 var(--ip-accent); }
+  & .suggestion-main { min-width: 0; display: flex; flex-direction: column; gap: 5px; }
+  & .suggestion-topline,
+  & .suggestion-meta { display: flex; align-items: center; gap: 8px; min-width: 0; }
+  & .suggestion-topline .key { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  & .suggestion-copy,
+  & .suggestion-meta span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  & .suggestion-copy { display: block; font-weight: 600; }
+  & .suggestion-time { margin-left: auto; white-space: nowrap; }
+  & .review-sidebar .pager { flex: 0 0 auto; margin: 0; padding: 10px 12px; border-top: 1px solid var(--ip-border); }
+  & .review-detail { min-width: 0; min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
+  & .review-detail .suggestion-panel { flex: 1 1 auto; min-height: 0; }
+  & .review-detail .detail-scroll { flex: 1 1 auto; overflow-y: auto; padding-right: 2px; }
+  & .empty-state { margin: auto; max-width: 320px; padding: 24px; text-align: center; }
+  & .empty-state h2 { margin: 0 0 6px; font-size: 18px; }
+  & .empty-state p { margin: 0; }
+  & .mobile-back { display: none; }
+  & /* Standalone show pages keep normal page scrolling. */
       .ip-show { min-height: 100vh; overflow: auto; }
-      .ip-show .detail-scroll { overflow: visible; }
-      @media (max-width: 760px) {
-        body { font-size: 14px; }
-        .container { padding: 14px 10px 24px; }
-        .ip-index, .ip-show { overflow-x: hidden; }
-        .review-detail, .suggestion-panel, .detail-scroll, .card, dl, dd { min-width: 0; max-width: 100%; }
-        .suggestion-panel .card { width: calc(100vw - 20px); }
-        .lede, dd, .comment { max-width: calc(100vw - 54px); white-space: normal; overflow-wrap: anywhere; }
-        .ip-index { overflow-y: auto; overflow-x: hidden; }
-        .ip-index, .ip-index .container { min-height: 100vh; height: auto; }
-        .ip-index .container { padding-bottom: 10px; }
-        .review-shell { display: block; min-height: calc(100vh - 76px); }
-        .review-sidebar, .review-detail { min-height: calc(100vh - 76px); }
-        .review-shell.has-selected .review-sidebar { display: none; }
-        .review-shell:not(.has-selected) .review-detail { display: none; }
-        .suggestion-list { overflow: visible; }
-        .suggestion-row { padding: 12px; }
-        .suggestion-meta { display: none; }
-        .review-detail .suggestion-panel { min-height: calc(100vh - 64px); }
-        .mobile-back { display: block; flex: 0 0 auto; margin: 10px 10px 0; font-size: 13px; }
-        .panel-head h1 { font-size: 18px; }
-        .panel-head .key { min-width: 0; white-space: normal; overflow-wrap: anywhere; }
-        dl.diff, .meta-list { grid-template-columns: 1fr; gap: 3px; }
-      }
+}

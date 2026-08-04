@@ -6,12 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-    <%= stylesheet_link_tag "#{dashboard_stylesheet_path}?v=#{I18nProofreading::Widget.dashboard_stylesheet_fingerprint}",
-                            'data-turbo-track': 'reload' %>
+    <%# The dashboard's stylesheet is declared by the views
+        (i18n_proofreading/shared/_dashboard), not here, so it survives a
+        host replacing this layout via config.admin_layout or config.base_controller_class. %>
   </head>
-  <body class="<%= content_for?(:body_class) ? yield(:body_class) : '' %>">
-    <div class="container">
-      <%= yield %>
+  <body class="ip-page <%= content_for?(:body_class) ? yield(:body_class) : '' %>">
+    <div class="ip-dashboard">
+      <div class="container">
+        <%= yield %>
+      </div>
     </div>
   </body>
 </html>
