@@ -62,17 +62,6 @@
   }
 }
 
-/* Page frame — the gem's own layout only. */
-.ip-page { margin: 0; background: var(--ip-bg); color: var(--ip-text); font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
-/* Desktop review: queue on the left, selected suggestion on the right. */
-.ip-index, .ip-index .container { height: 100vh; height: 100dvh; }
-.ip-index { overflow: hidden; }
-.ip-index .container { max-width: 1280px; display: flex; flex-direction: column; padding-bottom: 16px; }
-.ip-index header.page { flex: 0 0 auto; margin-bottom: 14px; }
-/* Standalone show pages keep normal page scrolling. */
-.ip-show { min-height: 100vh; overflow: auto; }
-.ip-show .detail-scroll { overflow: visible; }
-
 /* Dashboard components — any layout. */
 .ip-dashboard {
   /* A scoping device, not a layout one: without this the wrapper would
@@ -158,3 +147,15 @@
   & .empty-state p { margin: 0; }
   & .mobile-back { display: none; }
 }
+
+/* Page frame — the gem's own layout only. Last, so it wins the
+   specificity ties against the component layer above. */
+.ip-page { margin: 0; background: var(--ip-bg); color: var(--ip-text); font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+/* Desktop review: queue on the left, selected suggestion on the right. */
+.ip-index, .ip-index .container { height: 100vh; height: 100dvh; }
+.ip-index { overflow: hidden; }
+.ip-index .container { max-width: 1280px; display: flex; flex-direction: column; padding-bottom: 16px; }
+.ip-index header.page { flex: 0 0 auto; margin-bottom: 14px; }
+/* Standalone show pages keep normal page scrolling. */
+.ip-show { min-height: 100vh; overflow: auto; }
+.ip-show .detail-scroll { overflow: visible; }

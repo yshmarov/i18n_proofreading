@@ -102,6 +102,7 @@ Everything is optional; a fresh install works with zero config in development. F
 | `enabled_environments` | `%w[development staging]` | The hard gate. Never add production |
 | `enabled` | everyone | Per-request gate on top of the environment check |
 | `authorize_admin` | development only | **Who can read the dashboard.** Independent of the above |
+| `base_controller_class` | `ActionController::Base` | Controller the dashboard inherits. Name your admin's and it adopts that layout, helpers, authentication and request context. Public endpoints never inherit it. |
 | `admin_layout` | `i18n_proofreading/application` | Render the dashboard in your admin shell |
 | `current_user` | `nil` | Receives the request |
 | `author_label` | email, else `to_s` | Receives the user |
@@ -119,6 +120,7 @@ The tool's own UI ships in 26 languages, RTL mirrored, and follows system light/
 
 | Symptom | Cause |
 | --- | --- |
+| `NameError` for one of your own helpers in the dashboard | `isolate_namespace` scopes `helper` to the engine. Use `config.base_controller_class` so the dashboard inherits your helpers, rather than `admin_layout` alone. |
 | No pill, no outlines | The environment is not in `enabled_environments` (this is the usual one), or `config.enabled` returned false, or `show_pill = false` |
 | Pill appears but no strings are outlined | The I18n backend patch is only prepended in an enabled environment at boot — check you are actually in development/staging, and restart after changing the setting |
 | `/i18n_proofreading` returns a 403 | `authorize_admin` still at its development-only default |
@@ -128,6 +130,10 @@ The tool's own UI ships in 26 languages, RTL mirrored, and follows system light/
 | `undefined local variable current_user` in the initializer | A gate lambda treated its argument as a controller. It is a `request` |
 
 ---
+
+## One family
+
+`testimonials`, `ideasbugs`, `livechat`, `product_tours` are the sibling engines. Same install shape, same host hooks (`base_controller_class`, `admin_layout`), same scoped dashboard CSS, same `primary_key_type`-aware migrations — so what you learn here transfers.
 
 ## Working on the gem itself
 
