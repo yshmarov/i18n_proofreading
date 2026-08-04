@@ -23,7 +23,6 @@ en:
       rejected: "Rejected"
     dashboard:
       title: "I18nProofreading"
-      subtitle: "Review what reviewers proposed, then apply it to your locale files."
       locale: "Locale"
       filter: "Filter"
       all_locales: "All locales"

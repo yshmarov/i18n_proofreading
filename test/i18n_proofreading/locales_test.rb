@@ -39,7 +39,7 @@ module I18nProofreading
     test 'ships the dashboard strings in English' do
       en = YAML.load_file(EN_FILE)['en']['i18n_proofreading']
       assert_equal %w[applied pending rejected], en['statuses'].keys.sort
-      %w[title subtitle current suggested empty].each { |k| assert_includes en['dashboard'].keys, k }
+      %w[title current suggested empty].each { |k| assert_includes en['dashboard'].keys, k }
     end
 
     test 'ships the gem-name dashboard title in every locale' do

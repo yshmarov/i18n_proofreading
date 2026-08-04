@@ -1,5 +1,40 @@
 # Changelog
 
+## 0.12.0
+
+- **One design system across the family.** The stylesheet now opens with a
+  shared core — the colour tokens, `.page-head`, `.tabs`, `.filters`, `.card`,
+  `.badge`, buttons and form controls, and the `.dashboard-shell` +
+  `.record-row` + `.detail-panel` two-pane dashboard — identical in all five
+  gems of the family, apart from the `--ip-` prefix. The five had drifted:
+  sidebars between 380px and 430px, reading columns between 860px and 1020px,
+  two different tab styles and three different button styles. The sidebar is
+  now 330–430px everywhere, a reading page 1020px, a dashboard 1280px.
+  Everything below the `GEM-SPECIFIC` banner is what only this gem has.
+- **The dashboard markup uses the shared class names.** `.review-shell`,
+  `.review-sidebar` and `.review-detail` are `.dashboard-shell`,
+  `.dashboard-sidebar` and `.dashboard-detail`; `.suggestion-list`,
+  `.suggestion-row`, `.suggestion-main`, `.suggestion-topline`,
+  `.suggestion-copy`, `.suggestion-meta` and `.suggestion-time` are
+  `.record-*`; `.suggestion-panel` is `.detail-panel`; the page heading is a
+  `.page-head` rather than a `header.page`, and the status badge in a row sits
+  in `.record-side`. A card is unpadded until you add `.pad`, as in the other
+  four gems, and the empty state lost its dashed border. If you styled or
+  scripted any of those names in a host app, that is the breaking change — no
+  configuration, route or database change is involved.
+- **The narrow-screen rules work again.** The `max-width: 760px` block sat above
+  the component rules it means to override, and CSS nesting adds no specificity,
+  so the desktop grid won every tie: showing one pane at a time on a phone had
+  quietly stopped working. The media query moved to the end of the file.
+- Smaller fixes that came with the shared core: a submit input is styled as a
+  button rather than a full-width field, the filter row keeps its search box and
+  button on one line, and a `code.key` truncates inside a list row instead of
+  wrapping over three lines.
+- **The dashboard subtitle is gone,** and with it the
+  `i18n_proofreading.dashboard.subtitle` translation key. The page said what the
+  three tabs already say. If you overrode that key in your own locale file, the
+  override is now dead weight — nothing reads it.
+
 ## 0.11.0
 
 - **`config.admin_layout` now works on its own.** The dashboard's stylesheet was

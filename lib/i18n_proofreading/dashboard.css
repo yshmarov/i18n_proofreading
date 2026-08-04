@@ -4,61 +4,56 @@
  *
  *   :root            custom properties, all `--ip-` prefixed so they can
  *                    neither overwrite a host's nor be overwritten by them.
- *   .ip-page          the page frame (was bare html/body). Only the gem's own
+ *   .ip-page         the page frame (was bare html/body). Only the gem's own
  *                    layout puts this class on <body>, so inside a host admin
  *                    these rules simply do not apply.
- *   .ip-dashboard     everything else, nested. Names like .container, .card
+ *   .ip-dashboard    everything else, nested. Names like .container, .card
  *                    and .tabs are confined to the dashboard's own markup, so
  *                    loading this file inside a host cannot restyle its chrome.
  *
  * Nothing here styles a bare `body`, `a`, `table` or `*` at the top level.
+ *
+ * Two sections follow: the design system shared by the whole gem family,
+ * then what only this gem has. A rule that belongs in the shared section
+ * belongs in all five copies of it.
+ *
+ * Order inside a section matters — components, then the page frame, then the
+ * narrow-screen overrides. Nesting adds no specificity, so the last rule
+ * wins the ties, and an override placed before the rule it means to beat
+ * silently does nothing.
  */
 
+/* ---------------------------------------------------------------------------
+ * SHARED CORE — identical in testimonials, ideasbugs, livechat, product_tours
+ * and i18n_proofreading apart from the prefix. Diff it against a sibling gem
+ * before you change it, and carry the change to all five.
+ * ------------------------------------------------------------------------- */
 
 :root {
-        color-scheme: light dark;
-        --ip-bg: #f6f7f9; --ip-surface: #fff; --ip-text: #1c2024; --ip-muted: #6b7280;
-        --ip-border: #e5e7eb; --ip-accent: #2563eb; --ip-accent-text: #fff; --ip-code: #f0f1f3;
-        --ip-pending: #d97706; --ip-applied: #16a34a; --ip-rejected: #6b7280;
+  color-scheme: light dark;
+  --ip-bg: #f6f7f9;
+  --ip-surface: #fff;
+  --ip-text: #1c2024;
+  --ip-muted: #6b7280;
+  --ip-border: #e5e7eb;
+  --ip-accent: #2563eb;
+  --ip-accent-text: #fff;
+  --ip-code: #f0f1f3;
+  /* The four semantic states every gem in the family badges something with. */
+  --ip-success: #16a34a;
+  --ip-warning: #d97706;
+  --ip-danger: #dc2626;
+  --ip-neutral: #6b7280;
 }
 @media (prefers-color-scheme: dark) {
   :root {
-          --ip-bg: #111418; --ip-surface: #1a1f26; --ip-text: #e6e8ea; --ip-muted: #9aa2ab;
-          --ip-border: #2a313a; --ip-accent: #3b82f6; --ip-code: #232a33;
-}
-}
-@media (max-width: 760px) {
-  .ip-page { font-size: 14px; }
-  .ip-index, .ip-show { overflow-x: hidden; }
-  .ip-index { overflow-y: auto; overflow-x: hidden; }
-  .ip-index, .ip-index .container { min-height: 100vh; height: auto; }
-  .ip-index .container { padding-bottom: 10px; }
-  .ip-dashboard {
-  & .container { padding: 14px 10px 24px; }
-  & .review-detail,
-  & .suggestion-panel,
-  & .detail-scroll,
-  & .card,
-  & dl,
-  & dd { min-width: 0; max-width: 100%; }
-  & .suggestion-panel .card { width: calc(100vw - 20px); }
-  & .lede,
-  & dd,
-  & .comment { max-width: calc(100vw - 54px); white-space: normal; overflow-wrap: anywhere; }
-  & .review-shell { display: block; min-height: calc(100vh - 76px); }
-  & .review-sidebar,
-  & .review-detail { min-height: calc(100vh - 76px); }
-  & .review-shell.has-selected .review-sidebar { display: none; }
-  & .review-shell:not(.has-selected) .review-detail { display: none; }
-  & .suggestion-list { overflow: visible; }
-  & .suggestion-row { padding: 12px; }
-  & .suggestion-meta { display: none; }
-  & .review-detail .suggestion-panel { min-height: calc(100vh - 64px); }
-  & .mobile-back { display: block; flex: 0 0 auto; margin: 10px 10px 0; font-size: 13px; }
-  & .panel-head h1 { font-size: 18px; }
-  & .panel-head .key { min-width: 0; white-space: normal; overflow-wrap: anywhere; }
-  & dl.diff,
-  & .meta-list { grid-template-columns: 1fr; gap: 3px; }
+    --ip-bg: #111418;
+    --ip-surface: #1a1f26;
+    --ip-text: #e6e8ea;
+    --ip-muted: #9aa2ab;
+    --ip-border: #2a313a;
+    --ip-accent: #3b82f6;
+    --ip-code: #232a33;
   }
 }
 
@@ -71,91 +66,239 @@
   & * { box-sizing: border-box; }
   & a { color: var(--ip-accent); text-decoration: none; }
   & a:hover { text-decoration: underline; }
-  & .container { max-width: 960px; margin: 0 auto; padding: 24px 16px 64px; }
-  & h1 { font-size: 22px; margin: 0; }
-  & .lede { color: var(--ip-muted); margin: 4px 0 0; }
-  & header.page { margin-bottom: 20px; }
-  & .tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--ip-border); margin-bottom: 16px; flex-wrap: wrap; }
-  & .tabs a { padding: 8px 14px; border-radius: 8px 8px 0 0; color: var(--ip-muted); }
-  & .tabs a.active { color: var(--ip-text); font-weight: 600; border: 1px solid var(--ip-border); border-bottom: 2px solid var(--ip-surface); background: var(--ip-surface); margin-bottom: -1px; }
-  & .tabs a:hover { text-decoration: none; color: var(--ip-text); }
-  & .count { display: inline-block; min-width: 20px; padding: 0 6px; margin-left: 4px; border-radius: 999px; background: var(--ip-border); font-size: 12px; text-align: center; font-variant-numeric: tabular-nums; }
-  & .filters { margin-bottom: 16px; display: flex; gap: 8px; align-items: center; }
-  & .filters label { color: var(--ip-muted); font-size: 13px; }
-  & .filters select { padding: 6px 8px; border: 1px solid var(--ip-border); border-radius: 8px; background: var(--ip-surface); color: var(--ip-text); font: inherit; }
-  & .card { background: var(--ip-surface); border: 1px solid var(--ip-border); border-radius: 12px; padding: 14px 16px; margin-bottom: 12px; }
-  & .card.pad { margin: 0; }
-  & .row-top { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
-  & code.key { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12.5px; background: var(--ip-code); padding: 2px 7px; border-radius: 6px; overflow-wrap: anywhere; }
-  & .badge { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; color: #fff; white-space: nowrap; }
-  & .badge.status-pending { background: var(--ip-pending); }
-  & .badge.status-applied { background: var(--ip-applied); }
-  & .badge.status-rejected { background: var(--ip-rejected); }
-  & .badge.locale { background: transparent; color: var(--ip-muted); border: 1px solid var(--ip-border); }
-  & .spacer { flex: 1; }
-  & .meta { color: var(--ip-muted); font-size: 13px; }
-  & dl.diff { display: grid; grid-template-columns: max-content 1fr; gap: 6px 16px; margin: 0; }
-  & dl.diff dt { color: var(--ip-muted); font-size: 13px; }
-  & dl.diff dd { margin: 0; overflow-wrap: anywhere; white-space: pre-wrap; }
-  & dd .old { color: var(--ip-muted); }
-  & dd .new { font-weight: 600; }
-  & .comment { margin-top: 10px; padding: 8px 10px; background: var(--ip-code); border-radius: 8px; font-size: 14px; overflow-wrap: anywhere; }
-  & button { padding: 7px 13px; border: 1px solid var(--ip-border); border-radius: 8px; cursor: pointer; background: var(--ip-surface); color: var(--ip-text); font: inherit; font-size: 14px; font-weight: 600; }
-  & button:hover { border-color: var(--ip-muted); }
   & :focus-visible { outline: 2px solid var(--ip-accent); outline-offset: 2px; }
-  & .empty { padding: 48px 16px; text-align: center; color: var(--ip-muted); border: 1px dashed var(--ip-border); border-radius: 12px; }
-  & .pager { margin-top: 16px; display: flex; justify-content: space-between; }
-  & .pager .muted { color: var(--ip-muted); }
+
+  /* Page furniture. `.container` is the reading width; an index page widens it
+     to 1280px in the page frame below. */
+  & .container { max-width: 1020px; margin: 0 auto; padding: 24px 16px 64px; }
+  & h1 { margin: 0 0 16px; font-size: 22px; }
+  & h2 { margin: 0 0 12px; font-size: 16px; }
+  & .page-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+  & .page-head h1 { margin: 0; }
+  & .lede { margin: 4px 0 0; color: var(--ip-muted); }
   & .breadcrumb { margin: 0 0 12px; font-size: 13px; }
+  & .muted { color: var(--ip-muted); font-size: 13px; }
   & .case-id { color: var(--ip-muted); font-weight: 400; font-size: 15px; }
-  & .panel-head { flex: 0 0 auto; }
-  & .panel-head h1 { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
-  & .detail-scroll { min-height: 0; display: flex; flex-direction: column; gap: 12px; }
-  & .suggestion-panel { min-width: 0; display: flex; flex-direction: column; }
-  & .meta-list { display: grid; grid-template-columns: max-content 1fr; gap: 6px 16px; margin: 0; }
-  & .meta-list dt { color: var(--ip-muted); font-size: 13px; }
-  & .meta-list dd { margin: 0; overflow-wrap: anywhere; }
-  & .review-shell { flex: 1 1 auto; min-height: 0; display: grid; grid-template-columns: minmax(330px, 430px) 1fr; gap: 16px; }
-  & .review-sidebar { min-width: 0; min-height: 0; display: flex; flex-direction: column; background: var(--ip-surface); border: 1px solid var(--ip-border); border-radius: 8px; overflow: hidden; }
-  & .review-sidebar .tabs { flex: 0 0 auto; margin: 12px 12px 0; padding: 0; background: transparent; border: 0; border-radius: 0; gap: 6px; flex-wrap: nowrap; }
-  & .review-sidebar .tabs a { flex: 1 1 0; position: relative; display: flex; align-items: center; justify-content: center; gap: 6px; min-height: 34px; padding: 5px 10px 8px; border-radius: 8px; color: var(--ip-muted); font-weight: 600; }
-  & .review-sidebar .tabs a.active { color: var(--ip-text); border: 0; background: transparent; box-shadow: none; margin: 0; }
-  & .review-sidebar .tabs a.active::after { content: ""; position: absolute; left: 20px; right: 20px; bottom: 0; height: 2px; border-radius: 999px; background: var(--ip-accent); }
-  & .review-sidebar .tabs a:not(.active):hover { text-decoration: none; color: var(--ip-text); background: var(--ip-bg); }
-  & .review-sidebar .tabs .count { margin-left: 0; background: color-mix(in srgb, var(--ip-muted) 14%, transparent); }
-  & .review-sidebar .tabs a.active .count { background: var(--ip-border); }
-  & .review-sidebar .filters { flex: 0 0 auto; margin: 0; padding: 12px; border-bottom: 1px solid var(--ip-border); }
-  & .suggestion-list { flex: 1 1 auto; min-height: 0; overflow-y: auto; }
-  & .suggestion-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; padding: 13px 14px; color: var(--ip-text); border-bottom: 1px solid var(--ip-border); }
-  & .suggestion-row > .badge { align-self: start; }
-  & .suggestion-row:hover { text-decoration: none; background: var(--ip-bg); }
-  & .suggestion-row.active { background: color-mix(in srgb, var(--ip-accent) 9%, var(--ip-surface)); box-shadow: inset 3px 0 0 var(--ip-accent); }
-  & .suggestion-main { min-width: 0; display: flex; flex-direction: column; gap: 5px; }
-  & .suggestion-topline,
-  & .suggestion-meta { display: flex; align-items: center; gap: 8px; min-width: 0; }
-  & .suggestion-topline .key { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  & .suggestion-copy,
-  & .suggestion-meta span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  & .suggestion-copy { display: block; font-weight: 600; }
-  & .suggestion-time { margin-left: auto; white-space: nowrap; }
-  & .review-sidebar .pager { flex: 0 0 auto; margin: 0; padding: 10px 12px; border-top: 1px solid var(--ip-border); }
-  & .review-detail { min-width: 0; min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
-  & .review-detail .suggestion-panel { flex: 1 1 auto; min-height: 0; }
-  & .review-detail .detail-scroll { flex: 1 1 auto; overflow-y: auto; padding-right: 2px; }
-  & .empty-state { margin: auto; max-width: 320px; padding: 24px; text-align: center; }
+  & .spacer { flex: 1; }
+  & .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+
+  /* Section switcher: the pills above the dashboard when a gem has more than
+     one section. Lives on the page, so a host `admin_layout` can drop it. */
+  & .nav { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+  & .nav a { padding: 6px 16px; border: 1px solid var(--ip-border); border-radius: 999px; background: var(--ip-surface); color: var(--ip-muted); font-weight: 600; }
+  & .nav a:hover { text-decoration: none; color: var(--ip-text); }
+  & .nav a.active { border-color: var(--ip-accent); background: var(--ip-accent); color: var(--ip-accent-text); }
+  & .nav a.active:hover { color: var(--ip-accent-text); }
+
+  /* Tabs: one system for the whole family — an underlined row of equal-width
+     tabs, sized to sit at the top of the sidebar. */
+  & .tabs { display: flex; gap: 6px; }
+  & .tabs a { position: relative; display: flex; flex: 1 1 0; align-items: center; justify-content: center; gap: 6px; min-height: 34px; padding: 5px 10px 8px; border-radius: 8px; color: var(--ip-muted); font-weight: 600; }
+  & .tabs a:hover { background: var(--ip-bg); color: var(--ip-text); text-decoration: none; }
+  & .tabs a.active { color: var(--ip-text); }
+  & .tabs a.active::after { content: ""; position: absolute; right: 20px; bottom: 0; left: 20px; height: 2px; border-radius: 999px; background: var(--ip-accent); }
+  & .count { display: inline-block; min-width: 20px; padding: 0 6px; border-radius: 999px; background: color-mix(in srgb, var(--ip-muted) 14%, transparent); font-size: 12px; text-align: center; font-variant-numeric: tabular-nums; }
+  & .tabs a.active .count { background: var(--ip-border); }
+
+  /* Filter row under the tabs: a full-width select over a search + submit row,
+     however many of the three a gem actually has. */
+  & .filters { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 12px; border-bottom: 1px solid var(--ip-border); }
+  & .filters label { flex: 1 1 100%; color: var(--ip-muted); font-size: 13px; }
+  & .filters select { flex: 1 1 100%; }
+  /* Basis 0, not auto: the controls below are `width: 100%`, which would
+     otherwise push the submit button onto its own row. */
+  & .filters input[type="search"] { flex: 1 1 0; min-width: 0; }
+  & .filters button,
+  & .filters input[type="submit"] { flex: 0 0 auto; }
+
+  /* Form controls. 16px so iOS does not zoom the page on focus. */
+  & input,
+  & select,
+  & textarea { width: 100%; min-height: 38px; padding: 7px 9px; border: 1px solid var(--ip-border); border-radius: 8px; background: var(--ip-surface); color: var(--ip-text); font: inherit; font-size: 16px; letter-spacing: 0; }
+  & textarea { resize: vertical; }
+  & input[type="checkbox"],
+  & input[type="radio"] { width: auto; min-width: 0; min-height: 0; }
+  & input:focus,
+  & select:focus,
+  & textarea:focus { border-color: var(--ip-accent); outline: 2px solid color-mix(in srgb, var(--ip-accent) 22%, transparent); outline-offset: 0; }
+  & .field { margin-bottom: 16px; }
+  & .field label { display: block; margin-bottom: 5px; font-weight: 600; }
+  & .field small { display: block; margin-top: 5px; color: var(--ip-muted); }
+
+  /* A submit input is a button, whatever the markup says. */
+  & button,
+  & .button,
+  & input[type="submit"] { display: inline-flex; width: auto; align-items: center; justify-content: center; min-height: 38px; padding: 8px 14px; border: 1px solid var(--ip-border); border-radius: 8px; background: var(--ip-surface); color: var(--ip-text); font: inherit; cursor: pointer; }
+  & button:hover,
+  & .button:hover,
+  & input[type="submit"]:hover { border-color: var(--ip-muted); text-decoration: none; }
+  & button.primary,
+  & .button.primary,
+  & input[type="submit"].primary { border-color: var(--ip-accent); background: var(--ip-accent); color: var(--ip-accent-text); }
+  & button.danger,
+  & .button.danger { color: var(--ip-danger); }
+  & button.small,
+  & .button.small { min-height: 32px; padding: 4px 10px; font-size: 13px; }
+  & .actions,
+  & .form-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+  & .actions form { display: inline; }
+  & .form-actions { padding-top: 12px; }
+
+  & .card { overflow: hidden; border: 1px solid var(--ip-border); border-radius: 12px; background: var(--ip-surface); }
+  & .card.pad { padding: 16px; overflow: visible; }
+  & table { width: 100%; border-collapse: collapse; }
+  & th,
+  & td { padding: 10px 14px; text-align: left; vertical-align: top; }
+  & th { font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--ip-muted); border-bottom: 1px solid var(--ip-border); }
+  & tr + tr td { border-top: 1px solid var(--ip-border); }
+  & td.row-actions { white-space: nowrap; text-align: right; }
+  & td.row-actions form { display: inline-block; }
+  & td.row-actions form + form { margin-left: 6px; }
+
+  & .badge { display: inline-flex; padding: 2px 10px; border-radius: 999px; color: #fff; font-size: 12px; font-weight: 600; white-space: nowrap; }
+  & .badge.locale { border: 1px solid var(--ip-border); background: transparent; color: var(--ip-muted); }
+  & code.key { max-width: 100%; padding: 2px 7px; border-radius: 6px; background: var(--ip-code); font: 12.5px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; overflow-wrap: anywhere; }
+
+  & .flash,
+  & .errors { margin-bottom: 16px; padding: 10px 12px; border: 1px solid var(--ip-border); border-radius: 8px; background: var(--ip-surface); }
+  & .flash.notice { border-color: var(--ip-success); }
+  & .flash.alert,
+  & .errors { border-color: var(--ip-danger); }
+  & .errors ul { margin-bottom: 0; }
+
+  & dl { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 6px 16px; margin: 0; }
+  & dt { color: var(--ip-muted); }
+  & dd { margin: 0; overflow-wrap: anywhere; }
+  & .message { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+
+  & .empty { padding: 48px 16px; color: var(--ip-muted); text-align: center; }
+  & .empty-state { max-width: 320px; margin: auto; padding: 24px; text-align: center; }
   & .empty-state h2 { margin: 0 0 6px; font-size: 18px; }
   & .empty-state p { margin: 0; }
+
+  /* The two-pane dashboard: the queue on the left, the selected record on the
+     right, each pane owning its own scroll. */
+  & .dashboard-shell { display: grid; flex: 1 1 auto; grid-template-columns: minmax(330px, 430px) 1fr; gap: 16px; min-height: 0; }
+  & .dashboard-sidebar { display: flex; min-width: 0; min-height: 0; flex-direction: column; overflow: hidden; border: 1px solid var(--ip-border); border-radius: 8px; background: var(--ip-surface); }
+  & .dashboard-sidebar .tabs { flex: 0 0 auto; margin: 12px 12px 0; }
+  & .dashboard-sidebar .filters { flex: 0 0 auto; }
+
+  /* One row shape for every gem: a topline of badges and a timestamp, the copy
+     that identifies the record, then a muted line of ids and authors. */
+  & .record-list { flex: 1 1 auto; min-height: 0; overflow-y: auto; }
+  & .record-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; padding: 13px 14px; border-bottom: 1px solid var(--ip-border); color: var(--ip-text); }
+  & .record-row:hover { background: var(--ip-bg); text-decoration: none; }
+  & .record-row.active { background: color-mix(in srgb, var(--ip-accent) 9%, var(--ip-surface)); box-shadow: inset 3px 0 0 var(--ip-accent); }
+  & .record-main { display: flex; min-width: 0; flex-direction: column; gap: 5px; }
+  & .record-topline,
+  & .record-meta { display: flex; align-items: center; gap: 8px; min-width: 0; }
+  & .record-name,
+  & .record-copy,
+  & .record-meta span,
+  /* A key is `overflow-wrap: anywhere` in prose; in a row it truncates. */
+  & .record-topline code.key,
+  & .record-meta code.key { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  & .record-name { font-weight: 600; }
+  & .record-copy { display: block; font-weight: 600; }
+  & .record-time { margin-left: auto; white-space: nowrap; }
+  & .record-side { display: flex; flex-direction: column; align-items: flex-end; justify-content: space-between; gap: 8px; padding-top: 1px; }
+  & .pager { display: flex; flex: 0 0 auto; justify-content: space-between; gap: 16px; min-height: 42px; margin: 0; padding: 10px 12px; border-top: 1px solid var(--ip-border); }
+
+  /* The selected record. `.detail-scroll` is the only part that scrolls, so the
+     panel heading and its actions stay put. */
+  & .dashboard-detail { display: flex; min-width: 0; min-height: 0; flex-direction: column; overflow: hidden; }
+  & .dashboard-detail .detail-panel { flex: 1 1 auto; min-height: 0; }
+  & .dashboard-detail .detail-scroll { flex: 1 1 auto; overflow-y: auto; padding-right: 2px; }
+  & .dashboard-detail .actions { margin-bottom: 0; }
+  & .detail-panel { display: flex; min-width: 0; flex-direction: column; }
+  /* The panel's own heading row: the title on the left, whatever acts on the
+     whole record on the right. */
+  & .panel-head { display: flex; flex: 0 0 auto; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+  & .panel-head h1 { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 0; }
+  & .detail-scroll { display: flex; min-height: 0; flex-direction: column; gap: 12px; }
   & .mobile-back { display: none; }
 }
 
-/* Page frame — the gem's own layout only. Last, so it wins the
-   specificity ties against the component layer above. */
-.ip-page { margin: 0; background: var(--ip-bg); color: var(--ip-text); font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
-/* Desktop review: queue on the left, selected suggestion on the right. */
+/* Page frame — the gem's own layout only. After the components, so it wins the
+   specificity ties against them. */
+.ip-page { margin: 0; min-height: 100vh; background: var(--ip-bg); color: var(--ip-text); font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; letter-spacing: 0; }
+/* An index page is the dashboard: it fills the viewport and never scrolls
+   itself, because the queue and the detail pane each scroll on their own. */
 .ip-index, .ip-index .container { height: 100vh; height: 100dvh; }
 .ip-index { overflow: hidden; }
-.ip-index .container { max-width: 1280px; display: flex; flex-direction: column; padding-bottom: 16px; }
-.ip-index header.page { flex: 0 0 auto; margin-bottom: 14px; }
+.ip-index .container { display: flex; max-width: 1280px; flex-direction: column; padding-bottom: 16px; }
+.ip-index .nav,
+.ip-index .page-head { flex: 0 0 auto; }
 /* Standalone show pages keep normal page scrolling. */
 .ip-show { min-height: 100vh; overflow: auto; }
+.ip-show .detail-panel { width: 100%; }
 .ip-show .detail-scroll { overflow: visible; }
+
+/* Narrow screens: one pane at a time, the queue until a record is picked.
+   Last in the file, so these overrides actually reach the rules above. */
+@media (max-width: 760px) {
+  .ip-page { font-size: 14px; }
+  .ip-index, .ip-show { overflow-x: hidden; }
+  .ip-index { overflow-y: auto; }
+  .ip-index, .ip-index .container { min-height: 100vh; height: auto; }
+  .ip-index .container { padding-bottom: 10px; }
+  .ip-dashboard {
+    & .container { padding: 14px 10px 24px; }
+    & .page-head { margin-bottom: 12px; }
+    & .detail-panel,
+    & .detail-scroll,
+    & .card,
+    & dl,
+    & dd { min-width: 0; max-width: 100%; }
+    & .dashboard-detail .card { width: 100%; }
+    & .message,
+    & .lede,
+    & dd,
+    & .muted { overflow-wrap: anywhere; }
+    & .dashboard-shell { display: block; min-height: calc(100vh - 62px); }
+    & .dashboard-sidebar,
+    & .dashboard-detail { min-height: calc(100vh - 62px); }
+    & .dashboard-shell.has-selected .dashboard-sidebar { display: none; }
+    & .dashboard-shell:not(.has-selected) .dashboard-detail { display: none; }
+    & .record-list { overflow: visible; }
+    & .record-row { padding: 12px; }
+    & .record-meta { display: none; }
+    & .dashboard-detail .detail-panel { min-height: calc(100vh - 64px); }
+    & .mobile-back { display: block; flex: 0 0 auto; margin: 4px 0 10px; font-size: 13px; }
+    & .panel-head h1 { font-size: 18px; }
+    & dl { grid-template-columns: 1fr; gap: 3px; }
+    & dd { margin-bottom: 8px; }
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * GEM-SPECIFIC — i18n_proofreading only: the before/after diff of a proposed
+ * translation and the reviewer's comment.
+ * ------------------------------------------------------------------------- */
+
+:root {
+  --ip-pending: var(--ip-warning);
+  --ip-applied: var(--ip-success);
+  --ip-rejected: var(--ip-neutral);
+}
+
+.ip-dashboard {
+  & .badge.status-pending { background: var(--ip-pending); }
+  & .badge.status-applied { background: var(--ip-applied); }
+  & .badge.status-rejected { background: var(--ip-rejected); }
+
+  /* What the translation says now, against what the reviewer proposes. */
+  & dl.diff dt { font-size: 13px; }
+  & dl.diff dd { white-space: pre-wrap; }
+  & dd .old { color: var(--ip-muted); }
+  & dd .new { font-weight: 600; }
+  & .meta-list dt { font-size: 13px; }
+  & .comment { margin-top: 10px; padding: 8px 10px; border-radius: 8px; background: var(--ip-code); font-size: 14px; overflow-wrap: anywhere; }
+}
+
+@media (max-width: 760px) {
+  .ip-dashboard {
+    & .comment { max-width: 100%; white-space: normal; overflow-wrap: anywhere; }
+    & .panel-head code.key { min-width: 0; white-space: normal; overflow-wrap: anywhere; }
+  }
+}

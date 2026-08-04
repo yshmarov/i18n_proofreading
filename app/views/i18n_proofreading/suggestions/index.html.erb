@@ -1,13 +1,12 @@
 <% content_for :body_class, 'ip-index' %>
 
 <%= render layout: 'i18n_proofreading/shared/dashboard' do %>
-  <header class="page">
+  <div class="page-head">
     <h1><%= t('i18n_proofreading.dashboard.title', default: 'I18nProofreading') %></h1>
-    <p class="lede"><%= t('i18n_proofreading.dashboard.subtitle', default: 'Review what reviewers proposed, then apply it to your locale files.') %></p>
-  </header>
+  </div>
 
-  <div class="review-shell <%= 'has-selected' if @selected_suggestion %>">
-    <aside class="review-sidebar" aria-label="<%= t('i18n_proofreading.dashboard.suggestions', default: 'Suggestions') %>">
+  <div class="dashboard-shell <%= 'has-selected' if @selected_suggestion %>">
+    <aside class="dashboard-sidebar" aria-label="<%= t('i18n_proofreading.dashboard.suggestions', default: 'Suggestions') %>">
       <nav class="tabs">
         <% I18nProofreading::Suggestion::STATUSES.each do |status| %>
           <%= link_to suggestions_path(status: status, locale: @locale),
@@ -34,30 +33,32 @@
         </form>
       <% end %>
 
-      <div class="suggestion-list">
+      <div class="record-list">
         <% if @suggestions.any? %>
           <% @suggestions.each do |suggestion| %>
             <%= link_to suggestions_path(status: @status, locale: @locale, page: @page,
                                          suggestion_id: suggestion.id),
-                        class: ['suggestion-row', ('active' if @selected_suggestion&.id == suggestion.id)].compact do %>
-              <span class="suggestion-main">
-                <span class="suggestion-topline">
+                        class: ['record-row', ('active' if @selected_suggestion&.id == suggestion.id)].compact do %>
+              <span class="record-main">
+                <span class="record-topline">
                   <code class="key"><%= suggestion.translation_key %></code>
                   <span class="badge locale"><%= suggestion.locale %></span>
-                  <span class="muted suggestion-time" title="<%= suggestion.created_at %>">
+                  <span class="muted record-time" title="<%= suggestion.created_at %>">
                     <%= time_ago_in_words(suggestion.created_at) %> <%= t('i18n_proofreading.dashboard.ago', default: 'ago') %>
                   </span>
                 </span>
-                <span class="suggestion-copy" dir="auto"><%= truncate(suggestion.proposed_value, length: 110) %></span>
-                <span class="muted suggestion-meta">
+                <span class="record-copy" dir="auto"><%= truncate(suggestion.proposed_value, length: 110) %></span>
+                <span class="muted record-meta">
                   <span>#<%= suggestion.id %></span>
                   <% if suggestion.author_label.present? %>
                     <span><%= suggestion.author_label %></span>
                   <% end %>
                 </span>
               </span>
-              <span class="badge status-<%= suggestion.status %>">
-                <%= t("i18n_proofreading.statuses.#{suggestion.status}", default: suggestion.status.humanize) %>
+              <span class="record-side">
+                <span class="badge status-<%= suggestion.status %>">
+                  <%= t("i18n_proofreading.statuses.#{suggestion.status}", default: suggestion.status.humanize) %>
+                </span>
               </span>
             <% end %>
           <% end %>
@@ -82,7 +83,7 @@
       </nav>
     </aside>
 
-    <main class="review-detail" aria-label="<%= t('i18n_proofreading.dashboard.current_suggestion', default: 'Current suggestion') %>">
+    <main class="dashboard-detail" aria-label="<%= t('i18n_proofreading.dashboard.current_suggestion', default: 'Current suggestion') %>">
       <% if @selected_suggestion %>
         <p class="mobile-back">
           <%= link_to t('i18n_proofreading.dashboard.back', default: '← All suggestions'),

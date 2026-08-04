@@ -101,8 +101,8 @@ module I18nProofreading
       get '/i18n_proofreading/', params: { suggestion_id: suggestion.id }
 
       assert_response :ok
-      assert_includes response.body, 'review-shell has-selected'
-      assert_includes response.body, 'suggestion-row active'
+      assert_includes response.body, 'dashboard-shell has-selected'
+      assert_includes response.body, 'record-row active'
       assert_includes response.body, 'Hi there'
       assert_includes response.body, 'translator@example.test'
       assert_operator response.body.rindex('translator@example.test'), :<, response.body.rindex('Hi there')
