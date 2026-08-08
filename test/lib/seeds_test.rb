@@ -12,5 +12,8 @@ class SeedsTest < ActiveSupport::TestCase
     assert_equal 3, I18nProofreading::Suggestion.where("author_id LIKE 'i18n-proofreading-demo:%'").count
     assert_equal I18nProofreading::Suggestion::STATUSES.sort, first.map(&:status).sort
     assert_includes first.map(&:locale), 'fr'
+    assert_includes first.find(&:status_pending?).comment, 'pending suggestions are the review inbox'
+    assert_includes first.find(&:status_applied?).comment, 'The gem never edits YAML for you'
+    assert_includes first.find(&:status_rejected?).comment, 'Rejected on purpose'
   end
 end

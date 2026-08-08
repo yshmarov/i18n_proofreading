@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.12.1
+
+- **The demo suggestions now teach the review contract.** Pending explains the
+  inbox decision, applied makes clear that a human edited and committed the
+  locale file, and rejected demonstrates a proposal that changes meaning. The
+  seed is now a compact tutorial for the gem's deliberately read-only role.
+- `i18n_proofreading:seed_demo` updates its existing demo suggestions in place,
+  so rerunning it overwrites edits to those gem-owned rows. Host locale files
+  and non-demo suggestions remain untouched.
+
 ## 0.12.0
 
 - **One design system across the family.** The stylesheet now opens with a

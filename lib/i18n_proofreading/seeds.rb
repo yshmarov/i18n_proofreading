@@ -7,34 +7,37 @@ module I18nProofreading
         translation_key: 'dashboard.title',
         locale: 'en',
         old_value: 'Dashboard',
-        proposed_value: 'Overview',
-        comment: 'Shorter and clearer for the first screen.',
+        proposed_value: 'Product overview',
+        comment: 'Start here: pending suggestions are the review inbox. Compare the rendered wording and ' \
+                 'page context, then decide whether the proposed copy belongs in your locale file.',
         page_url: '/dashboard',
         status: 'pending',
         author_id: 'i18n-proofreading-demo:reviewer',
-        author_label: 'Demo Reviewer'
+        author_label: 'Demo reviewer · needs a decision'
       },
       {
         translation_key: 'billing.cta',
         locale: 'en',
         old_value: 'Go',
         proposed_value: 'Update billing details',
-        comment: 'The button should say what will happen.',
+        comment: 'Applied is bookkeeping, not automation: a maintainer copied this clearer call to action ' \
+                 'into config/locales and committed the change. The gem never edits YAML for you.',
         page_url: '/billing',
         status: 'applied',
         author_id: 'i18n-proofreading-demo:copywriter',
-        author_label: 'Demo Copywriter'
+        author_label: 'Demo copywriter · applied by a human'
       },
       {
         translation_key: 'settings.cancel',
         locale: 'fr',
         old_value: 'Annuler',
         proposed_value: 'Supprimer le compte',
-        comment: 'Rejected example: this changes the meaning.',
+        comment: 'Rejected on purpose: the proposal means “Delete the account,” not “Cancel.” The original ' \
+                 'translation stays the source of truth, and the rejected row preserves the review decision.',
         page_url: '/settings',
         status: 'rejected',
         author_id: 'i18n-proofreading-demo:reviewer',
-        author_label: 'Demo Reviewer'
+        author_label: 'Demo reviewer · meaning changed'
       }
     ].freeze
 
