@@ -5,7 +5,7 @@ Instructions for coding agents. Two audiences:
 - **[Installing i18n_proofreading into a Rails app](#installing-into-a-rails-app)** — you are working in a host app and were asked to add in-context translation review or a way for someone to suggest better wording.
 - **[Working on the gem itself](#working-on-the-gem-itself)** — you are working in this repository.
 
-Requirements: Ruby 3.2–4.0, Rails 7.1–8.1. The widget needs the CSRF token from `csrf_meta_tags`, which a standard Rails layout already has.
+Requirements: Ruby >= 3.2, Rails >= 7.1 and < 9. The widget needs the CSRF token from `csrf_meta_tags`, which a standard Rails layout already has.
 
 **Read this first: the gem never writes to your locale files, and it is not a production tool.** Both are deliberate, and both are covered below.
 
