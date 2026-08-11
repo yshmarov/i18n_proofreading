@@ -27,10 +27,34 @@ jobs:
           bundler-cache: true
       - name: Run tests before publishing
         run: bundle exec rake test
+      - name: Verify tag matches gem version
+        run: |
+          version="$(ruby -Ilib -r i18n_proofreading/version -e 'print I18nProofreading::VERSION')"
+          test "$GITHUB_REF_NAME" = "v$version"
+      - name: Check whether this version is already published
+        id: release
+        env:
+          GEM_NAME: i18n_proofreading
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          if ruby -rjson -rnet/http -ruri -e '
+            name, version = ARGV
+            uri = URI("https://rubygems.org/api/v1/versions/#{name}.json")
+            versions = JSON.parse(Net::HTTP.get(uri))
+            exit(versions.any? { |item| item.fetch("number") == version } ? 0 : 1)
+          ' "$GEM_NAME" "$version"
+          then
+            echo "$GEM_NAME $version is already published; nothing to do."
+            echo "needed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "needed=true" >> "$GITHUB_OUTPUT"
+          fi
       # Exchanges the GitHub Actions OIDC token for a short-lived RubyGems API
       # key (sets GEM_HOST_API_KEY). Same action rubygems/release-gem uses.
       - uses: rubygems/configure-rubygems-credentials@v2.1.0
+        if: steps.release.outputs.needed == 'true'
       - name: Build and push the gem
+        if: steps.release.outputs.needed == 'true'
         run: |
           gem build i18n_proofreading.gemspec
           gem push i18n_proofreading-*.gem
