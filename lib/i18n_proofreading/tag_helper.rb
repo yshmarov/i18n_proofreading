@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 
 module I18nProofreading
-  # Lets a host place the widget explicitly (`<%= i18n_proofreading_tag %>` at the end
-  # of a layout) instead of relying on auto-injection. Renders nothing unless the
-  # tool is available for the current request.
+  # Lets a host place the widget explicitly (`<%= i18n_proofreading_tag %>` at
+  # the end of a layout) instead of relying on auto-injection. This lives under
+  # lib and is required before the engine registers its Action View load hook:
+  # a host initializer may load Action View before Rails sets up application
+  # autoloaders, when an app/helpers constant cannot be resolved yet.
   module TagHelper
     def i18n_proofreading_tag
       return ''.html_safe unless I18nProofreading.available?(request)

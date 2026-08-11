@@ -1,5 +1,32 @@
 # Changelog
 
+## [Unreleased]
+
+## [1.0.0] - 2026-08-11
+
+- **The documented integration surface is now the stable 1.x contract.**
+  `I18nProofreading.configure`, every generated configuration option,
+  `mount_i18n_proofreading`, `i18n_proofreading_tag`, the toggle parameter,
+  `I18nProofreading::Suggestion`'s documented fields/status helpers/scopes, and
+  the `on_submit` callback will follow semantic versioning. Engine controllers,
+  partials, CSS classes and widget internals remain private implementation.
+- **Hosts that load Action View from an initializer boot normally.** `TagHelper`
+  is required from `lib` before the engine registers its Action View load hook,
+  rather than relying on an `app/helpers` autoload that Rails may not have set
+  up yet. A dummy-host initializer now reproduces that early load on every test
+  boot. The helper constant and `i18n_proofreading_tag` API are unchanged.
+- Supported combinations are Ruby 3.2 through 4.0 and Rails 7.1 through 8.1.
+  Rails now has a `< 9` upper bound: future Rails majors must pass the suite
+  before Bundler treats them as supported.
+- Added a security policy and documented the data a suggestion stores, the
+  production-off default, private vulnerability reporting, and host-owned
+  retention/deletion. Upgrading from 0.12.1 requires no migration or config
+  change.
+- Release validation now runs the normal and browser suites, RuboCop, the
+  widget syntax check and gem build on Ruby 4.0; it verifies the published
+  version and creates the GitHub Release. Generator tests now write only under
+  ignored root `tmp/`, so running the suite no longer rewrites tracked fixtures.
+
 ## 0.12.1
 
 - **The demo suggestions now teach the review contract.** Pending explains the
@@ -71,8 +98,6 @@
   `Rails.configuration.generators` lookup Rails' own Active Storage migration
   does, so a uuid-keyed host gets a uuid table.
 - A `BackboneTest` now fails the build on any of the above regressing.
-
-## [Unreleased]
 
 ## [0.10.6]
 

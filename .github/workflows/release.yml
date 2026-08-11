@@ -17,20 +17,25 @@ jobs:
   release:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       id-token: write # exchange the OIDC token with RubyGems
     steps:
       - uses: actions/checkout@v5
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: "3.4"
+          ruby-version: "4.0"
           bundler-cache: true
-      - name: Run tests before publishing
-        run: bundle exec rake test
       - name: Verify tag matches gem version
         run: |
           version="$(ruby -Ilib -r i18n_proofreading/version -e 'print I18nProofreading::VERSION')"
           test "$GITHUB_REF_NAME" = "v$version"
+      - name: Validate release
+        run: |
+          bundle exec rake test
+          bundle exec rake test:system
+          bundle exec rubocop
+          node --check lib/i18n_proofreading/widget.js
+          gem build i18n_proofreading.gemspec
       - name: Check whether this version is already published
         id: release
         env:
@@ -56,5 +61,35 @@ jobs:
       - name: Build and push the gem
         if: steps.release.outputs.needed == 'true'
         run: |
-          gem build i18n_proofreading.gemspec
           gem push i18n_proofreading-*.gem
+      - name: Verify the published version
+        env:
+          GEM_NAME: i18n_proofreading
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          for attempt in 1 2 3 4 5 6
+          do
+            if ruby -rjson -rnet/http -ruri -e '
+              name, version = ARGV
+              uri = URI("https://rubygems.org/api/v1/versions/#{name}.json")
+              versions = JSON.parse(Net::HTTP.get(uri))
+              exit(versions.any? { |item| item.fetch("number") == version } ? 0 : 1)
+            ' "$GEM_NAME" "$version"
+            then
+              exit 0
+            fi
+            echo "RubyGems has not indexed $GEM_NAME $version yet (attempt $attempt/6)."
+            sleep 5
+          done
+          exit 1
+      - name: Create the GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1
+          then
+            echo "$GITHUB_REF_NAME already has a GitHub release."
+          else
+            gh release create "$GITHUB_REF_NAME" --verify-tag --generate-notes \
+              --title "i18n_proofreading $GITHUB_REF_NAME"
+          fi

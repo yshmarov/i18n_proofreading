@@ -46,8 +46,8 @@ No layout change needed — the widget injects itself into HTML responses.
 > `%w[development staging]`, and the review dashboard defaults to development
 > only. This is not a production tool.
 
-Ruby >= 3.2 · Rails >= 7.1 · CSRF token comes from `csrf_meta_tags`, already in
-a standard Rails layout.
+Ruby 3.2–4.0 · Rails 7.1–8.1 · CSRF token comes from `csrf_meta_tags`, already
+in a standard Rails layout.
 
 Installing with a coding agent? Point it at [AGENTS.md](AGENTS.md) — the same
 steps in the order an agent needs them, the gates it tends to get wrong, and the
@@ -273,6 +273,36 @@ to use the localized `i18n_proofreading.pill` key.
 
 </details>
 
+## Compatibility and public API
+
+Starting with 1.0, these documented integration points follow semantic
+versioning: incompatible changes wait for a new major version, while a
+deprecation normally ships in a preceding minor release.
+
+- `I18nProofreading.configure` and the configuration options listed above.
+- `mount_i18n_proofreading at:` and the mounted dashboard root.
+- `i18n_proofreading_tag` for hosts that disable automatic injection.
+- The configured toggle parameter and its `true` / `false` behavior.
+- `I18nProofreading::Suggestion` fields documented under Reviewing
+  suggestions, `STATUSES`, prefixed status helpers/scopes, and `newest_first`.
+- `on_submit`, called with the saved suggestion.
+
+Engine controllers, view partials, CSS classes, generated HTML structure, and
+the JavaScript object behind the widget are implementation details. Integrate
+through the APIs above rather than reopening or linking to those internals.
+
+Supported versions are Ruby 3.2 through 4.0 and Rails 7.1 through 8.1. The gem
+depends on Rails `< 9`; support for a future Rails major is released after that
+major passes the compatibility and browser suites.
+
+### Upgrading from 0.12.1
+
+Change the version requirement and run `bundle update i18n_proofreading`. No
+database migration, generator, initializer change, or data rewrite is needed.
+The `I18nProofreading::TagHelper` constant and `i18n_proofreading_tag` behavior
+are unchanged; only the helper's internal load location moved so hosts that
+configure Action View during initialization can boot reliably.
+
 ## Security
 
 - **Gated on the server** for every marker, endpoint, and injection. Setting
@@ -286,6 +316,12 @@ to use the localized `i18n_proofreading.pill` key.
   survives Turbo visits.
 - **Rate-limited per IP** on the submission endpoint (30/min by default,
   Rails 7.2+).
+- **Host-owned review data.** A row may contain translated text, proposed text,
+  a comment, page URL, and optional author fields. The host controls access,
+  backups, retention, and deletion.
+
+Report vulnerabilities privately through the process in
+[SECURITY.md](SECURITY.md), not through a public issue.
 
 ## Development
 
@@ -296,7 +332,8 @@ bundle exec rake test:system  # browser tests (headless Chrome)
 bundle exec rubocop
 ```
 
-Tests run against a dummy Rails app in `test/dummy`.
+Tests run against a dummy Rails app in `test/dummy`. CI covers Ruby 3.2–4.0
+against Rails 7.1–8.1, plus the real browser flow on Ruby 4.0.
 
 ## One family
 
