@@ -5,10 +5,15 @@ on:
     branches: [main]
   pull_request:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
     name: Test (Ruby ${{ matrix.ruby }} / Rails ${{ matrix.rails }})
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     strategy:
       fail-fast: false
       matrix:
@@ -28,6 +33,7 @@ jobs:
   system:
     name: System tests (widget, headless Chrome)
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v5
       - uses: ruby/setup-ruby@v1
@@ -41,6 +47,7 @@ jobs:
   lint:
     name: RuboCop
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v5
       - uses: ruby/setup-ruby@v1
