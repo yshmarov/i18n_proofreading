@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-08-11
+
+- **A failing `on_submit` hook no longer turns a saved suggestion into a 500.**
+  The failure is logged after persistence, so host notifications cannot make
+  the review submission appear lost.
+- **Stored page context is now privacy-filtered.** Only bounded HTTP(S) URLs
+  without credentials, query strings, or fragments are retained.
+
 ## [1.0.0] - 2026-08-11
 
 - **The documented integration surface is now the stable 1.x contract.**

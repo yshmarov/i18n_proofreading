@@ -37,10 +37,11 @@ module I18nProofreading
 
     def create
       suggestion = Suggestion.new(suggestion_params)
+      suggestion.page_url = clean_page_url(suggestion.page_url)
       attribute_author(suggestion)
 
       if suggestion.save
-        I18nProofreading.config.on_submit.call(suggestion)
+        notify_host(suggestion)
         head :created
       else
         render json: { errors: suggestion.errors.full_messages }, status: :unprocessable_entity
@@ -48,6 +49,15 @@ module I18nProofreading
     end
 
     private
+
+    # The host's hook must never turn a saved suggestion into a 500 — the
+    # suggestion is in the database; notification failures are the host's
+    # logs' problem.
+    def notify_host(suggestion)
+      I18nProofreading.config.on_submit.call(suggestion)
+    rescue StandardError => e
+      Rails.logger.error("i18n_proofreading: on_submit hook raised #{e.class}: #{e.message}")
+    end
 
     def attribute_author(suggestion)
       author = current_author

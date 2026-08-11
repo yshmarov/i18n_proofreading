@@ -28,6 +28,24 @@ module I18nProofreading
       assert_equal 'Hi there', Suggestion.last.proposed_value
     end
 
+    test 'stores only a safe query-free source page' do
+      post '/i18n_proofreading/suggestions', params: {
+        suggestion: valid_params[:suggestion].merge(
+          page_url: 'https://example.test/sample?token=secret#copy'
+        )
+      }
+
+      assert_response :created
+      assert_equal 'https://example.test/sample', Suggestion.last.page_url
+
+      post '/i18n_proofreading/suggestions', params: {
+        suggestion: valid_params[:suggestion].merge(page_url: 'https://user:secret@example.test/private')
+      }
+
+      assert_response :created
+      assert_nil Suggestion.last.page_url
+    end
+
     test 'rejects an invalid suggestion' do
       post '/i18n_proofreading/suggestions',
            params: { suggestion: { translation_key: '', locale: 'en', proposed_value: '' } }
@@ -63,6 +81,17 @@ module I18nProofreading
       assert_kind_of Suggestion, submitted
       assert_predicate submitted, :persisted?
       assert_equal 'Hi there', submitted.proposed_value
+    end
+
+    test 'keeps the saved suggestion when the on_submit hook raises' do
+      I18nProofreading.config.on_submit = ->(_suggestion) { raise 'host notification failed' }
+
+      assert_difference -> { Suggestion.count }, 1 do
+        post '/i18n_proofreading/suggestions', params: valid_params
+      end
+
+      assert_response :created
+      assert_equal 'Hi there', Suggestion.last.proposed_value
     end
 
     test 'does not run the on_submit hook when the suggestion is invalid' do
