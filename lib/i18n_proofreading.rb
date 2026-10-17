@@ -2,6 +2,7 @@
 
 require 'i18n_proofreading/version'
 require 'i18n_proofreading/configuration'
+require 'i18n_proofreading/ractor_support'
 require 'i18n_proofreading/marking'
 require 'i18n_proofreading/widget'
 require 'i18n_proofreading/tag_helper'

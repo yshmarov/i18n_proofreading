@@ -13,6 +13,15 @@ module I18nProofreading
 
     enum :status, STATUSES.index_by(&:itself), prefix: :status, default: :pending
 
+    # Explicit methods work in non-main Ractors; Rails' enum-generated
+    # predicates and bang methods are currently unisolated closures.
+    def status_pending? = status_for_database == 'pending'
+    def status_pending! = update!(status: 'pending')
+    def status_applied? = status_for_database == 'applied'
+    def status_applied! = update!(status: 'applied')
+    def status_rejected? = status_for_database == 'rejected'
+    def status_rejected! = update!(status: 'rejected')
+
     validates :translation_key, presence: true, length: { maximum: 500 }
     validates :proposed_value, presence: true, length: { maximum: 5_000 }
     validates :old_value, length: { maximum: 5_000 }

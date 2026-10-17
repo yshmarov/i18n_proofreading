@@ -2,7 +2,18 @@
 
 module I18nProofreading
   class Engine < ::Rails::Engine
+    initializer 'i18n_proofreading.ractor_middleware' do |app|
+      app.middleware.insert_before 0, RactorSupport::Middleware
+    end
+
     isolate_namespace I18nProofreading
+
+    initializer 'i18n_proofreading.ractorize', before: 'action_controller.ractorize' do
+      if Rails::Application.method_defined?(:ractorize!)
+        Engine.routes.singleton_class.prepend(RactorSupport::MountedRoutes)
+      end
+      ActiveSupport.on_load(:before_ractorize) { I18nProofreading::RactorSupport.prepare! }
+    end
 
     rake_tasks do
       load File.expand_path('../tasks/i18n_proofreading_tasks.rake', __dir__)

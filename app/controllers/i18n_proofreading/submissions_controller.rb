@@ -15,7 +15,7 @@ module I18nProofreading
     # Rails.cache); a no-op on Rails 7.1. Tune or disable via config.rate_limit —
     # read once at boot, after the host's initializer.
     if respond_to?(:rate_limit) && I18nProofreading.config.rate_limit
-      rate_limit(**I18nProofreading.config.rate_limit,
+      I18nProofreading::RactorSupport.rate_limit(self, **I18nProofreading.config.rate_limit,
                  only: :create,
                  with: lambda {
                    render json: { errors: ['Too many suggestions. Please slow down and try again.'] },

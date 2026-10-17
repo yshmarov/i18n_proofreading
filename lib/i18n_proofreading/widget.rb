@@ -14,8 +14,8 @@ module I18nProofreading
     # pipeline never ingests it: Rails auto-registers every engine's
     # app/assets/* directory, which would put this file in the host's asset
     # namespace as a bare "widget.js" and into its precompiled output.
-    SOURCE = File.expand_path('widget.js', __dir__)
-    DASHBOARD_STYLESHEET_SOURCE = File.expand_path('dashboard.css', __dir__)
+    SOURCE = File.expand_path('widget.js', __dir__).freeze
+    DASHBOARD_STYLESHEET_SOURCE = File.expand_path('dashboard.css', __dir__).freeze
 
     # Right-to-left scripts, so the popover renders mirrored for those locales.
     # Matched on the language subtag, so region variants ("ar-EG") count too.
