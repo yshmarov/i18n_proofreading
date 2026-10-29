@@ -2,6 +2,20 @@
 
 ## [Unreleased]
 
+- **A Turbo visit to a page without the tool now switches the widget off.**
+  Before, the widget kept the previous page's config when the new page carried
+  none, so the pill survived a sign-out or `enabled` turning false until a hard
+  reload, and a visit made while in suggest mode (Back, `Turbo.visit`) kept
+  every click on the new page frozen. A host that worked around this with a
+  `data-turbo-track="reload"` element can drop it.
+- **The pill comes back after a Turbo render that has no `turbo:load`**, such
+  as a form answered with a 422 or a morph refresh. The widget's per-page setup
+  now runs on `turbo:render` as well as `turbo:load`; it is idempotent, so a
+  normal visit runs it twice at the cost of rebuilding one button.
+- Costs: a page with a malformed config block now gets no widget instead of the
+  previous page's; a host that injects the tag in only some layouts sees the
+  pill only on those pages. No configuration, migration, or server-side change.
+
 ## [1.1.0] - 2026-10-18
 
 - Add Rails edge CI and experimental Ruby 4.0+ Ractor request support. The host
