@@ -27,7 +27,7 @@ The generator writes `config/initializers/i18n_proofreading.rb`, one migration (
 
 ### 2. There is no step 2 — do not edit the layout
 
-The widget injects itself into HTML responses through a Rack middleware, so **no layout change is needed**. Boot the app in development and look for the **"Suggest edits"** pill bottom-left. Click it, then click any text; `Esc` exits.
+The widget injects itself into HTML responses through a Rack middleware, so **no layout change is needed**. Boot the app in development and look for the **"Improve translation"** pill bottom-left. Click it, then click any text; `Esc` exits.
 
 Only if the host prefers to place it explicitly:
 

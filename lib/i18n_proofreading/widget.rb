@@ -106,7 +106,7 @@ module I18nProofreading
       # stays fully worded even for a locale the gem ships no translation for.
       def labels(locale)
         {
-          pill: t(locale, :pill, 'Suggest edits'),
+          pill: t(locale, :pill, 'Improve translation'),
           pillActive: t(locale, :pill_active, 'Stop suggesting (Esc)'),
           title: t(locale, :title, 'Suggest a translation fix'),
           currentText: t(locale, :current_text, 'Current text'),

@@ -1,6 +1,6 @@
 fr:
   i18n_proofreading:
-    pill: "Proposer des corrections"
+    pill: "Améliorer la traduction"
     start: "Améliorer la traduction"
     stop: "Arrêter de proposer (Esc)"
     pill_active: "Arrêter de proposer (Échap)"

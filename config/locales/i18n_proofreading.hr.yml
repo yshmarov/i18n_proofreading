@@ -1,6 +1,6 @@
 hr:
   i18n_proofreading:
-    pill: "Predloži izmjene"
+    pill: "Poboljšaj prijevod"
     pill_active: "Prestani predlagati (Esc)"
     start: "Poboljšaj prijevod"
     stop: "Prestani predlagati (Esc)"

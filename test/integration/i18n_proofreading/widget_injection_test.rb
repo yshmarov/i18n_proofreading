@@ -64,6 +64,16 @@ module I18nProofreading
       assert_includes response.body, '"save":"Send suggestion"'
     end
 
+    # "Suggest edits" did not say what the tool is for; the pill now uses the
+    # same words as the documented menu-item label (`start`).
+    test 'labels the pill with what it is for' do
+      get '/sample'
+      assert_includes response.body, '"pill":"Improve translation"'
+
+      I18n.with_locale(:fr) { get '/sample' }
+      assert_includes response.body, '"pill":"Améliorer la traduction"'
+    end
+
     test 'follows the app locale for the widget labels using the shipped translations' do
       I18n.with_locale(:fr) { get '/sample' }
 

@@ -47,6 +47,24 @@ module I18nProofreading
       assert_no_selector "[data-i18n-key='sample.greeting']" # markers gone — back out
     end
 
+    # A host that hardens every cookie (SecureHeaders adds HttpOnly) makes the
+    # suggest-mode cookie unwritable from JavaScript, so the widget must leave
+    # the switch to the server. Overskill reproduced this in production.
+    test 'Escape and the pill exit suggest mode even when the cookie is HttpOnly' do
+      visit '/sample'
+      %i[escape pill].each do |control|
+        suggest_with_http_only_cookie
+        if control == :escape
+          find('body').send_keys(:escape)
+        else
+          find('.i18np-pill').click
+        end
+
+        assert_no_selector "[data-i18n-key='sample.greeting']", wait: 5
+        assert_nil suggest_cookie, "#{control} left the suggest-mode cookie in place"
+      end
+    end
+
     # The plain sample has no Turbo, so these tests do what Turbo Drive does on a
     # visit: replace <body> (keeping <html> and <head>), then fire the event.
     # A body with no config block is a page the tool is not available on: the
@@ -55,7 +73,7 @@ module I18nProofreading
     UNAVAILABLE_BODY = <<~HTML
       <h1>Elsewhere</h1>
       <a id="onward" href="#landed">Onward</a>
-      <button type="button" class="i18np-pill">✎ Suggest edits</button>
+      <button type="button" class="i18np-pill">✎ Improve translation</button>
     HTML
 
     test 'a Turbo visit to a page without the tool removes the pill' do
@@ -176,6 +194,16 @@ module I18nProofreading
     end
 
     private
+
+    def suggest_with_http_only_cookie
+      page.driver.browser.manage.add_cookie(name: 'i18n_proofreading', value: '1', path: '/', http_only: true)
+      visit '/sample'
+      assert_selector "[data-i18n-key='sample.greeting']" # in suggest mode
+    end
+
+    def suggest_cookie
+      page.driver.browser.manage.all_cookies.find { |cookie| cookie[:name] == 'i18n_proofreading' }
+    end
 
     # The page as the server sent it: the pill is built by the widget, so a
     # fresh response never contains one.
