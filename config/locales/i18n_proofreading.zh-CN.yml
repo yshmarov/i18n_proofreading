@@ -1,6 +1,6 @@
 zh-CN:
   i18n_proofreading:
-    pill: "建议修改"
+    pill: "改进翻译"
     start: "改进翻译"
     stop: "停止建议 (Esc)"
     pill_active: "停止建议（Esc）"

@@ -1,6 +1,6 @@
 ko:
   i18n_proofreading:
-    pill: "수정 제안"
+    pill: "번역 개선"
     start: "번역 개선"
     stop: "제안 중지 (Esc)"
     pill_active: "제안 중지 (Esc)"

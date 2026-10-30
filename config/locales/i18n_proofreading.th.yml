@@ -1,6 +1,6 @@
 th:
   i18n_proofreading:
-    pill: "แนะนำการแก้ไข"
+    pill: "ปรับปรุงคำแปล"
     start: "ปรับปรุงคำแปล"
     stop: "หยุดแนะนำ (Esc)"
     pill_active: "หยุดแนะนำ (Esc)"

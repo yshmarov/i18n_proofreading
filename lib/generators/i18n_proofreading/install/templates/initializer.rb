@@ -52,7 +52,7 @@ I18nProofreading.configure do |config|
   #
   # config.auto_inject = true
 
-  # Show the floating "Suggest edits" pill. Set false to hide it and toggle
+  # Show the floating "Improve translation" pill. Set false to hide it and toggle
   # suggest mode from your own link instead, e.g.
   # `<%= link_to "Proofread", "?i18n_proofreading=true" %>`. "?i18n_proofreading=false"
   # exits; the choice is remembered in a cookie. Set :auto to hide the pill only

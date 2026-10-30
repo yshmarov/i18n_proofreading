@@ -2,6 +2,29 @@
 
 ## [Unreleased]
 
+## [1.2.1] - 2026-10-30
+
+### Fixed
+
+- **Esc and the pill now leave suggest mode on apps that harden their
+  cookies.** The widget used to switch the mode by writing the
+  `i18n_proofreading` cookie from JavaScript and reloading. An app that adds
+  `HttpOnly` to every cookie (SecureHeaders does in production) makes that
+  cookie unwritable from a script, so the delete was silently dropped and the
+  page reloaded still in suggest mode. The widget now visits the page with the
+  toggle parameter, the same server-side switch a host link uses.
+- Costs: turning the mode on or off is now a redirect (one extra request)
+  instead of a reload. A page reached by a form POST is left with a GET to the
+  same URL, where a reload used to re-submit the form.
+
+### Changed
+
+- **The pill reads "Improve translation"** (the `start` label, already
+  translated in every bundled language) instead of "Suggest edits", which did
+  not say what the tool is for. A host that overrides
+  `i18n_proofreading.pill` in its own locale files, or sets `pill_label`,
+  keeps its own text.
+
 ## [1.2.0] - 2026-10-30
 
 ### Fixed

@@ -36,7 +36,7 @@ It creates three idempotent sample suggestions across pending, applied, and
 rejected states. Running the task again refreshes those records instead of
 duplicating them.
 
-Boot the app in development and look for the **"Suggest edits"** pill in the
+Boot the app in development and look for the **"Improve translation"** pill in the
 bottom-left. Click it, then click any text. `Esc` exits.
 
 No layout change needed — the widget injects itself into HTML responses.
@@ -112,7 +112,7 @@ Everything is optional — the defaults work out of the box in development. In
 | `author_label` | the user's `email` | Label shown for the author |
 | `available_locales` | `I18n.available_locales` | Which locales a suggestion may target |
 | `auto_inject` | `true` | Inject the widget into HTML responses |
-| `show_pill` | `true` | The floating "Suggest edits" pill. `:auto` shows it only on pages without a toggle link of your own |
+| `show_pill` | `true` | The floating "Improve translation" pill. `:auto` shows it only on pages without a toggle link of your own |
 | `pill_label` | `nil` | Fixed pill text. `nil` uses the localized default |
 | `toggle_param` | `"i18n_proofreading"` | Query param that toggles suggest mode |
 | `mount_path` | `"/i18n_proofreading"` | Keep in sync with `mount` in `routes.rb` |

@@ -73,7 +73,7 @@ module I18nProofreading
     attr_accessor :show_pill
 
     # Text on the floating toggle pill. Leave nil to use the localized default
-    # ("Suggest edits", translated via the `i18n_proofreading.pill` I18n key).
+    # ("Improve translation", translated via the `i18n_proofreading.pill` I18n key).
     attr_accessor :pill_label
 
     # The query-string parameter that turns suggest mode on/off, so a host can

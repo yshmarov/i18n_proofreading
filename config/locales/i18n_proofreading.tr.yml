@@ -1,6 +1,6 @@
 tr:
   i18n_proofreading:
-    pill: "Düzenleme öner"
+    pill: "Çeviriyi iyileştir"
     start: "Çeviriyi iyileştir"
     stop: "Önermeyi durdur (Esc)"
     pill_active: "Önermeyi durdur (Esc)"
