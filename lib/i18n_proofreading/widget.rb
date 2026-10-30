@@ -62,7 +62,7 @@ module I18nProofreading
           endpoint: endpoint,
           locale: locale.to_s,
           active: active ? true : false,
-          showPill: I18nProofreading.config.show_pill ? true : false,
+          showPill: show_pill,
           pillLabel: I18nProofreading.config.pill_label,
           toggleParam: I18nProofreading.config.toggle_param,
           labels: labels(locale),
@@ -87,6 +87,15 @@ module I18nProofreading
       end
 
       private
+
+      # true, false, or "auto": the widget then shows the pill only on a page
+      # without a host toggle link, decided in the browser on every render.
+      def show_pill
+        setting = I18nProofreading.config.show_pill
+        return 'auto' if setting.to_s == 'auto'
+
+        setting ? true : false
+      end
 
       # Every user-facing string in the widget, resolved through Rails I18n so the
       # popover matches the locale the page was rendered in. The locale is passed

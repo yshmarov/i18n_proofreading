@@ -96,6 +96,14 @@ module I18nProofreading
       assert_includes response.body, '"showPill":false'
     end
 
+    test 'passes show_pill :auto to the widget, which decides per page' do
+      I18nProofreading.config.show_pill = :auto
+
+      get '/sample'
+
+      assert_includes response.body, '"showPill":"auto"'
+    end
+
     test 'references the widget code by fingerprinted same-origin src, not inline' do
       get '/sample'
 

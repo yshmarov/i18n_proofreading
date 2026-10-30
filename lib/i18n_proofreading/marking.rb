@@ -32,6 +32,14 @@ module I18nProofreading
       def translate(locale, key, options = {})
         result = super
         return result unless Marking.enabled? && result.is_a?(String)
+        # Blank text has nothing to click, and a marker would make it present:
+        # hosts gate markup on `t(...).presence` (Bullet Train renders every form
+        # field's help and placeholder that way), so suggest mode would render
+        # elements the page does not have.
+        return result if result.blank?
+        # Rails' `t` helper resolves a String `default:` for a missing key with
+        # `I18n.translate(nil, default: ...)`: no key to attribute a suggestion to.
+        return result if key.to_s.empty?
 
         full = [*options[:scope], key].join('.')
         return result if full.match?(SKIP)

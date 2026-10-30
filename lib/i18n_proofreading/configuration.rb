@@ -67,7 +67,9 @@ module I18nProofreading
     attr_accessor :mount_path
 
     # Show the floating toggle pill. Set false to hide it and drive suggest mode
-    # from your own link instead (see #toggle_param).
+    # from your own link instead (see #toggle_param). Set :auto to hide it only
+    # on pages that carry such a link, for a host whose menu is not on every
+    # layout; the widget decides on each render.
     attr_accessor :show_pill
 
     # Text on the floating toggle pill. Leave nil to use the localized default

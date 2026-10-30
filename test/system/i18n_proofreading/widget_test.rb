@@ -133,6 +133,32 @@ module I18nProofreading
       assert_equal '', page.evaluate_script('document.documentElement.style.overflow')
     end
 
+    test 'show_pill :auto leaves the pill to pages without a host toggle link' do
+      I18nProofreading.config.show_pill = :auto
+
+      visit '/sample'
+      assert_selector '.i18np-pill'
+
+      visit '/sample?toggle_link=1'
+      assert_selector '#toggle'
+      assert_no_selector '.i18np-pill'
+
+      # The host link alone drives suggest mode, in and out.
+      find_by_id('toggle').click
+      assert_selector "[data-i18n-key='sample.greeting']"
+      assert_no_selector '.i18np-pill'
+      find_by_id('toggle').click
+      assert_no_selector "[data-i18n-key='sample.greeting']"
+    end
+
+    test 'strips an empty marker that reaches the page' do
+      visit '/sample?stray=1&i18n_proofreading=true'
+
+      assert_selector "[data-i18n-key='sample.greeting']" # in suggest mode
+      assert_equal 'Kept', find_by_id('stray').text
+      assert_equal '', find_by_id('stray-input')['placeholder']
+    end
+
     test 'render and load respect showPill false even when a cached pill remains' do
       visit '/sample'
       assert_selector '.i18np-pill'
