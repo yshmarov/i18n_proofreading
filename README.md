@@ -314,6 +314,9 @@ configure Action View during initialization can boot reliably.
   `script-src` including `strict-dynamic`. Runtime config ships as
   `<script type="application/json">` (data, not code), so it needs no nonce and
   survives Turbo visits.
+- **The browser follows the server's gate across Turbo visits.** A page the
+  middleware injected nothing into (signed out, `enabled` false) turns the
+  widget off: no pill and no suggest mode, even when the previous page had them.
 - **Rate-limited per IP** on the submission endpoint (30/min by default,
   Rails 7.2+).
 - **Host-owned review data.** A row may contain translated text, proposed text,

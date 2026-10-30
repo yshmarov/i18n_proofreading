@@ -46,8 +46,10 @@ module I18nProofreading
       # The config rides in a `type="application/json"` block: it is *data*, not
       # code, so the browser never executes it and Turbo never tries to re-run it
       # on a soft visit — which means it needs no CSP nonce and, crucially, the
-      # widget can re-read the *current* page's config on every `turbo:load`
-      # instead of being stuck with whatever the last full load evaluated.
+      # widget can re-read the *current* page's config after every Turbo render
+      # instead of being stuck with whatever the last full load evaluated. A
+      # page without the block is a page the tool is off for, and the widget
+      # switches itself off there.
       #
       # The code is a same-origin `src` script served by the engine — NOT
       # inlined. Under a nonce-based CSP, Turbo Drive body swaps re-run body

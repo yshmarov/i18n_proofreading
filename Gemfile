@@ -17,4 +17,5 @@ group :development, :test do
   gem 'capybara'
   gem 'puma'
   gem 'selenium-webdriver'
+  gem 'turbo-rails', '~> 2.0', require: false
 end
