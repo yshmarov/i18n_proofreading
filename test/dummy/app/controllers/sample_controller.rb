@@ -22,6 +22,23 @@ class SampleController < ActionController::Base
         </head>
         <body>
           <h1><%= t("sample.greeting") %></h1>
+          <% if params[:fields] %>
+            <%# A host form field the way Bullet Train renders one: optional
+                strings resolved as t(key, default: "").presence, an empty
+                translation, and a String default for a missing key. %>
+            <% help = t("sample.name_help", default: "").presence %>
+            <input id="name" placeholder="<%= t("sample.name_placeholder", default: "") %>">
+            <% if help %><p id="help"><%= help %></p><% end %>
+            <% if (note = t("sample.empty_note").presence) %><p id="note"><%= note %></p><% end %>
+            <p id="fallback"><%= t("sample.missing_title", default: "Fallback title") %></p>
+          <% end %>
+          <% if params[:toggle_link] %>
+            <a id="toggle" href="/sample?<%= request.query_parameters.except("i18n_proofreading").merge("i18n_proofreading" => cookies[:i18n_proofreading].blank?).to_query %>">Toggle</a>
+          <% end %>
+          <% if params[:stray] %>
+            <p id="stray">Kept ⟦⟧</p>
+            <input id="stray-input" placeholder=" ⟦⟧">
+          <% end %>
           <% if params[:turbo] %>
             <a id="onward" href="/sample?turbo=1&unavailable=1&page=next">Onward</a>
             <form action="/sample?turbo=1" method="post">

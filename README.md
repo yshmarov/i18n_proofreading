@@ -87,7 +87,9 @@ works from any app that bundles it.
 
 1. In an enabled environment, the I18n backend appends a hidden `⟦some.key⟧`
    marker to each translated string — only while a reviewer has the tool on
-   (a cookie), so pages are clean by default.
+   (a cookie), so pages are clean by default. Blank strings and Rails'
+   keyless `default:` fallbacks stay unmarked, so a view's `t(...).presence`
+   check behaves the same in suggest mode.
 2. The widget strips every marker out of the DOM on load and remembers which
    key produced each piece of text.
 3. Clicking a string opens a popover: current text, pending suggestions, and a
@@ -110,7 +112,7 @@ Everything is optional — the defaults work out of the box in development. In
 | `author_label` | the user's `email` | Label shown for the author |
 | `available_locales` | `I18n.available_locales` | Which locales a suggestion may target |
 | `auto_inject` | `true` | Inject the widget into HTML responses |
-| `show_pill` | `true` | The floating "Suggest edits" pill |
+| `show_pill` | `true` | The floating "Suggest edits" pill. `:auto` shows it only on pages without a toggle link of your own |
 | `pill_label` | `nil` | Fixed pill text. `nil` uses the localized default |
 | `toggle_param` | `"i18n_proofreading"` | Query param that toggles suggest mode |
 | `mount_path` | `"/i18n_proofreading"` | Keep in sync with `mount` in `routes.rb` |
@@ -145,7 +147,9 @@ config.on_submit = ->(s) { SuggestionMailer.with(suggestion: s).created.deliver_
 
 Prefer a menu item over the floating pill? Drive suggest mode from any link —
 and optionally hide the pill with `config.show_pill = false` (the two can also
-coexist).
+coexist). If the menu is not on every page, `config.show_pill = :auto` hides
+the pill only where the page has a toggle link, so a layout without your menu
+keeps the pill.
 
 A one-way "turn it on" link is just the toggle parameter:
 
@@ -165,7 +169,7 @@ language:
 <% end %>
 ```
 
-Three things worth knowing:
+Four things worth knowing:
 
 - `?i18n_proofreading=true` turns it on, `false` off. State lives in the
   `i18n_proofreading` cookie; the middleware then redirects to the same URL
@@ -173,6 +177,11 @@ Three things worth knowing:
 - These links keep working **while suggest mode is active**. The widget freezes
   ordinary navigation during proofreading so a stray click can't leave the page
   mid-edit — but any link carrying the toggle parameter is exempt.
+- **A hover never toggles.** The link is a GET that flips the mode, and Turbo 8
+  prefetches a link when the pointer rests on it; the widget cancels Turbo's
+  prefetch for any link carrying the toggle parameter. If the app also uses
+  another prefetcher (Speculation Rules, `rel="prefetch"`), exclude these links
+  there.
 - The `i18n_proofreading.*` scope is **exempt from key-marking**, so the tool
   never flags its own controls as editable. No plain-literal workaround needed.
 

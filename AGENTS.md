@@ -83,7 +83,7 @@ The pill is one way; a link is another, and the choice is remembered in a cookie
 ?i18n_proofreading=false   # off
 ```
 
-`config.show_pill = false` hides the pill, `config.pill_label` overrides its text (nil = the localized `i18n_proofreading.pill` key), and `config.toggle_param` renames the parameter.
+`config.show_pill = false` hides the pill, `config.show_pill = :auto` hides it only on pages that carry a toggle link (use it when the menu holding your link is not on every layout), `config.pill_label` overrides its text (nil = the localized `i18n_proofreading.pill` key), and `config.toggle_param` renames the parameter.
 
 ### Do not
 
@@ -108,7 +108,7 @@ Everything is optional; a fresh install works with zero config in development. F
 | `author_label` | email, else `to_s` | Receives the user |
 | `available_locales` | `I18n.available_locales` | Callable; validates what a suggestion may target |
 | `auto_inject` | `true` | `false` = place `i18n_proofreading_tag` yourself |
-| `show_pill`, `pill_label` | `true`, localized | Hide the pill and use `?i18n_proofreading=true` instead |
+| `show_pill`, `pill_label` | `true`, localized | Hide the pill and use `?i18n_proofreading=true` instead; `:auto` hides it only where the page has such a link |
 | `toggle_param` | `"i18n_proofreading"` | Rename the query parameter |
 | `rate_limit` | `{ to: 30, within: 60 }` | Rails 7.2+; ignored on 7.1. `nil` disables |
 | `mount_path` | `"/i18n_proofreading"` | Keep in sync with the `mount` line |
@@ -121,7 +121,7 @@ The tool's own UI ships in 26 languages, RTL mirrored, and follows system light/
 | Symptom | Cause |
 | --- | --- |
 | `NameError` for one of your own helpers in the dashboard | `isolate_namespace` scopes `helper` to the engine. Use `config.base_controller_class` so the dashboard inherits your helpers, rather than `admin_layout` alone. |
-| No pill, no outlines | The environment is not in `enabled_environments` (this is the usual one), or `config.enabled` returned false, or `show_pill = false` |
+| No pill, no outlines | The environment is not in `enabled_environments` (this is the usual one), or `config.enabled` returned false, or `show_pill = false` (or `:auto` on a page with a toggle link) |
 | Pill appears but no strings are outlined | The I18n backend patch is only prepended in an enabled environment at boot — check you are actually in development/staging, and restart after changing the setting |
 | `/i18n_proofreading` returns a 403 | `authorize_admin` still at its development-only default |
 | Suggestions rejected with an invalid-token error | The layout is missing `csrf_meta_tags` |

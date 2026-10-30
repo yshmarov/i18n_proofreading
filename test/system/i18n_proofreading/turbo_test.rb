@@ -66,7 +66,38 @@ module I18nProofreading
       assert_selector "[data-i18n-key='sample.greeting']"
     end
 
+    # The toggle is a GET that flips suggest mode, and Turbo 8 prefetches a link
+    # when the pointer rests on it, so without a guard a hover toggles the mode.
+    test 'hovering a host toggle link never prefetches it' do
+      visit '/sample?turbo=1&toggle_link=1'
+      assert_selector '.i18np-pill'
+      track_fetches
+
+      # Control: an ordinary link is prefetched on hover, so the hover is real.
+      find_by_id('onward').hover
+      assert_selector "html[data-proofreading-fetches*='page=next']"
+
+      find_by_id('toggle').hover
+      sleep 0.5 # well past Turbo's 100ms prefetch delay
+      assert_no_selector "html[data-proofreading-fetches*='i18n_proofreading=']"
+      assert_not_includes page.evaluate_script('document.cookie'), 'i18n_proofreading=1'
+
+      # A click still toggles.
+      find_by_id('toggle').click
+      assert_selector "[data-i18n-key='sample.greeting']"
+    end
+
     private
+
+    def track_fetches
+      page.execute_script(<<~JS)
+        window.proofreadingFetches = [];
+        document.addEventListener('turbo:before-fetch-request', function (event) {
+          window.proofreadingFetches.push(event.detail.url.href);
+          document.documentElement.dataset.proofreadingFetches = window.proofreadingFetches.join(' ');
+        });
+      JS
+    end
 
     def track_turbo
       page.execute_script(<<~JS)

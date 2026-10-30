@@ -2,7 +2,38 @@
 
 ## [Unreleased]
 
-## [1.1.1] - 2026-10-30
+## [1.2.0] - 2026-10-30
+
+### Fixed
+
+- **Suggest mode no longer renders elements a page does not have.** A blank
+  translation (an empty value, or a `default: ""` for a missing key) used to get
+  a marker, which made it present: a view gating markup on `t(...).presence`
+  rendered it in suggest mode only. Bullet Train resolves every form field's
+  help and placeholder that way, so each field grew an empty help paragraph.
+  Blank results are now left unmarked.
+- **No more stray `⟦⟧` on the page.** Rails' `t` helper resolves a String
+  `default:` for a missing key with `I18n.translate(nil, ...)`; the backend
+  marked that keyless result with an empty `⟦⟧`, which the widget could not
+  strip, so it showed beside the text and in placeholders. Keyless fallbacks
+  are now left unmarked, and the widget strips any empty marker that still
+  reaches the page.
+- **Hovering a host toggle link no longer toggles suggest mode.** The link is a
+  GET that flips the mode, and Turbo 8 prefetches a link when the pointer rests
+  on it, so a hover alone turned suggest mode on or off. The widget now cancels
+  Turbo's prefetch (`turbo:before-prefetch`) for any link carrying the toggle
+  parameter. Other prefetchers (Speculation Rules) are not covered.
+- Costs: a `default:` fallback for a missing key is no longer clickable in
+  suggest mode. It had no key to attribute a suggestion to, so it could not be
+  submitted usefully anyway. Blank strings are no longer clickable either; they
+  rendered nothing to click.
+
+### Added
+
+- **`config.show_pill = :auto`** shows the pill only on pages without a toggle
+  link of the host's own, decided by the widget on every render. For a host
+  whose menu item is not on every layout: pages with the menu get only the menu
+  item, the rest keep the pill. The default stays `true`.
 
 ### Fixed
 
