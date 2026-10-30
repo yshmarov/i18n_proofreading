@@ -47,7 +47,7 @@ module I18nProofreading
       assert_no_selector "[data-i18n-key='sample.greeting']" # markers gone — back out
     end
 
-    # The dummy host has no Turbo, so these tests do what Turbo Drive does on a
+    # The plain sample has no Turbo, so these tests do what Turbo Drive does on a
     # visit: replace <body> (keeping <html> and <head>), then fire the event.
     # A body with no config block is a page the tool is not available on: the
     # middleware injected nothing (signed out, `enabled` false, a layout without
@@ -102,6 +102,51 @@ module I18nProofreading
       turbo_swap_body(available_body, 'turbo:render')
 
       assert_selector '.i18np-pill', count: 1
+    end
+
+    test 'malformed configuration switches off suggest mode and releases an open dialog' do
+      visit '/sample?i18n_proofreading=true'
+      find("[data-i18n-key='sample.greeting']").click
+      assert_selector '.i18np-panel'
+
+      turbo_swap_body("#{UNAVAILABLE_BODY}<script data-i18n-proofreading-config>{broken</script>", 'turbo:render')
+
+      assert_no_selector '.i18np-pill'
+      assert_no_selector '.i18np-panel'
+      assert_equal '', page.evaluate_script('document.documentElement.style.overflow')
+      find_by_id('onward').click
+      assert_equal '#landed', page.evaluate_script('window.location.hash')
+    end
+
+    test 'a render that preserves the dialog closes it when the tool becomes unavailable' do
+      visit '/sample?i18n_proofreading=true'
+      find("[data-i18n-key='sample.greeting']").click
+      assert_selector '.i18np-panel'
+
+      page.execute_script(<<~JS)
+        document.querySelector('script[data-i18n-proofreading-config]').remove();
+        document.dispatchEvent(new Event('turbo:render', { bubbles: true }));
+      JS
+
+      assert_no_selector '.i18np-panel'
+      assert_no_selector '.i18np-pill'
+      assert_equal '', page.evaluate_script('document.documentElement.style.overflow')
+    end
+
+    test 'render and load respect showPill false even when a cached pill remains' do
+      visit '/sample'
+      assert_selector '.i18np-pill'
+
+      page.execute_script(<<~JS)
+        var element = document.querySelector('script[data-i18n-proofreading-config]');
+        var config = JSON.parse(element.textContent);
+        config.showPill = false;
+        element.textContent = JSON.stringify(config);
+        document.dispatchEvent(new Event('turbo:render', { bubbles: true }));
+        document.dispatchEvent(new Event('turbo:load', { bubbles: true }));
+      JS
+
+      assert_no_selector '.i18np-pill'
     end
 
     private
