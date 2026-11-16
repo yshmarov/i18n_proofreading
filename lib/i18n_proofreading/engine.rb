@@ -32,6 +32,12 @@ module I18nProofreading
       end
     end
 
+    initializer 'i18n_proofreading.controller_methods' do
+      ActiveSupport.on_load(:action_controller_base) do
+        include I18nProofreading::ControllerMethods
+      end
+    end
+
     initializer 'i18n_proofreading.helper' do
       ActiveSupport.on_load(:action_view) do
         include I18nProofreading::TagHelper

@@ -108,6 +108,7 @@ Everything is optional; a fresh install works with zero config in development. F
 | `author_label` | email, else `to_s` | Receives the user |
 | `available_locales` | `I18n.available_locales` | Callable; validates what a suggestion may target |
 | `auto_inject` | `true` | `false` = place `i18n_proofreading_tag` yourself |
+| `controller_scoped` | `false` | Default pages to off until `enable_i18n_proofreading` runs before rendering |
 | `show_pill`, `pill_label` | `true`, localized | Hide the pill and use `?i18n_proofreading=true` instead; `:auto` hides it only where the page has such a link |
 | `toggle_param` | `"i18n_proofreading"` | Rename the query parameter |
 | `rate_limit` | `{ to: 30, within: 60 }` | Rails 7.2+; ignored on 7.1. `nil` disables |
@@ -159,3 +160,41 @@ Conventions this codebase holds to — follow them rather than the first thing t
 - **`lib/i18n_proofreading/dashboard.css` is half shared.** Everything above the `GEM-SPECIFIC` banner is the design system all five gems in the family ship — the same tokens, the same `.page-head`/`.tabs`/`.filters`/`.card`/`.badge`/`button`/`.status-switch`, the same `.dashboard-shell` + `.record-row` + `.detail-panel` two-pane dashboard — identical in every repo apart from the `ip` prefix. Diff it against a sibling before changing it, and carry the change to the other four. Anything only this gem has goes below the banner. New dashboard markup reuses the shared class names rather than inventing a domain-specific one.
 - Every user-facing change bumps `lib/i18n_proofreading/version.rb` and adds a `CHANGELOG.md` entry (Keep a Changelog format) that says what it costs, not only what it adds.
 - Commit messages are prose that explains the tradeoff — read `git log` before writing one.
+
+## Selecting pages from controllers
+
+`config.enabled` runs before routing. When page eligibility depends on the
+controller, use a `before_action` **before any translations are rendered**:
+
+```ruby
+class PublicController < ApplicationController
+  before_action :disable_i18n_proofreading
+end
+```
+
+This suppresses both markers and the widget, including an explicitly placed
+`i18n_proofreading_tag`. It does not change that page's cache headers.
+
+For an allowlist instead, set `config.controller_scoped = true` in the initializer.
+Pages then start with no markers or widget until an eligible controller opts in:
+
+```ruby
+class AccountController < ApplicationController
+  before_action :authenticate_user!
+  before_action :enable_i18n_proofreading
+end
+```
+
+The environment and `config.enabled` user gates still apply. Authentication and
+which controllers qualify belong to your app; Devise is not required. The
+methods can also be called from your own conditional `before_action`.
+
+Default `controller_scoped = false` preserves existing behavior. Page selection
+is independent of suggestion endpoint authorization, the dashboard gate and the
+toggle-cookie redirect. It is not an authorization mechanism. Do not call these
+methods after rendering: disabling cannot remove markers already rendered.
+
+This API does not isolate marking to view rendering, bypass fragment caches or
+set CDN cache policy. Hosts must still keep marked fragments out of shared
+caches and protect responses containing reviewer-specific widgets. Existing
+render-scoping/cache safeguards should remain when replacing an injection patch.

@@ -112,6 +112,7 @@ Everything is optional — the defaults work out of the box in development. In
 | `author_label` | the user's `email` | Label shown for the author |
 | `available_locales` | `I18n.available_locales` | Which locales a suggestion may target |
 | `auto_inject` | `true` | Inject the widget into HTML responses |
+| `controller_scoped` | `false` | Default pages to off until `enable_i18n_proofreading` runs before rendering |
 | `show_pill` | `true` | The floating "Improve translation" pill. `:auto` shows it only on pages without a toggle link of your own |
 | `pill_label` | `nil` | Fixed pill text. `nil` uses the localized default |
 | `toggle_param` | `"i18n_proofreading"` | Query param that toggles suggest mode |
@@ -199,6 +200,44 @@ Set `config.auto_inject = false` and drop the helper at the end of your layout:
 It renders nothing unless the tool is available for the request.
 
 </details>
+
+## Selecting pages from controllers
+
+`config.enabled` runs before routing. When page eligibility depends on the
+controller, use a `before_action` **before any translations are rendered**:
+
+```ruby
+class PublicController < ApplicationController
+  before_action :disable_i18n_proofreading
+end
+```
+
+This suppresses both markers and the widget, including an explicitly placed
+`i18n_proofreading_tag`. It does not change that page's cache headers.
+
+For an allowlist instead, set `config.controller_scoped = true` in the initializer.
+Pages then start with no markers or widget until an eligible controller opts in:
+
+```ruby
+class AccountController < ApplicationController
+  before_action :authenticate_user!
+  before_action :enable_i18n_proofreading
+end
+```
+
+The environment and `config.enabled` user gates still apply. Authentication and
+which controllers qualify belong to your app; Devise is not required. The
+methods can also be called from your own conditional `before_action`.
+
+Default `controller_scoped = false` preserves existing behavior. Page selection
+is independent of suggestion endpoint authorization, the dashboard gate and the
+toggle-cookie redirect. It is not an authorization mechanism. Do not call these
+methods after rendering: disabling cannot remove markers already rendered.
+
+This API does not isolate marking to view rendering, bypass fragment caches or
+set CDN cache policy. Hosts must still keep marked fragments out of shared
+caches and protect responses containing reviewer-specific widgets. Existing
+render-scoping/cache safeguards should remain when replacing an injection patch.
 
 ## Reviewing suggestions
 
@@ -291,6 +330,7 @@ deprecation normally ships in a preceding minor release.
 - `I18nProofreading.configure` and the configuration options listed above.
 - `mount_i18n_proofreading at:` and the mounted dashboard root.
 - `i18n_proofreading_tag` for hosts that disable automatic injection.
+- `enable_i18n_proofreading` and `disable_i18n_proofreading` controller callbacks.
 - The configured toggle parameter and its `true` / `false` behavior.
 - `I18nProofreading::Suggestion` fields documented under Reviewing
   suggestions, `STATUSES`, prefixed status helpers/scopes, and `newest_first`.
