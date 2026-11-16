@@ -52,6 +52,12 @@ I18nProofreading.configure do |config|
   #
   # config.auto_inject = true
 
+  # Default pages to off until a before_action calls enable_i18n_proofreading.
+  # With the default false, disable_i18n_proofreading excludes individual pages.
+  # Call before rendering; both markers and automatic/manual widgets obey it.
+  # User/environment gates and suggestion endpoint authorization are unchanged.
+  # config.controller_scoped = false
+
   # Show the floating "Improve translation" pill. Set false to hide it and toggle
   # suggest mode from your own link instead, e.g.
   # `<%= link_to "Proofread", "?i18n_proofreading=true" %>`. "?i18n_proofreading=false"

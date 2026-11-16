@@ -1,6 +1,12 @@
 # frozen_string_literal: true
 
 class SampleController < ActionController::Base
+  before_action do
+    enable_i18n_proofreading if params[:proofreading_page] == 'on'
+    disable_i18n_proofreading if params[:proofreading_page] == 'off'
+    response.headers['Cache-Control'] = 'public, max-age=300' if params[:public_cache]
+  end
+
   # Module scripts use a CORS fetch rather than an XMLHttpRequest. This action
   # serves a public test asset, so Rails' JavaScript response guard is unnecessary.
   skip_after_action :verify_same_origin_request, only: :turbo
@@ -21,6 +27,7 @@ class SampleController < ActionController::Base
           <% end %>
         </head>
         <body>
+          <%= i18n_proofreading_tag if params[:manual_tag] %>
           <h1><%= t("sample.greeting") %></h1>
           <% if params[:fields] %>
             <%# A host form field the way Bullet Train renders one: optional

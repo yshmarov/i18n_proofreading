@@ -2,6 +2,22 @@
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-11-17
+
+### Added
+
+- Controller methods `disable_i18n_proofreading` and `enable_i18n_proofreading`
+  select pages before rendering, suppressing both key markers and automatic or
+  manually placed widgets without overriding middleware internals. The optional
+  `controller_scoped = true` setting defaults pages to off until opted in.
+- Existing installs retain their behavior. Environment and user gates still
+  apply; suggestion endpoints, dashboard authorization and toggle redirects are
+  unchanged. No migration or new dependency.
+- Costs: hosts must call these methods before rendering, and still own fragment
+  and response cache safeguards. This does not narrow marking to view rendering
+  or undo markers already emitted. Excluded pages keep their cache headers.
+- Request and real Turbo browser tests cover page transitions and gate behavior.
+
 ## [1.2.1] - 2026-10-30
 
 ### Fixed

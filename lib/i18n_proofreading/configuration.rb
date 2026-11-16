@@ -61,6 +61,9 @@ module I18nProofreading
     # yourself with `<%= i18n_proofreading_tag %>` in your layout.
     attr_accessor :auto_inject
 
+    # Default pages to off until a controller calls enable_i18n_proofreading.
+    attr_accessor :controller_scoped
+
     # Where the engine is mounted. The widget posts suggestions to
     # "#{mount_path}/suggestions", so keep this in sync with the `mount` line in
     # your routes.
@@ -101,6 +104,7 @@ module I18nProofreading
       @author_label = ->(user) { user.respond_to?(:email) ? user.email : user&.to_s }
       @available_locales = -> { I18n.available_locales.map(&:to_s) }
       @auto_inject = true
+      @controller_scoped = false
       @mount_path = '/i18n_proofreading'
       @show_pill = true
       @pill_label = nil

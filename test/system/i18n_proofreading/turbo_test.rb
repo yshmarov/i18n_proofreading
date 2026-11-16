@@ -87,6 +87,26 @@ module I18nProofreading
       assert_selector "[data-i18n-key='sample.greeting']"
     end
 
+    test 'controller scoped pages turn the widget off and back on during Turbo visits' do
+      I18nProofreading.config.controller_scoped = true
+      visit '/sample?turbo=1&proofreading_page=on&i18n_proofreading=true'
+      assert_selector "[data-i18n-key='sample.greeting']"
+      track_turbo
+
+      page.execute_script("Turbo.visit('/sample?turbo=1')")
+      assert_selector 'html[data-proofreading-loads="1"]'
+      assert_no_selector '.i18np-pill'
+      assert_no_selector '[data-i18n-key]'
+      refute page.evaluate_script("document.documentElement.classList.contains('i18np-active')")
+
+      page.execute_script("Turbo.visit('/sample?turbo=1&proofreading_page=on')")
+      assert_selector 'html[data-proofreading-loads="2"]'
+      assert_selector '.i18np-pill', count: 1
+      find("[data-i18n-key='sample.greeting']").click
+      assert_selector '.i18np-panel'
+      assert_equal true, page.evaluate_script('window.proofreadingSoftVisit')
+    end
+
     private
 
     def track_fetches

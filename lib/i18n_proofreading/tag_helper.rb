@@ -8,7 +8,7 @@ module I18nProofreading
   # autoloaders, when an app/helpers constant cannot be resolved yet.
   module TagHelper
     def i18n_proofreading_tag
-      return ''.html_safe unless I18nProofreading.available?(request)
+      return ''.html_safe unless I18nProofreading.available?(request) && PageScope.enabled?(request)
 
       Widget.snippet(
         endpoint: I18nProofreading.config.suggestions_endpoint,

@@ -27,11 +27,13 @@ module I18nProofreading
       end
 
       marking = available && cookie_on?(request)
-      Marking.enabled = marking
+      env[PageScope::MARKING] = marking
+      Marking.enabled = marking && PageScope.enabled?(request)
 
       status, headers, body = @app.call(env)
 
-      if available && I18nProofreading.config.auto_inject && html?(headers) && !request.xhr?
+      if available && PageScope.enabled?(request) && I18nProofreading.config.auto_inject &&
+         html?(headers) && !request.xhr?
         status, headers, body = inject(status, headers, body, marking, csp_nonce(env))
       end
 
